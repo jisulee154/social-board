@@ -21,6 +21,8 @@
 		415C6B4E2A988FC90081375F /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 415C6B4D2A988FC90081375F /* RxSwift */; };
 		415C6B502A9890020081375F /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 415C6B4F2A9890020081375F /* Post.swift */; };
 		415C6B522A98929F0081375F /* SocialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 415C6B512A98929F0081375F /* SocialViewController.swift */; };
+		415C6B5A2A98AAF70081375F /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 415C6B592A98AAF70081375F /* PostCell.swift */; };
+		415C6B5D2A98C0210081375F /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 415C6B5C2A98C0210081375F /* SnapKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +39,7 @@
 		415C6B462A988F940081375F /* PostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		415C6B4F2A9890020081375F /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		415C6B512A98929F0081375F /* SocialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialViewController.swift; sourceTree = "<group>"; };
+		415C6B592A98AAF70081375F /* PostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +48,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				415C6B4E2A988FC90081375F /* RxSwift in Frameworks */,
+				415C6B5D2A98C0210081375F /* SnapKit in Frameworks */,
 				415C6B4C2A988FC90081375F /* RxRelay in Frameworks */,
 				415C6B4A2A988FC90081375F /* RxCocoa in Frameworks */,
 			);
@@ -90,8 +94,9 @@
 			isa = PBXGroup;
 			children = (
 				415C6B2F2A9868E30081375F /* ViewController.swift */,
-				415C6B512A98929F0081375F /* SocialViewController.swift */,
 				415C6B422A986C8B0081375F /* MainTabBarController.swift */,
+				415C6B512A98929F0081375F /* SocialViewController.swift */,
+				415C6B592A98AAF70081375F /* PostCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -140,6 +145,7 @@
 				415C6B492A988FC90081375F /* RxCocoa */,
 				415C6B4B2A988FC90081375F /* RxRelay */,
 				415C6B4D2A988FC90081375F /* RxSwift */,
+				415C6B5C2A98C0210081375F /* SnapKit */,
 			);
 			productName = "social-board";
 			productReference = 415C6B282A9868E30081375F /* social-board.app */;
@@ -171,6 +177,7 @@
 			mainGroup = 415C6B1F2A9868E30081375F;
 			packageReferences = (
 				415C6B482A988FC90081375F /* XCRemoteSwiftPackageReference "RxSwift" */,
+				415C6B5B2A98C0210081375F /* XCRemoteSwiftPackageReference "SnapKit" */,
 			);
 			productRefGroup = 415C6B292A9868E30081375F /* Products */;
 			projectDirPath = "";
@@ -207,6 +214,7 @@
 				415C6B522A98929F0081375F /* SocialViewController.swift in Sources */,
 				415C6B2E2A9868E30081375F /* SceneDelegate.swift in Sources */,
 				415C6B362A9868E30081375F /* social_board.xcdatamodeld in Sources */,
+				415C6B5A2A98AAF70081375F /* PostCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -424,6 +432,14 @@
 				minimumVersion = 6.0.0;
 			};
 		};
+		415C6B5B2A98C0210081375F /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -441,6 +457,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 415C6B482A988FC90081375F /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
+		};
+		415C6B5C2A98C0210081375F /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 415C6B5B2A98C0210081375F /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 
