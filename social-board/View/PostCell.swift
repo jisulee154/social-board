@@ -12,22 +12,26 @@ import RxSwift
 class PostCell: UITableViewCell {
     var post: Post?
     
+    //MARK: - 셀 상단 작성자 정보 스택
     var profilePicture = UIImageView()      // 작성자 사진
     var nameLabel = UILabel()               // 작성자 닉네임
     var jobLabel = UILabel()                // 작성자 직종
+    var seperatorDot = UILabel()            // 구분자
     var createdTimeLabel = UILabel()        // 작성 시간
     
     var subStack = UIStackView()            // 직종 + 시간 //HStack
-    var rightStack = UIStackView()          // subInfoStack + 닉네임 //VStack
-    var stack = UIStackView()               // 사진 + rightStack //HStack
+    var rightStack = UIStackView()          // subInfoStack + nameStack //VStack
+    var stack = UIStackView()               // profileStack + rightStack //HStack
 
+    //MARK: - 셀 중앙 컨텐츠 스택
+    
+    //MARK: - 셀 하단 코멘트/좋아요 스택
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         configureCell()
-        setSubStackConstraint()
-        setRightStackConstraint()
-        setStackConstraint()
+        setConstraint()
     }
     
     required init?(coder: NSCoder) {
@@ -46,7 +50,7 @@ extension PostCell {
         self.post = post
         
 //        getProfilePicture(with: "https://random.dog/5350-13889-29214.jpg")
-        self.profilePicture.image = UIImage(named: "pencil-solid-small")
+//        self.profilePicture.image = UIImage(named: "pencil-solid-small")
         self.nameLabel.text = post.writer?.userName
         self.jobLabel.text = post.writer?.userJob?.rawValue
         self.createdTimeLabel.text = post.createdDateTime?.description
@@ -86,99 +90,19 @@ extension PostCell {
 
 //MARK: - 오토 레이아웃
 extension PostCell {
-    //MARK: - 오토 레이아웃: subStack(직종 + 작성시간)
-    func setSubStackConstraint() {
-        subStack.translatesAutoresizingMaskIntoConstraints          = false
-        jobLabel.translatesAutoresizingMaskIntoConstraints          = false
-        createdTimeLabel.translatesAutoresizingMaskIntoConstraints  = false
-        
-        
-        NSLayoutConstraint.activate([
-            subStack.topAnchor.constraint(equalTo: rightStack.topAnchor, constant: 30),
-            subStack.trailingAnchor.constraint(equalTo: rightStack.trailingAnchor, constant: -10),
-            subStack.leadingAnchor.constraint(equalTo: rightStack.leadingAnchor, constant: 10),
-            subStack.widthAnchor.constraint(equalToConstant: 300),
-            subStack.heightAnchor.constraint(equalToConstant: 50)
-        ])
-        
-        //MARK: - 오토 레이아웃: 직종, 작성시간
-        NSLayoutConstraint.activate([
-            jobLabel.topAnchor.constraint(equalTo: subStack.topAnchor, constant: 0),
-            jobLabel.bottomAnchor.constraint(equalTo: subStack.bottomAnchor, constant: 0),
-            jobLabel.leadingAnchor.constraint(equalTo: subStack.leadingAnchor, constant: 0),
-            jobLabel.widthAnchor.constraint(equalToConstant: 50),
-            jobLabel.heightAnchor.constraint(equalToConstant: 20),
-            
-            createdTimeLabel.leadingAnchor.constraint(equalTo: jobLabel.trailingAnchor, constant: 5),
-            createdTimeLabel.trailingAnchor.constraint(equalTo: subStack.trailingAnchor, constant: -20),
-            createdTimeLabel.heightAnchor.constraint(equalToConstant: 20),
-            createdTimeLabel.centerYAnchor.constraint(equalTo: jobLabel.centerYAnchor)
-            ])
-        
-//        NSLayoutConstraint.activate([
-//            jobLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-//            jobLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-//            jobLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-//            jobLabel.widthAnchor.constraint(equalToConstant: 50),
-//            jobLabel.heightAnchor.constraint(equalToConstant: 20),
-//
-//            createdTimeLabel.leadingAnchor.constraint(equalTo: jobLabel.trailingAnchor, constant: 10),
-//            createdTimeLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -50),
-//            createdTimeLabel.heightAnchor.constraint(equalToConstant: 20),
-//            createdTimeLabel.centerYAnchor.constraint(equalTo: jobLabel.centerYAnchor)
-//            ])
-    }
-    
-    //MARK: - 오토 레이아웃: Right Stack (닉네임 + subStack)
-    func setRightStackConstraint() {
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        rightStack.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            nameLabel.topAnchor.constraint(equalTo: rightStack.topAnchor, constant: 0),
-            nameLabel.leadingAnchor.constraint(equalTo: rightStack.leadingAnchor, constant: 10),
-            
-            subStack.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: -5),
-            subStack.bottomAnchor.constraint(equalTo: rightStack.bottomAnchor, constant: -10),
-            
-            rightStack.leadingAnchor.constraint(equalTo: profilePicture.trailingAnchor, constant: 5),
-            rightStack.heightAnchor.constraint(equalToConstant: 50)
-        ])
-    }
-    
-    //MARK: - 오토 레이아웃: Stack (사진 + Right Stack)
-    func setStackConstraint() {
-        profilePicture.translatesAutoresizingMaskIntoConstraints = false
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            rightStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            rightStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30),
-            
-            profilePicture.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            profilePicture.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            profilePicture.widthAnchor.constraint(equalToConstant: 50),
-            profilePicture.heightAnchor.constraint(equalToConstant: 50),
-            
-            rightStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 100),
-            
-            stack.topAnchor.constraint(equalTo: contentView.topAnchor),
-            stack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-        ])
-    }
-    
     func configureCell() {
         setProfilePicture()
         setNameLabel()
         setJobLabel()
         setCreatedTimeLabel()
+        setSeperatorDot()
         
         setSubStack()
         setRightStack()
         setStack()
-        
+    }
+    
+    func setConstraint() {
         contentView.addSubview(stack)
         
         stack.addSubview(profilePicture)
@@ -188,8 +112,87 @@ extension PostCell {
         rightStack.addSubview(subStack)
         
         subStack.addSubview(jobLabel)
+        subStack.addSubview(seperatorDot)
         subStack.addSubview(createdTimeLabel)
         
+        setStackConstraint()
+        setRightStackConstraint()
+        setSubStackConstraint()
+    }
+    
+    //MARK: - 오토 레이아웃: Stack (사진 + Right Stack)
+    func setStackConstraint() {
+        profilePicture.translatesAutoresizingMaskIntoConstraints = false
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        
+        stack.snp.makeConstraints { make in
+            make.edges.equalTo(self.contentView).inset(UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10))
+        }
+        
+        profilePicture.snp.makeConstraints { make in
+            make.top.equalTo(stack.snp.top).offset(10)
+            make.leading.equalTo(stack.snp.leading).offset(10)
+            make.width.equalTo(40)
+            make.height.equalTo(40)
+        }
+    }
+    
+    //MARK: - 오토 레이아웃: Right Stack (닉네임 + subStack)
+    func setRightStackConstraint() {
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        rightStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        rightStack.snp.makeConstraints { make in
+            make.top.equalTo(profilePicture.snp.top)
+            make.leading.equalTo(profilePicture.snp.trailing).offset(10)
+            make.trailing.greaterThanOrEqualTo(contentView.snp.trailing).offset(-10)
+            make.height.greaterThanOrEqualTo(profilePicture.snp.height)
+        }
+        
+        nameLabel.snp.makeConstraints { make in
+            make.top.equalTo(rightStack.snp.top)
+            make.leading.equalTo(rightStack.snp.leading)
+            make.trailing.greaterThanOrEqualTo(rightStack.snp.trailing)
+            make.width.greaterThanOrEqualTo(50)
+            make.height.lessThanOrEqualTo(20)
+        }
+    }
+    
+    //MARK: - 오토 레이아웃: subStack(직종 + 작성시간)
+    func setSubStackConstraint() {
+        subStack.translatesAutoresizingMaskIntoConstraints          = false
+        jobLabel.translatesAutoresizingMaskIntoConstraints          = false
+        createdTimeLabel.translatesAutoresizingMaskIntoConstraints  = false
+        
+        subStack.snp.makeConstraints { make in
+            make.top.equalTo(nameLabel.snp.bottom)
+            make.bottom.equalTo(rightStack.snp.bottom)
+            
+            make.leading.equalTo(rightStack.snp.leading)
+            make.trailing.greaterThanOrEqualTo(rightStack.snp.trailing)
+            make.height.lessThanOrEqualTo(20)
+        }
+        
+        //MARK: - 오토 레이아웃: 직종, 작성시간
+        jobLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(subStack.snp.centerY)
+            make.leading.equalTo(subStack.snp.leading)
+            
+            make.width.greaterThanOrEqualTo(20)
+        }
+        
+        seperatorDot.snp.makeConstraints { make in
+            make.centerY.equalTo(subStack.snp.centerY)
+            make.leading.equalTo(jobLabel.snp.trailing)
+            
+            make.width.greaterThanOrEqualTo(5)
+        }
+        createdTimeLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(subStack.snp.centerY)
+            make.leading.equalTo(seperatorDot.snp.trailing)
+            
+            make.width.greaterThanOrEqualTo(50)
+        }
     }
 }
 
@@ -198,6 +201,8 @@ extension PostCell {
     func setProfilePicture() {
         profilePicture = {
             let imageView = UIImageView()
+            
+            imageView.backgroundColor = .white
             imageView.image = UIImage(systemName: "person.crop.circle")
             
             return imageView
@@ -208,7 +213,9 @@ extension PostCell {
         nameLabel = {
             let label = UILabel()
             
+            label.backgroundColor = .green
             label.translatesAutoresizingMaskIntoConstraints = false
+            label.font = .systemFont(ofSize: 15, weight: .bold)
             return label
         }()
     }
@@ -217,8 +224,9 @@ extension PostCell {
         jobLabel = {
             let label = UILabel()
             
+            jobLabel.backgroundColor = .brown
             label.translatesAutoresizingMaskIntoConstraints = false
-            label.font = .systemFont(ofSize: 12, weight: .thin)
+            label.font = .systemFont(ofSize: 10, weight: .regular)
             return label
         }()
     }
@@ -227,12 +235,22 @@ extension PostCell {
         createdTimeLabel = {
             let label = UILabel()
             
+            createdTimeLabel.backgroundColor = .cyan
             label.translatesAutoresizingMaskIntoConstraints = false
-            label.font = .systemFont(ofSize: 12, weight: .thin)
+            label.font = .systemFont(ofSize: 10, weight: .regular)
             return label
         }()
     }
     
+    func setSeperatorDot() {
+        seperatorDot = {
+            let label = UILabel()
+            label.text = "・"
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.font = .systemFont(ofSize: 10, weight: .regular)
+            return label
+        }()
+    }
     func setSubStack() {
         subStack = {
             let stack = UIStackView()
@@ -260,8 +278,8 @@ extension PostCell {
             let stack = UIStackView()
             
             stack.axis = .vertical
-            stack.alignment
-            stack.backgroundColor = .yellow
+            stack.alignment = .center
+//            stack.backgroundColor = .yellow
             
             return stack
         }()

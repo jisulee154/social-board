@@ -6,16 +6,9 @@
 //
 
 import UIKit
+import SnapKit
 
 class SocialViewController: UIViewController {
-    let tableView: UITableView = {
-        let table = UITableView()
-        table.translatesAutoresizingMaskIntoConstraints = false
-        table.register(PostCell.self, forCellReuseIdentifier: "PostCell")
-        
-        return table
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -23,10 +16,20 @@ class SocialViewController: UIViewController {
         setConstraint()
     }
     
+    var tableView = UITableView()
+    
     //MARK: - ViewModel data
     let postViewModel = PostViewModel()
     
     func configureTableView() {
+        tableView = {
+            let table = UITableView()
+            table.translatesAutoresizingMaskIntoConstraints = false
+            table.register(PostCell.self, forCellReuseIdentifier: "PostCell")
+            
+            return table
+        }()
+        
         tableView.register(PostCell.self, forCellReuseIdentifier: "PostCell")
         
         setNavigationBarItem()
@@ -67,18 +70,26 @@ class SocialViewController: UIViewController {
         self.view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
+        
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(view).offset(0)
+            make.bottom.equalTo(view).offset(0)
+            make.leading.equalTo(view).offset(0)
+            make.trailing.equalTo(view).offset(0)
+        }
+        
 //        // auto height
 //        tableView.rowHeight = UITableView.automaticDimension
 //        tableView.estimatedRowHeight = UITableView.automaticDimension
 //
 //        tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: self.view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
-        ])
+//        NSLayoutConstraint.activate([
+//            tableView.topAnchor.constraint(equalTo: self.view.topAnchor),
+//            tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+//            tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+//            tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
+//        ])
     }
 }
 
@@ -97,16 +108,13 @@ extension SocialViewController: UITableViewDataSource {
         let post = postViewModel.posts[indexPath.row]
         cell.setPost(post)
         
-//        cell.jobLabel.text = post.writerID
-//        cell.createdTimeLabel.text = "\(Date())"
-        
         cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 1000
+        return 500
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

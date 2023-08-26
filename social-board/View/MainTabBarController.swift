@@ -12,6 +12,10 @@ class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        configureView()
+    }
+    
+    func configureView() {
         let firstNC = UINavigationController(rootViewController: ViewController(title: "채용", bgColor: .blue))
         let secondNC = UINavigationController(rootViewController: ViewController(title: "커리어", bgColor: .green))
         let socialNC = UINavigationController(rootViewController: SocialViewController())
