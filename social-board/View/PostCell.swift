@@ -11,6 +11,10 @@ import RxSwift
 
 class PostCell: UITableViewCell {
     var post: Post?
+    var postViewModel = PostViewModel()
+    let disposeBag = DisposeBag()
+    
+    var isFirstPost: Bool = false
     
     //MARK: - 전체 영역
     var stack = UIStackView()               // 전체 통합
@@ -43,11 +47,25 @@ class PostCell: UITableViewCell {
     var commentCountIcon = UIImageView()
     var commentCountLabel = UILabel()
     
+    
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        configureCell()
-        setConstraint()
+//        postViewModel.isFirstPost
+//            .subscribe{
+//                self.isFirstPost = $0
+//                print(#fileID, #function, #line, " - isFirstPost", self.isFirstPost)
+//            }
+//            .disposed(by: disposeBag)
+//
+//        if isFirstPost {
+//            configureWritingCell()
+//            setWritingCellConstraint()
+//        } else {
+            configureCell()
+            setConstraint()
+//        }
     }
     
     required init?(coder: NSCoder) {
@@ -123,6 +141,12 @@ extension PostCell {
 //MARK: - 요소 정의 호출
 extension PostCell {
     func configureCell() {
+        postViewModel.isFirstPost
+            .subscribe{
+                print(#fileID, #function, #line, " - isFirstPost", $0)
+            }
+            .disposed(by: disposeBag)
+        
         // 전체
         setStack()
         
@@ -202,12 +226,11 @@ extension PostCell {
         
     }
     
+    
     //MARK: - 오토 레이아웃: 셀 전체
     func setAllConstraint() {
         stack.snp.makeConstraints { make in
             make.edges.equalTo(self.contentView)
-            
-//            make.height.greaterThanOrEqualTo(1000)
         }
     }
     
@@ -217,10 +240,10 @@ extension PostCell {
     func setWriterInfoStackConstraint() {
         
         writerInfoStack.snp.makeConstraints { make in
-            make.top.equalTo(stack.snp.top).offset(10)
-            make.leading.equalTo(stack.snp.leading).offset(10)
-            make.trailing.equalTo(stack.snp.trailing).offset(-10)
-            make.bottom.equalTo(contentsStack.snp.top).offset(-10)
+            make.top.equalTo(stack.snp.top).offset(15)
+            make.leading.equalTo(stack.snp.leading).offset(20)
+            make.trailing.equalTo(stack.snp.trailing).offset(-20)
+            make.bottom.equalTo(contentsStack.snp.top).offset(-15)
             make.height.equalTo(40)
 //            make.edges.equalTo(stack).inset(UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10))
         }
@@ -239,8 +262,8 @@ extension PostCell {
         
         rightStack.snp.makeConstraints { make in
             make.top.equalTo(profilePicture.snp.top)
-            make.leading.equalTo(profilePicture.snp.trailing).offset(10)
-            make.trailing.equalTo(contentView.snp.trailing).offset(-10)
+            make.leading.equalTo(profilePicture.snp.trailing).offset(20)
+            make.trailing.equalTo(contentView.snp.trailing).offset(-20)
             make.bottom.equalTo(profilePicture.snp.bottom)
             
             make.height.equalTo(profilePicture.snp.height)
@@ -295,27 +318,27 @@ extension PostCell {
     func setContentsStackConstraint() {
         contentsStack.snp.makeConstraints { make in
 //            make.top.equalTo(self.contentView.snp.top).offset(55)
-            make.top.equalTo(writerInfoStack.snp.bottom).offset(10)
-            make.bottom.equalTo(likeCommentStack.snp.top).offset(-10)
-            make.leading.equalTo(writerInfoStack.snp.leading)
-            make.trailing.equalTo(writerInfoStack.snp.trailing)
+            make.top.equalTo(writerInfoStack.snp.bottom).offset(15)
+//            make.bottom.equalTo(likeCommentStack.snp.top).offset(-10)
+            make.leading.equalTo(writerInfoStack)
+            make.trailing.equalTo(writerInfoStack)
             
 //            make.height.greaterThanOrEqualTo(50)
         }
         
         contentsImage.snp.makeConstraints { make in
-            make.top.equalTo(contentsStack.snp.top)
+            make.top.equalTo(contentsStack)
 //            make.bottom.equalTo(contentsText.snp.top).offset(-20)
-            make.leading.equalTo(contentsStack.snp.leading)
+            make.leading.equalTo(contentsStack)
             
-            make.width.equalTo(contentsStack.snp.width)
+            make.width.equalTo(contentsStack)
 //            make.height.greaterThanOrEqualTo(50)
         }
         
         contentsText.snp.makeConstraints { make in
             make.top.equalTo(contentsImage.snp.bottom).offset(20)
             make.leading.equalTo(contentsStack.snp.leading)
-            make.bottom.equalTo(contentsStack.snp.bottom).offset(-50)
+            make.bottom.equalTo(contentsStack.snp.bottom).offset(-50) // 더보기 버튼을 위한 여백
             make.trailing.equalTo(contentsStack.snp.trailing)
             
 //            make.height.greaterThanOrEqualTo(50)
@@ -349,9 +372,9 @@ extension PostCell {
         }
         
         commentCountStack.snp.makeConstraints { make in
-            make.top.equalTo(likeCommentStack.snp.top)
-            make.leading.equalTo(likeCountStack.snp.trailing).offset(10)
-            make.trailing.equalTo(likeCommentStack.snp.trailing)
+            make.top.equalTo(likeCommentStack)
+            make.leading.equalTo(likeCountStack.snp.trailing).offset(20)
+            make.trailing.equalTo(likeCommentStack)
             
 //            make.width.lessThanOrEqualTo(40)
         }
@@ -429,6 +452,7 @@ extension PostCell {
             let label = UILabel()
             
             label.font = .systemFont(ofSize: 10, weight: .regular)
+            label.textColor = .gray
             return label
         }()
     }
@@ -438,6 +462,7 @@ extension PostCell {
             let label = UILabel()
             
             label.font = .systemFont(ofSize: 10, weight: .regular)
+            label.textColor = .gray   
             return label
         }()
     }

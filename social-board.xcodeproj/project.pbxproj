@@ -23,6 +23,7 @@
 		415C6B522A98929F0081375F /* SocialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 415C6B512A98929F0081375F /* SocialViewController.swift */; };
 		415C6B5A2A98AAF70081375F /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 415C6B592A98AAF70081375F /* PostCell.swift */; };
 		415C6B5D2A98C0210081375F /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 415C6B5C2A98C0210081375F /* SnapKit */; };
+		415C6B5F2A9E0CA30081375F /* PostTopCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 415C6B5E2A9E0CA30081375F /* PostTopCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		415C6B4F2A9890020081375F /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		415C6B512A98929F0081375F /* SocialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialViewController.swift; sourceTree = "<group>"; };
 		415C6B592A98AAF70081375F /* PostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
+		415C6B5E2A9E0CA30081375F /* PostTopCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTopCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 				415C6B422A986C8B0081375F /* MainTabBarController.swift */,
 				415C6B512A98929F0081375F /* SocialViewController.swift */,
 				415C6B592A98AAF70081375F /* PostCell.swift */,
+				415C6B5E2A9E0CA30081375F /* PostTopCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -208,6 +211,7 @@
 				415C6B302A9868E30081375F /* ViewController.swift in Sources */,
 				415C6B472A988F940081375F /* PostViewModel.swift in Sources */,
 				415C6B452A987EF50081375F /* Extensions.swift in Sources */,
+				415C6B5F2A9E0CA30081375F /* PostTopCell.swift in Sources */,
 				415C6B502A9890020081375F /* Post.swift in Sources */,
 				415C6B2C2A9868E30081375F /* AppDelegate.swift in Sources */,
 				415C6B432A986C8B0081375F /* MainTabBarController.swift in Sources */,
