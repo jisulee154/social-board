@@ -181,13 +181,13 @@ extension PostCell {
         setRightStackConstraint()
         setSubStackConstraint()
 
-//        // 내용
+        // 내용
         contentsStack.addSubview(contentsImage)
         contentsStack.addSubview(contentsText)
         contentsStack.addSubview(contentsMore)
 
         setContentsStackConstraint()
-//
+
         // 좋아요/코멘트
         likeCommentStack.addSubview(likeCountStack)
         likeCommentStack.addSubview(commentCountStack)
@@ -206,6 +206,8 @@ extension PostCell {
     func setAllConstraint() {
         stack.snp.makeConstraints { make in
             make.edges.equalTo(self.contentView)
+            
+//            make.height.greaterThanOrEqualTo(1000)
         }
     }
     
@@ -213,6 +215,7 @@ extension PostCell {
     // 작성자 정보 영역
     // 프로필 사진 + RightStack
     func setWriterInfoStackConstraint() {
+        
         writerInfoStack.snp.makeConstraints { make in
             make.top.equalTo(stack.snp.top).offset(10)
             make.leading.equalTo(stack.snp.leading).offset(10)
@@ -223,8 +226,8 @@ extension PostCell {
         }
         
         profilePicture.snp.makeConstraints { make in
-            make.top.equalTo(writerInfoStack.snp.top).offset(10)
-            make.leading.equalTo(writerInfoStack.snp.leading).offset(10)
+            make.top.equalTo(writerInfoStack.snp.top)
+            make.leading.equalTo(writerInfoStack.snp.leading)
             make.width.equalTo(40)
             make.height.equalTo(40)
         }
@@ -233,6 +236,7 @@ extension PostCell {
     //MARK: - 오토 레이아웃: Right Stack
     // 닉네임 + subStack
     func setRightStackConstraint() {
+        
         rightStack.snp.makeConstraints { make in
             make.top.equalTo(profilePicture.snp.top)
             make.leading.equalTo(profilePicture.snp.trailing).offset(10)
@@ -245,7 +249,7 @@ extension PostCell {
         nameLabel.snp.makeConstraints { make in
             make.top.equalTo(rightStack.snp.top)
             make.leading.equalTo(rightStack.snp.leading)
-            make.trailing.greaterThanOrEqualTo(rightStack.snp.trailing)
+            make.trailing.equalTo(rightStack.snp.trailing)
             
             make.width.greaterThanOrEqualTo(50)
             make.height.lessThanOrEqualTo(20)
@@ -260,8 +264,8 @@ extension PostCell {
             make.bottom.equalTo(rightStack.snp.bottom)
             
             make.leading.equalTo(rightStack.snp.leading)
-            make.trailing.greaterThanOrEqualTo(rightStack.snp.trailing)
-            make.height.lessThanOrEqualTo(20)
+            make.trailing.equalTo(rightStack.snp.trailing)
+            make.height.equalTo(20)
         }
         
         jobLabel.snp.makeConstraints { make in
@@ -301,20 +305,20 @@ extension PostCell {
         
         contentsImage.snp.makeConstraints { make in
             make.top.equalTo(contentsStack.snp.top)
-            make.bottom.greaterThanOrEqualTo(contentsText.snp.top).offset(-10)
+//            make.bottom.equalTo(contentsText.snp.top).offset(-20)
             make.leading.equalTo(contentsStack.snp.leading)
             
             make.width.equalTo(contentsStack.snp.width)
-            make.height.greaterThanOrEqualTo(50)
+//            make.height.greaterThanOrEqualTo(50)
         }
         
         contentsText.snp.makeConstraints { make in
-            make.top.equalTo(contentsImage.snp.bottom).offset(10)
+            make.top.equalTo(contentsImage.snp.bottom).offset(20)
             make.leading.equalTo(contentsStack.snp.leading)
-            make.bottom.equalTo(contentsStack.snp.bottom)
+            make.bottom.equalTo(contentsStack.snp.bottom).offset(-50)
             make.trailing.equalTo(contentsStack.snp.trailing)
             
-            make.height.greaterThanOrEqualTo(50)
+//            make.height.greaterThanOrEqualTo(50)
         }
         
         contentsMore.snp.makeConstraints { make in
@@ -329,8 +333,8 @@ extension PostCell {
     //MARK: - 오토 레이아웃: 좋아요/코멘트
     func setLikeCommentStackConstraint() {
         likeCommentStack.snp.makeConstraints { make in
-            make.top.equalTo(contentsStack.snp.bottom).offset(10)
-            make.bottom.equalTo(stack.snp.bottom).offset(-10)
+            make.top.equalTo(contentsStack.snp.bottom)
+            make.bottom.equalTo(stack.snp.bottom).offset(-20)
             make.leading.equalTo(contentsStack.snp.leading)
             make.trailing.equalTo(contentsStack.snp.trailing)
             
@@ -346,23 +350,23 @@ extension PostCell {
         
         commentCountStack.snp.makeConstraints { make in
             make.top.equalTo(likeCommentStack.snp.top)
-            make.leading.equalTo(likeCountStack.snp.trailing).offset(5)
+            make.leading.equalTo(likeCountStack.snp.trailing).offset(10)
             make.trailing.equalTo(likeCommentStack.snp.trailing)
             
-            make.width.lessThanOrEqualTo(40)
+//            make.width.lessThanOrEqualTo(40)
         }
         
         likeCountIcon.snp.makeConstraints { make in
             make.top.equalTo(likeCommentStack.snp.top)
             make.leading.equalTo(likeCountStack.snp.leading)
             
-            make.width.equalTo(20)
+//            make.width.equalTo(20)
             make.height.equalTo(likeCommentStack.snp.height)
         }
         
         likeCountLabel.snp.makeConstraints { make in
             make.top.equalTo(likeCommentStack.snp.top)
-            make.leading.equalTo(likeCountIcon.snp.trailing).offset(10)
+            make.leading.equalTo(likeCountIcon.snp.trailing).offset(5)
 //            make.width.equalTo(30)
             
             make.height.equalTo(likeCommentStack.snp.height)
@@ -378,7 +382,7 @@ extension PostCell {
         
         commentCountLabel.snp.makeConstraints { make in
             make.top.equalTo(likeCommentStack.snp.top)
-            make.leading.equalTo(commentCountIcon.snp.trailing).offset(10)
+            make.leading.equalTo(commentCountIcon.snp.trailing).offset(5)
 //            make.width.equalTo(30)
             
             make.height.equalTo(likeCommentStack.snp.height)
@@ -393,7 +397,6 @@ extension PostCell {
         stack = {
             let stack = UIStackView()
             
-            stack.translatesAutoresizingMaskIntoConstraints = false
             stack.axis = .vertical
             stack.alignment = .center
 //            stack.backgroundColor = .red
@@ -406,8 +409,6 @@ extension PostCell {
         profilePicture = {
             let imageView = UIImageView()
             
-            imageView.translatesAutoresizingMaskIntoConstraints = false
-//            imageView.backgroundColor = .white
             imageView.image = UIImage(systemName: "person.crop.circle")
             
             return imageView
@@ -418,8 +419,6 @@ extension PostCell {
         nameLabel = {
             let label = UILabel()
             
-//            label.backgroundColor = .green
-            label.translatesAutoresizingMaskIntoConstraints = false
             label.font = .systemFont(ofSize: 15, weight: .bold)
             return label
         }()
@@ -429,8 +428,6 @@ extension PostCell {
         jobLabel = {
             let label = UILabel()
             
-//            jobLabel.backgroundColor = .brown
-            label.translatesAutoresizingMaskIntoConstraints = false
             label.font = .systemFont(ofSize: 10, weight: .regular)
             return label
         }()
@@ -440,8 +437,6 @@ extension PostCell {
         createdTimeLabel = {
             let label = UILabel()
             
-//            createdTimeLabel.backgroundColor = .cyan
-            label.translatesAutoresizingMaskIntoConstraints = false
             label.font = .systemFont(ofSize: 10, weight: .regular)
             return label
         }()
@@ -451,7 +446,7 @@ extension PostCell {
         seperatorDot = {
             let label = UILabel()
             label.text = "・"
-            label.translatesAutoresizingMaskIntoConstraints = false
+
             label.font = .systemFont(ofSize: 10, weight: .regular)
             return label
         }()
@@ -460,7 +455,6 @@ extension PostCell {
         subStack = {
             let stack = UIStackView()
             
-            stack.translatesAutoresizingMaskIntoConstraints = false
             stack.axis = .horizontal
             stack.alignment = .center
 //            stack.backgroundColor = .orange
@@ -472,7 +466,6 @@ extension PostCell {
         rightStack = {
             let stack = UIStackView()
             
-            stack.translatesAutoresizingMaskIntoConstraints = false
             stack.axis = .vertical
             stack.alignment = .center
 //            stack.backgroundColor = .systemIndigo
@@ -484,7 +477,6 @@ extension PostCell {
         writerInfoStack = {
             let stack = UIStackView()
             
-            stack.translatesAutoresizingMaskIntoConstraints = false
             stack.axis = .vertical
             stack.alignment = .center
             stack.backgroundColor = .white
@@ -498,10 +490,8 @@ extension PostCell {
         contentsStack = {
             let stack = UIStackView()
             
-            stack.translatesAutoresizingMaskIntoConstraints = false
             stack.axis = .vertical
             stack.alignment = .center
-            stack.backgroundColor = .yellow
             
             return stack
         }()
@@ -511,7 +501,6 @@ extension PostCell {
         contentsImage = {
             let imageView = UIImageView()
             
-            imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.backgroundColor = .darkGray
             imageView.image = UIImage(systemName: "star")
             imageView.contentMode = .scaleAspectFit
@@ -525,7 +514,6 @@ extension PostCell {
             let label = UILabel()
             
             label.backgroundColor = .white
-            label.translatesAutoresizingMaskIntoConstraints = false
             
             label.numberOfLines = 0
             label.lineBreakMode = .byTruncatingTail
@@ -538,7 +526,6 @@ extension PostCell {
         contentsMore = {
             let btn = UIButton()
             
-            btn.translatesAutoresizingMaskIntoConstraints = false
             btn.backgroundColor = .magenta
             return btn
         }()
@@ -549,7 +536,6 @@ extension PostCell {
         likeCommentStack = {
             let stack = UIStackView()
             
-            stack.translatesAutoresizingMaskIntoConstraints = false
             stack.axis = .horizontal
             stack.alignment = .center
             stack.backgroundColor = .green
@@ -562,7 +548,6 @@ extension PostCell {
         likeCountStack = {
             let stack = UIStackView()
             
-            stack.translatesAutoresizingMaskIntoConstraints = false
             stack.axis = .horizontal
             stack.alignment = .center
             
@@ -574,7 +559,6 @@ extension PostCell {
         commentCountStack = {
             let stack = UIStackView()
             
-            stack.translatesAutoresizingMaskIntoConstraints = false
             stack.axis = .horizontal
             stack.alignment = .center
             
@@ -586,7 +570,6 @@ extension PostCell {
         likeCountIcon = {
             let imageView = UIImageView()
             
-            imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.backgroundColor = .white
             imageView.image = UIImage(systemName: "heart")
             
@@ -598,8 +581,6 @@ extension PostCell {
         likeCountLabel = {
             let label = UILabel()
             
-            label.translatesAutoresizingMaskIntoConstraints = false
-//            label.font = .systemFont(ofSize: 10, weight: .regular)
             return label
         }()
     }
@@ -608,7 +589,6 @@ extension PostCell {
         commentCountIcon = {
             let imageView = UIImageView()
             
-            imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.backgroundColor = .white
             imageView.image = UIImage(systemName: "message")
             
@@ -620,8 +600,6 @@ extension PostCell {
         commentCountLabel = {
             let label = UILabel()
             
-            label.translatesAutoresizingMaskIntoConstraints = false
-//            label.font = .systemFont(ofSize: 10, weight: .regular)
             return label
         }()
     }
