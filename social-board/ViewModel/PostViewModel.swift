@@ -16,7 +16,7 @@ class PostViewModel {
     var posts = [Post()]
     
     init() {
-        let realm = try! Realm()
+//        let realm = try! Realm()
         
 //        let post = realm.object(ofType: Post.self, forPrimaryKey: 12345)
         self.posts[0].postID = ObjectId()

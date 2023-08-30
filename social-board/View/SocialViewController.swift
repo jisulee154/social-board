@@ -40,6 +40,7 @@ class SocialViewController: UIViewController {
         let newPostBtn = UIButton()
         let newPostBtnImage = UIImage(systemName: "pencil")
         newPostBtn.setImage(newPostBtnImage, for: .normal)
+        newPostBtn.addTarget(self, action: #selector(moveToCreatePostViewController), for: .touchUpInside)
         newPostBtn.tintColor = .black
         
         let noticeBtn = UIButton()
@@ -72,6 +73,14 @@ class SocialViewController: UIViewController {
             make.edges.equalTo(self.view)
         }
     }
+    
+    //MARK: - 화면 전환 (->새글 쓰기)
+    @objc func moveToCreatePostViewController() {
+        let targetViewController = CreatePostViewController()
+        pushViewController(targetViewController, animated: true)
+        print(#fileID, #function, #line, " - new Post!")
+    }
+    
 }
 
 //MARK: - TableView DataSource
