@@ -93,16 +93,16 @@ extension PostCell {
         
 //        getProfilePicture(with: "https://random.dog/5350-13889-29214.jpg")
 //        self.profilePicture.image = UIImage(named: "pencil-solid-small")
-        self.nameLabel.text = post.writer?.userName
-        self.jobLabel.text = post.writer?.userJob?.rawValue
-        self.createdTimeLabel.text = post.createdDateTime?.description
+//        self.nameLabel.text = post.writerID?.userName
+//        self.jobLabel.text = post.writer?.userJob?.rawValue
+//        self.createdTimeLabel.text = post.createdDateTime?.description
         
 //        self.contentsImage.image = post.contentImage
-        self.contentsText.text = post.contents
+//        self.contentsText.text = post.contents
         self.contentsMore.titleLabel?.text = "더보기"
         
-        self.likeCountLabel.text = "\(post.likeCount!)"
-        self.commentCountLabel.text = "\(post.commentCount!)"
+//        self.likeCountLabel.text = "\(post.likeCount!)"
+//        self.commentCountLabel.text = "\(post.commentCount!)"
     }
     
     // profile 사진 받아오기
@@ -141,12 +141,6 @@ extension PostCell {
 //MARK: - 요소 정의 호출
 extension PostCell {
     func configureCell() {
-        postViewModel.isFirstPost
-            .subscribe{
-                print(#fileID, #function, #line, " - isFirstPost", $0)
-            }
-            .disposed(by: disposeBag)
-        
         // 전체
         setStack()
         
@@ -462,7 +456,7 @@ extension PostCell {
             let label = UILabel()
             
             label.font = .systemFont(ofSize: 10, weight: .regular)
-            label.textColor = .gray   
+            label.textColor = .gray
             return label
         }()
     }
