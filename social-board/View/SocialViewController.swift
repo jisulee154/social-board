@@ -23,20 +23,15 @@ class SocialViewController: UIViewController {
         let table = UITableView()
         table.register(PostCell.self, forCellReuseIdentifier: "PostCell")
         table.register(PostTopCell.self, forCellReuseIdentifier: "PostTopCell")
-//        table.register(PostHeader.self, forHeaderFooterViewReuseIdentifier: "PostHeader")
         
         return table
     }()
     
     //MARK: - ViewModel data
-    let postViewModel = PostViewModel()
+//    let postViewModel = PostViewModel()
     let disposeBag = DisposeBag()
     
-    var posts: [Post] = [] {
-        didSet {
-//            print(#fileID, #function, #line, " - DIDSET", posts)
-        }
-    }
+    var posts: [Post] = []
     
     func configureTableView() {
         setNavigationBarItem()
@@ -90,25 +85,15 @@ class SocialViewController: UIViewController {
     
     //MARK: - rx 구독
     func bind() {
-        postViewModel.posts
+        PostViewModel.shared.posts
             .subscribe(on: MainScheduler.instance)
             .subscribe {
                 self.posts = $0
                 self.tableView.reloadData()
-                print(#fileID, #function, #line, " - bind()!!")
             }
             .disposed(by: disposeBag)
         
-//        postViewModel.updateTableView
-//            .subscribe(on: MainScheduler.instance)
-//            .subscribe {
-//                if $0 {
-//                    print(#fileID, #function, #line, " - updateTableView subscribed")
-//                    self.tableView.reloadData()
-//                }
-//            }
-//            .disposed(by: disposeBag)
-        postViewModel.fetchPosts()
+        PostViewModel.shared.fetchPosts()
     }
     
 }

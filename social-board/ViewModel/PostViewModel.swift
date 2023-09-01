@@ -10,16 +10,18 @@ import RealmSwift
 import Foundation
 
 class PostViewModel {
-    //MARK: - 더미 데이터
+    static let shared = PostViewModel()
+    
     var posts = PublishSubject<[Post]>()
-    var updateTableView = PublishSubject<Bool>()
+//    var updateTableView = PublishSubject<Bool>()
     
     let disposeBag = DisposeBag()
     
     var dummyjobs: [Job] = []
     var dummyUsers: [User] = []
     
-    init() {
+    private init() {
+        //MARK: - 더미 데이터
         dummyjobs = [
             Job(jobID: ObjectId.generate(), category: JobCategory.dev, workYear: 1),
             Job(jobID: ObjectId.generate(), category: JobCategory.design, workYear: 3),
@@ -39,23 +41,8 @@ class PostViewModel {
     }
     
     func createPost(with post: Post) {
-//        let post = Post()
-//        post.postID = ObjectId.generate()
-//        post.title = ""
-//        post.contents = "내용2 다른 내용입니다 다른 내용입니다 다른 내용입니다 다른 내용입니다"
-//        post.createdDateTime = Date()
-//        post.likeCount = 2
-//        post.commentCount = 5
-//
-//        post.writer.first?.userName = "모모" //??? 왜 first?
-//        post.writer.first?.job?.category = .dev
-//        post.writer.first?.userProfilePicture = "person"
-        print(#fileID, #function, #line, " - createPost()!!")
-        print(#fileID, #function, #line, " - newPost: ", post.contents)
-        // When you open the realm, specify that the schema
-        // is now using a newer version.
+        //MARK: - Realm SchemaVersion 관리
         let config = Realm.Configuration(schemaVersion: 1)
-        // Use this configuration when opening realms
         Realm.Configuration.defaultConfiguration = config
         let realm = try! Realm()
         
@@ -80,11 +67,8 @@ class PostViewModel {
         self.posts
             .onNext(postResult)
         
-        self.updateTableView
-            .onNext(true)
-        
-        print(#fileID, #function, #line, " - onNext()!!")
-        
+//        self.updateTableView
+//            .onNext(true)
     }
 
 //    let posts = [

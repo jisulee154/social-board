@@ -11,7 +11,6 @@ import RxSwift
 
 class PostCell: UITableViewCell {
     var post: Post?
-    var postViewModel = PostViewModel()
     let disposeBag = DisposeBag()
     
     var isFirstPost: Bool = false
