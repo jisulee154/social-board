@@ -15,6 +15,8 @@ class SocialViewController: UIViewController {
         
         configureTableView()
         setConstraint()
+        
+        bind()
     }
     
     var tableView = {
@@ -29,6 +31,12 @@ class SocialViewController: UIViewController {
     //MARK: - ViewModel data
     let postViewModel = PostViewModel()
     let disposeBag = DisposeBag()
+    
+    var posts: [Post] = [] {
+        didSet {
+//            print(#fileID, #function, #line, " - DIDSET", posts)
+        }
+    }
     
     func configureTableView() {
         setNavigationBarItem()
@@ -74,11 +82,33 @@ class SocialViewController: UIViewController {
         }
     }
     
-    //MARK: - 화면 전환 (->새글 쓰기)
+    //MARK: - 화면 전환 (-> 새글 쓰기)
     @objc func moveToCreatePostViewController() {
         let targetViewController = CreatePostViewController()
-        pushViewController(targetViewController, animated: true)
-        print(#fileID, #function, #line, " - new Post!")
+        self.present(targetViewController, animated: true)
+    }
+    
+    //MARK: - rx 구독
+    func bind() {
+        postViewModel.posts
+            .subscribe(on: MainScheduler.instance)
+            .subscribe {
+                self.posts = $0
+                self.tableView.reloadData()
+                print(#fileID, #function, #line, " - bind()!!")
+            }
+            .disposed(by: disposeBag)
+        
+//        postViewModel.updateTableView
+//            .subscribe(on: MainScheduler.instance)
+//            .subscribe {
+//                if $0 {
+//                    print(#fileID, #function, #line, " - updateTableView subscribed")
+//                    self.tableView.reloadData()
+//                }
+//            }
+//            .disposed(by: disposeBag)
+        postViewModel.fetchPosts()
     }
     
 }
@@ -89,13 +119,13 @@ extension SocialViewController: UITableViewDataSource {
         if section == 0 {
             return 1
         } else {
-            return postViewModel.posts.count
+            return self.posts.count
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            // 최상단 셀
+            // 최상단 글쓰기 셀을 보여줍니다.
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "PostTopCell", for: indexPath) as? PostTopCell
             else {
                 return UITableViewCell()
@@ -109,7 +139,8 @@ extension SocialViewController: UITableViewDataSource {
                 return UITableViewCell()
             }
             
-            let post = postViewModel.posts[indexPath.row]
+            let post = posts[indexPath.row]
+            
             cell.setPost(post)
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             

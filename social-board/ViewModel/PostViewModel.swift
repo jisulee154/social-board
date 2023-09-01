@@ -10,20 +10,83 @@ import RealmSwift
 import Foundation
 
 class PostViewModel {
+    //MARK: - 더미 데이터
+    var posts = PublishSubject<[Post]>()
+    var updateTableView = PublishSubject<Bool>()
+    
     let disposeBag = DisposeBag()
     
-    //MARK: - 더미 데이터
-    var posts = [Post()]
+    var dummyjobs: [Job] = []
+    var dummyUsers: [User] = []
     
     init() {
-//        let realm = try! Realm()
+        dummyjobs = [
+            Job(jobID: ObjectId.generate(), category: JobCategory.dev, workYear: 1),
+            Job(jobID: ObjectId.generate(), category: JobCategory.design, workYear: 3),
+            Job(jobID: ObjectId.generate(), category: JobCategory.business, workYear: 11),
+            Job(jobID: ObjectId.generate(), category: JobCategory.hr, workYear: 4),
+            Job(jobID: ObjectId.generate(), category: JobCategory.marcketing, workYear: 2)
+        ]
         
-//        let post = realm.object(ofType: Post.self, forPrimaryKey: 12345)
-        self.posts[0].postID = ObjectId()
-        posts[0].title = "제목1"
-        posts[0].contents = "짧은 내용입니다 짧은 내용입니다 짧은 내용입니다"
+        dummyUsers = [
+            User(userID: ObjectId.generate(), userName: "신사임당", userProfilePicture: "userProfile1", job: dummyjobs.randomElement()),
+            User(userID: ObjectId.generate(), userName: "유관순", userProfilePicture: "userProfile2", job: dummyjobs.randomElement()),
+            User(userID: ObjectId.generate(), userName: "권애라", userProfilePicture: "userProfile3", job: dummyjobs.randomElement()),
+            User(userID: ObjectId.generate(), userName: "마리", userProfilePicture: "userProfile4", job: dummyjobs.randomElement()),
+            User(userID: ObjectId.generate(), userName: "지혜", userProfilePicture: "userProfile5", job: dummyjobs.randomElement()),
+            User(userID: ObjectId.generate(), userName: "은지", userProfilePicture: "userProfile6", job: dummyjobs.randomElement())
+        ]
     }
     
+    func createPost(with post: Post) {
+//        let post = Post()
+//        post.postID = ObjectId.generate()
+//        post.title = ""
+//        post.contents = "내용2 다른 내용입니다 다른 내용입니다 다른 내용입니다 다른 내용입니다"
+//        post.createdDateTime = Date()
+//        post.likeCount = 2
+//        post.commentCount = 5
+//
+//        post.writer.first?.userName = "모모" //??? 왜 first?
+//        post.writer.first?.job?.category = .dev
+//        post.writer.first?.userProfilePicture = "person"
+        print(#fileID, #function, #line, " - createPost()!!")
+        print(#fileID, #function, #line, " - newPost: ", post.contents)
+        // When you open the realm, specify that the schema
+        // is now using a newer version.
+        let config = Realm.Configuration(schemaVersion: 1)
+        // Use this configuration when opening realms
+        Realm.Configuration.defaultConfiguration = config
+        let realm = try! Realm()
+        
+        try! realm.write {
+            realm.add(post)
+        }
+        fetchPosts()
+    }
+    
+    func fetchPosts() {
+        let config = Realm.Configuration(schemaVersion: 1)
+        Realm.Configuration.defaultConfiguration = config
+        let realm = try! Realm()
+        
+        let fetchResult = realm.objects(Post.self)
+        var postResult: [Post] = []
+        
+        for element in fetchResult {
+            postResult.append(element)
+        }
+        
+        self.posts
+            .onNext(postResult)
+        
+        self.updateTableView
+            .onNext(true)
+        
+        print(#fileID, #function, #line, " - onNext()!!")
+        
+    }
+
 //    let posts = [
 //        Post(
 //            title: "제목1", contents: "내용1 짧은 내용입니다 짧은 내용입니다 짧은 내용입니다", contentImage: "https://velog.velcdn.com/images/jisulee154/post/2d868b6c-c75b-4b9c-9c34-c1ccf89a38dd/image.png", createdDateTime: Date(), likeCount: 3, commentCount: 0,

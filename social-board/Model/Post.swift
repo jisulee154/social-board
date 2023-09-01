@@ -17,9 +17,18 @@ class User: Object {
     
     @Persisted var posts: List<Post> //외래키
     
-    @Persisted var comments: List<ObjectId> //외래키
+    @Persisted var comments: List<Comment> //외래키
     
-    @Persisted var topics: List<ObjectId> //외래키
+    @Persisted var topics: List<Topic> //외래키
+    
+    convenience init(userID: ObjectId, userName: String, userProfilePicture: String, job: Job? = nil) {
+        self.init()
+        
+        self.userID = userID
+        self.userName = userName
+        self.userProfilePicture = userProfilePicture
+        self.job = job
+    }
 }
 
 
@@ -32,9 +41,24 @@ class Post: Object {
     @Persisted var likeCount: Int?
     @Persisted var commentCount: Int? // computed property로 전환?
     
-    @Persisted(originProperty: "posts") var writer: LinkingObjects<User> //외래키
-    
+    @Persisted var writer: User? //외래키
     @Persisted var comments: List<Comment> //외래키
+    
+//    @Persisted(originProperty: "posts") var writer: LinkingObjects<User> //외래키
+    
+    convenience init(postID: ObjectId = ObjectId.generate(), title: String = "", contents: String, contentImage: String? = nil, createdDateTime: Date = Date(), likeCount: Int? = nil, commentCount: Int? = nil, writer: User? = nil) {
+        self.init()
+        
+        self.postID = postID
+        self.title = title
+        self.contents = contents
+        self.contentImage = contentImage
+        self.createdDateTime = createdDateTime
+        self.likeCount = likeCount
+        self.commentCount = commentCount
+        self.writer = writer
+//        self.comments = comments
+    }
 }
     
 
@@ -43,9 +67,20 @@ class Comment: Object {
     @Persisted var createdDateTime: Date?
     @Persisted var contents: String?
     
-    @Persisted(originProperty: "comments") var writtenBy: LinkingObjects<User> //외래키
+//    @Persisted(originProperty: "comments") var writtenBy: LinkingObjects<User> //외래키
+//    @Persisted(originProperty: "comments") var belongsTo: LinkingObjects<Post> //외래키
+    @Persisted var writtenBy: User? //외래키
+    @Persisted var belongsTo: Post?//외래키
     
-    @Persisted(originProperty: "comments") var belongsTo: LinkingObjects<Post> //외래키
+    convenience init(commentID: ObjectId, createdDateTime: Date? = nil, contents: String? = nil, writtenBy: User? = nil, belongsTo: Post? = nil) {
+        self.init()
+        
+        self.commentID = commentID
+        self.createdDateTime = createdDateTime
+        self.contents = contents
+        self.writtenBy = writtenBy
+        self.belongsTo = belongsTo
+    }
 }
 
 class Job: Object {
@@ -53,14 +88,31 @@ class Job: Object {
     @Persisted var category: JobCategory?
     @Persisted var workYear: Int?
     
-    @Persisted(originProperty: "job") var worker: LinkingObjects<User> //외래키
+//    @Persisted(originProperty: "job") var worker: LinkingObjects<User> //외래키 //필요한가?
+    
+    convenience init(jobID: ObjectId, category: JobCategory, workYear: Int) {
+        self.init()
+        
+        self.jobID = jobID
+        self.category = category
+        self.workYear = workYear
+//        self.worker = worker
+    }
 }
 
 class Topic: Object {
     @Persisted(primaryKey: true) var topicID: ObjectId
     @Persisted var category: TopicCategory?
     
-    @Persisted(originProperty: "topics") var postIDs: LinkingObjects<User> //외래키
+//    @Persisted(originProperty: "topics") var postIDs: LinkingObjects<User> //외래키 //필요한가?
+    
+    convenience init(topicID: ObjectId, category: TopicCategory? = nil) {
+        self.init()
+        
+        self.topicID = topicID
+        self.category = category
+//        self.postIDs = postIDs
+    }
 }
 
 enum JobCategory: String, PersistableEnum {

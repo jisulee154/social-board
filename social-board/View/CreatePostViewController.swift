@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import RealmSwift
+import RxSwift
 
 import SwiftUI // UI 테스트
 
@@ -20,16 +21,33 @@ class CreatePostViewController: UIViewController {
     var appendImageLabel = UILabel() // 이미지 추가 place holder 메시지
     var textfield = UITextField() // 내용 작성 버튼 // place holder text 포함
     
-    //MARK: - 스택 뷰 선언
+    //MARK: - 영역별 스택 뷰 선언
     var topStackView = UIStackView() // 최상단 스택뷰 - 닫기, 업로드 버튼
     var appendImageStackView = UIStackView() // 이미지 추가 영역
     var writingStackView = UIStackView() // 글쓰기 영역
     
+    let postViewModel = PostViewModel()
+    let disposeBag = DisposeBag()
+    var posts: [Post] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.view.backgroundColor = .white
+        
         configureView()
         setConstraint()
+        
+        bind()
+    }
+    //MARK: - 뷰모델 의존성 주입
+    func bind() {
+        postViewModel.posts
+            .subscribe(on: MainScheduler.instance)
+            .subscribe {
+                self.posts = $0
+            }
+            .disposed(by: disposeBag)
     }
     
     //MARK: - 화면에 요소 추가
@@ -183,6 +201,7 @@ class CreatePostViewController: UIViewController {
             btn.setTitle("닫기", for: .normal)
             btn.setTitleColor(UIColor.black, for: .normal)
             btn.contentHorizontalAlignment = .left
+            btn.addTarget(self, action: #selector(backToSocialViewController), for: .touchUpInside) // 현재 화면 닫기
             
             return btn
         }()
@@ -196,6 +215,8 @@ class CreatePostViewController: UIViewController {
             btn.setTitleColor(UIColor.black, for: .normal)
             btn.contentHorizontalAlignment = .right
             btn.isEnabled = false
+            
+            btn.addTarget(self, action: #selector(submitPost), for: .touchUpInside)
             
             return btn
         }()
@@ -219,6 +240,8 @@ class CreatePostViewController: UIViewController {
                 btn.setImage(UIImage(systemName: "plus.square.dashed"), for: .normal)
                 btn.imageView?.tintColor = .black
             }
+        
+            
 //            btn.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             return btn
         }()
@@ -237,7 +260,6 @@ class CreatePostViewController: UIViewController {
         {
             let textfield = UITextField()
             textfield.translatesAutoresizingMaskIntoConstraints = false
-//            textfield.placeholder = "나누고 싶은 생각을 공유해 보세요!"
             textfield.attributedPlaceholder = NSAttributedString(string: "나누고 싶은 생각을 공유해 보세요!", attributes: [NSAttributedString.Key.foregroundColor : UIColor.systemGray2])
             
             // padding
@@ -245,10 +267,39 @@ class CreatePostViewController: UIViewController {
             textfield.leftView = paddingView
             textfield.leftViewMode = UITextField.ViewMode.always
             
+            textfield.rx.text.orEmpty
+                .map {
+                    $0.count > 0
+                }
+                .observe(on: MainScheduler.instance)
+                .subscribe {
+                    self.submitBtn.isEnabled = $0
+                }
+                .disposed(by: disposeBag)
+            
             return textfield
         }()
     }
     
+}
+
+
+extension CreatePostViewController {
+    //MARK: - 화면 전환(닫기)
+    @objc func backToSocialViewController() {
+        self.dismiss(animated: true)
+    }
+    
+    //MARK: - 새글 쓰기
+    @objc func submitPost() {
+        let contents = self.textfield.text ?? ""
+        let dummyUser = postViewModel.dummyUsers.randomElement()
+        let dummyLikeCount = (0...10).randomElement()
+        let dummyCommentCount = (0...10).randomElement()
+        let post = Post(contents: contents, likeCount: dummyLikeCount, commentCount: dummyCommentCount, writer: dummyUser)
+        self.postViewModel.createPost(with: post)
+        self.dismiss(animated: true)
+    }
 }
 
 struct PreView: PreviewProvider{

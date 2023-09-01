@@ -91,35 +91,25 @@ extension PostCell {
     func setPost(_ post: Post) {
         self.post = post
         
-//        getProfilePicture(with: "https://random.dog/5350-13889-29214.jpg")
-//        self.profilePicture.image = UIImage(named: "pencil-solid-small")
-//        self.nameLabel.text = post.writerID?.userName
-//        self.jobLabel.text = post.writer?.userJob?.rawValue
-//        self.createdTimeLabel.text = post.createdDateTime?.description
+        if let pic = UIImage(named: post.writer?.userProfilePicture ?? "userProfile1") {
+            self.profilePicture.image = pic
+        } else {
+            self.profilePicture.image = UIImage(systemName: "person")
+        }
+        // 이미지 원형으로 변형
+        self.profilePicture.layer.cornerRadius = self.profilePicture.frame.height/2
+        self.profilePicture.clipsToBounds = true
+        
+        self.createdTimeLabel.text = post.createdDateTime?.description ?? ""
+        self.nameLabel.text = post.writer?.userName ?? "익명"
+        self.jobLabel.text = post.writer?.job?.category?.rawValue ?? JobCategory.dev.rawValue
         
 //        self.contentsImage.image = post.contentImage
-//        self.contentsText.text = post.contents
+        self.contentsText.text = post.contents
         self.contentsMore.titleLabel?.text = "더보기"
         
-//        self.likeCountLabel.text = "\(post.likeCount!)"
-//        self.commentCountLabel.text = "\(post.commentCount!)"
-    }
-    
-    // profile 사진 받아오기
-    func getProfilePicture(with source: String){
-        let disposeBag = DisposeBag()
-        
-        if let url = URL(string: source) {
-            URLSession.shared.rx
-                .response(request: URLRequest(url: url))
-                .map({ (_, data) in
-                    UIImage(data: data)
-                })
-                .subscribe {
-                    self.profilePicture.image = $0
-                }
-                .disposed(by: disposeBag)
-        }
+        self.likeCountLabel.text = "\(post.likeCount ?? 0)"
+        self.commentCountLabel.text = "\(post.commentCount ?? 0)"
     }
     
 //        if let url = URL(string: source) {
@@ -426,7 +416,7 @@ extension PostCell {
         profilePicture = {
             let imageView = UIImageView()
             
-            imageView.image = UIImage(systemName: "person.crop.circle")
+            
             
             return imageView
         }()

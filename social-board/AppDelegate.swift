@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import RealmSwift
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,6 +19,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow()
         window?.rootViewController = ViewController()
         window?.makeKeyAndVisible()
+        
+//        let realm = try! Realm()
+//        print(#fileID, #function, #line, " - User Realm User file location: \(realm.configuration.fileURL!.path)")
+        
         return true
     }
     
