@@ -34,7 +34,7 @@ class User: Object {
 
 class Post: Object {
     @Persisted(primaryKey: true) var postID: ObjectId
-    @Persisted var title: String
+//    @Persisted var title: String
     @Persisted var contents: String
     @Persisted var contentImage: String?
     @Persisted var createdDateTime: Date?
@@ -52,7 +52,7 @@ class Post: Object {
         self.init()
         
         self.postID = postID
-        self.title = title
+//        self.title = title
         self.contents = contents
         self.contentImage = contentImage
         self.createdDateTime = createdDateTime

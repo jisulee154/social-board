@@ -19,6 +19,14 @@ class SocialViewController: UIViewController {
         bind()
     }
     
+    //MARK: - View 사라질 때 수행하는 작업
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        //MARK: - 더보기 전부 해제
+        PostViewModel.shared.reset()
+    }
+    
     var tableView = {
         let table = UITableView()
         table.register(PostCell.self, forCellReuseIdentifier: "PostCell")
@@ -77,7 +85,7 @@ class SocialViewController: UIViewController {
         }
     }
     
-    //MARK: - 화면 전환 (-> 새글 쓰기)
+    //MARK: - 화면 전환 (-> 새글 쓰기 화면)
     @objc func moveToCreatePostViewController() {
         let targetViewController = CreatePostViewController()
         self.present(targetViewController, animated: true)
@@ -88,6 +96,7 @@ class SocialViewController: UIViewController {
         PostViewModel.shared.posts
             .subscribe(on: MainScheduler.instance)
             .subscribe {
+                print(#fileID, #function, #line, " - subscribe()!!")
                 self.posts = $0
                 self.tableView.reloadData()
             }

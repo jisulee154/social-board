@@ -46,6 +46,10 @@ class PostCell: UITableViewCell {
     var commentCountIcon = UIImageView()
     var commentCountLabel = UILabel()
     
+    //MARK: - 더보기 기능 관련
+    var isExpanded: Bool = false
+    let maxCharNum: Int = 150
+    
     
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -75,6 +79,10 @@ class PostCell: UITableViewCell {
         super.prepareForReuse()
         
         self.nameLabel.text = ""
+        
+        self.profilePicture.layer.cornerRadius = self.profilePicture.frame.height/2
+        self.profilePicture.clipsToBounds = true
+        
         self.jobLabel.text = ""
         self.createdTimeLabel.text = ""
         
@@ -90,14 +98,15 @@ extension PostCell {
     func setPost(_ post: Post) {
         self.post = post
         
+        
+        // 이미지 원형으로 변형
+        self.profilePicture.layer.cornerRadius = self.profilePicture.frame.height/2
+        self.profilePicture.clipsToBounds = true
         if let pic = UIImage(named: post.writer?.userProfilePicture ?? "userProfile1") {
             self.profilePicture.image = pic
         } else {
             self.profilePicture.image = UIImage(systemName: "person")
         }
-        // 이미지 원형으로 변형
-        self.profilePicture.layer.cornerRadius = self.profilePicture.frame.height/2
-        self.profilePicture.clipsToBounds = true
         
         self.createdTimeLabel.text = post.createdDateTime?.description ?? ""
         self.nameLabel.text = post.writer?.userName ?? "익명"
@@ -105,13 +114,48 @@ extension PostCell {
         
 //        self.contentsImage.image = post.contentImage
         self.contentsText.text = post.contents
-        self.contentsMore.titleLabel?.text = "더보기"
+        self.isExpanded = post.expanded ?? false
+        
+        // 보여주는 라인 수 결정
+        setContentsTextMaxNumLines()
+        
+        // 더보기 버튼 표시 결정
+        setContentsMoreShowing()
         
         self.likeCountLabel.text = "\(post.likeCount ?? 0)"
         self.commentCountLabel.text = "\(post.commentCount ?? 0)"
     }
+
+    /// 셀에서 '더보기' 버튼을 표시할지 결정합니다.
+    func setContentsMoreShowing() {
+        let charNum = self.contentsText.text?.count ?? 0
+        print(#fileID, #function, #line, " - charNum: ", charNum)
+        print(#fileID, #function, #line, " - isExpanded: ", isExpanded)
+        if charNum > maxCharNum && !self.isExpanded {
+            // 긴글이며, 더보기 기능이 활성화 안되었을 때는 '더보기' 버튼을 표시합니다.
+            self.contentsMore.isHidden = false
+        } else {
+            self.contentsMore.isHidden = true
+        }
+    }
     
+    /// 글 목록에서 보여줄 줄 수를 결정합니다.
+    /// '더보기' 선택
+    /// --> 0 (제한 없음)
+    /// '더보기' 미선택
+    /// --> 5 (최대 다섯줄)
+    func setContentsTextMaxNumLines() {
+        self.contentsText.numberOfLines = isExpanded ? 0 : 5
+    }
     
+    /// 더보기: 접힌 글 내용을 전부 표시합니다.
+    @objc func expandContents() {
+        guard let post = self.post else {
+            print(#fileID, #function, #line, " - 더보기 Error: \(String(describing: post))")
+            return
+        }
+        PostViewModel.shared.updatePost(post, expanded: true)
+    }
     
 }
 
@@ -316,8 +360,8 @@ extension PostCell {
         }
         
         contentsMore.snp.makeConstraints { make in
-            make.trailing.equalTo(contentsStack.snp.trailing)
-            make.bottom.equalTo(contentsStack.snp.bottom)
+            make.trailing.equalTo(contentsStack)
+            make.bottom.equalTo(contentsStack).offset(-5)
             
             make.width.equalTo(80)
             make.height.equalTo(25)
@@ -521,8 +565,10 @@ extension PostCell {
     func setContentsMore() {
         contentsMore = {
             let btn = UIButton()
+            btn.setTitle("더보기", for: .normal)
+            btn.setTitleColor(.link, for: .normal)
             
-            btn.backgroundColor = .magenta
+            btn.addTarget(self, action: #selector(expandContents), for: .touchUpInside)
             return btn
         }()
     }
@@ -534,7 +580,7 @@ extension PostCell {
             
             stack.axis = .horizontal
             stack.alignment = .center
-            stack.backgroundColor = .green
+//            stack.backgroundColor = .green
             
             return stack
         }()
@@ -566,7 +612,8 @@ extension PostCell {
         likeCountIcon = {
             let imageView = UIImageView()
             
-            imageView.backgroundColor = .white
+//            imageView.backgroundColor = .white
+            imageView.tintColor = .black
             imageView.image = UIImage(systemName: "heart")
             
             return imageView
@@ -585,7 +632,8 @@ extension PostCell {
         commentCountIcon = {
             let imageView = UIImageView()
             
-            imageView.backgroundColor = .white
+//            imageView.backgroundColor = .white
+            imageView.tintColor = .black
             imageView.image = UIImage(systemName: "message")
             
             return imageView
