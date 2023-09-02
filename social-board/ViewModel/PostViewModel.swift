@@ -13,6 +13,7 @@ class PostViewModel {
     static let shared = PostViewModel()
     
     var posts = PublishSubject<[Post]>()
+//    var update
 //    var updateTableView = PublishSubject<Bool>()
     
     let disposeBag = DisposeBag()
@@ -41,9 +42,6 @@ class PostViewModel {
     }
     
     func createPost(with post: Post) {
-        //MARK: - Realm SchemaVersion 관리
-        let config = Realm.Configuration(schemaVersion: 1)
-        Realm.Configuration.defaultConfiguration = config
         let realm = try! Realm()
         
         try! realm.write {
@@ -53,7 +51,8 @@ class PostViewModel {
     }
     
     func fetchPosts() {
-        let config = Realm.Configuration(schemaVersion: 1)
+        //MARK: - Realm SchemaVersion 관리
+        let config = Realm.Configuration(schemaVersion: 3)
         Realm.Configuration.defaultConfiguration = config
         let realm = try! Realm()
         

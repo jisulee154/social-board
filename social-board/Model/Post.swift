@@ -44,9 +44,11 @@ class Post: Object {
     @Persisted var writer: User? //외래키
     @Persisted var comments: List<Comment> //외래키
     
+    @Persisted var expanded: Bool? //긴글의 경우, 모든 내용을 다 보여줄 것인지 결정합니다.
+    
 //    @Persisted(originProperty: "posts") var writer: LinkingObjects<User> //외래키
     
-    convenience init(postID: ObjectId = ObjectId.generate(), title: String = "", contents: String, contentImage: String? = nil, createdDateTime: Date = Date(), likeCount: Int? = nil, commentCount: Int? = nil, writer: User? = nil) {
+    convenience init(postID: ObjectId = ObjectId.generate(), title: String = "", contents: String, contentImage: String? = nil, createdDateTime: Date = Date(), likeCount: Int? = nil, commentCount: Int? = nil, writer: User? = nil, expanded: Bool? = false) {
         self.init()
         
         self.postID = postID
@@ -57,6 +59,7 @@ class Post: Object {
         self.likeCount = likeCount
         self.commentCount = commentCount
         self.writer = writer
+        self.expanded = expanded
 //        self.comments = comments
     }
 }

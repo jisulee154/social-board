@@ -85,8 +85,8 @@ class PostCell: UITableViewCell {
 
 }
 
-//MARK: - Post 내용 설정
 extension PostCell {
+    //MARK: - Post 내용 설정
     func setPost(_ post: Post) {
         self.post = post
         
@@ -111,19 +111,7 @@ extension PostCell {
         self.commentCountLabel.text = "\(post.commentCount ?? 0)"
     }
     
-//        if let url = URL(string: source) {
-//            let request = URLRequest(url: url)
-//
-//            let session = URLSession.shared.dataTask(with: request) { (data, response, error) in
-//                if error != nil {
-//                    print(#fileID, #function, #line, " - URLSession Error: ", error)
-//                }
-//
-//                let decoder = JSON
-//            }
-//
-//            session.resume()
-//        }
+    
     
 }
 
