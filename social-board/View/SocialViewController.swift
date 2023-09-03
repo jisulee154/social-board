@@ -36,7 +36,6 @@ class SocialViewController: UIViewController {
     }()
     
     //MARK: - ViewModel data
-//    let postViewModel = PostViewModel()
     let disposeBag = DisposeBag()
     
     var posts: [Post] = []
@@ -154,9 +153,6 @@ extension SocialViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
-    
-    
-    
 }
 
 //MARK: - TableView Delegate

@@ -26,9 +26,8 @@ class CreatePostViewController: UIViewController {
     var appendImageStackView = UIStackView() // 이미지 추가 영역
     var writingStackView = UIStackView() // 글쓰기 영역
     
-//    let postViewModel = PostViewModel()
     let disposeBag = DisposeBag()
-//    var posts: [Post] = []
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,18 +36,6 @@ class CreatePostViewController: UIViewController {
         
         configureView()
         setConstraint()
-        
-//        bind()
-    }
-    //MARK: - 뷰모델 의존성 주입
-    func bind() {
-//        postViewModel.posts
-//            .subscribe(on: MainScheduler.instance)
-//            .subscribe {
-//                self.posts = $0
-//                print(#fileID, #function, #line, " - createPost bind()")
-//            }
-//            .disposed(by: disposeBag)
     }
     
     //MARK: - 화면에 요소 추가
@@ -299,10 +286,19 @@ extension CreatePostViewController {
         let dummyLikeCount = (0...10).randomElement()
         let dummyCommentCount = (0...10).randomElement()
         let post = Post(contents: contents, likeCount: dummyLikeCount, commentCount: dummyCommentCount, writer: dummyUser)
-//        self.postViewModel.createPost(with: post)
         PostViewModel.shared.createPost(with: post) //onNext
         self.dismiss(animated: true)
     }
+    
+    //MARK: - 이미지 추가
+    @objc func selectContentImage() {
+        
+        
+    }
+}
+
+extension CreatePostViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
 }
 
 struct PreView: PreviewProvider{

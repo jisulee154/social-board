@@ -48,27 +48,15 @@ class PostCell: UITableViewCell {
     
     //MARK: - 더보기 기능 관련
     var isExpanded: Bool = false
-    let maxCharNum: Int = 150
     
-    
+    //MARK: - 상수
+    let maxCharNum: Int = 150 // 글목록에서 보여주는 최대길이 (더보기 미적용)
+    let profilePictureHeight: Int = 40 // 프로필 이미지 높이
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-//        postViewModel.isFirstPost
-//            .subscribe{
-//                self.isFirstPost = $0
-//                print(#fileID, #function, #line, " - isFirstPost", self.isFirstPost)
-//            }
-//            .disposed(by: disposeBag)
-//
-//        if isFirstPost {
-//            configureWritingCell()
-//            setWritingCellConstraint()
-//        } else {
-            configureCell()
-            setConstraint()
-//        }
+        configureCell()
+        setConstraint()
     }
     
     required init?(coder: NSCoder) {
@@ -79,10 +67,6 @@ class PostCell: UITableViewCell {
         super.prepareForReuse()
         
         self.nameLabel.text = ""
-        
-        self.profilePicture.layer.cornerRadius = self.profilePicture.frame.height/2
-        self.profilePicture.clipsToBounds = true
-        
         self.jobLabel.text = ""
         self.createdTimeLabel.text = ""
         
@@ -90,7 +74,6 @@ class PostCell: UITableViewCell {
         self.likeCountLabel.text = ""
         self.commentCountLabel.text = ""
     }
-
 }
 
 extension PostCell {
@@ -98,10 +81,9 @@ extension PostCell {
     func setPost(_ post: Post) {
         self.post = post
         
-        
-        // 이미지 원형으로 변형
-        self.profilePicture.layer.cornerRadius = self.profilePicture.frame.height/2
-        self.profilePicture.clipsToBounds = true
+//        // 이미지 원형으로 변형
+//        self.profilePicture.layer.cornerRadius = self.profilePicture.frame.height/2
+//        self.profilePicture.clipsToBounds = true
         if let pic = UIImage(named: post.writer?.userProfilePicture ?? "userProfile1") {
             self.profilePicture.image = pic
         } else {
@@ -129,8 +111,6 @@ extension PostCell {
     /// 셀에서 '더보기' 버튼을 표시할지 결정합니다.
     func setContentsMoreShowing() {
         let charNum = self.contentsText.text?.count ?? 0
-        print(#fileID, #function, #line, " - charNum: ", charNum)
-        print(#fileID, #function, #line, " - isExpanded: ", isExpanded)
         if charNum > maxCharNum && !self.isExpanded {
             // 긴글이며, 더보기 기능이 활성화 안되었을 때는 '더보기' 버튼을 표시합니다.
             self.contentsMore.isHidden = false
@@ -266,8 +246,8 @@ extension PostCell {
         profilePicture.snp.makeConstraints { make in
             make.top.equalTo(writerInfoStack.snp.top)
             make.leading.equalTo(writerInfoStack.snp.leading)
-            make.width.equalTo(40)
-            make.height.equalTo(40)
+            make.width.equalTo(profilePictureHeight)
+            make.height.equalTo(profilePictureHeight)
         }
     }
     
@@ -446,8 +426,9 @@ extension PostCell {
     func setProfilePicture() {
         profilePicture = {
             let imageView = UIImageView()
-            
-            
+            imageView.contentMode = .scaleAspectFill
+            imageView.layer.cornerRadius = CGFloat(self.profilePictureHeight / 2)
+            imageView.clipsToBounds = true
             
             return imageView
         }()
