@@ -11,10 +11,7 @@ import Foundation
 
 class PostViewModel {
     static let shared = PostViewModel()
-    
     var posts = PublishSubject<[Post]>()
-    //    var update
-    //    var updateTableView = PublishSubject<Bool>()
     
     let disposeBag = DisposeBag()
     
@@ -67,9 +64,6 @@ class PostViewModel {
         
         self.posts
             .onNext(postResult)
-        
-//        self.updateTableView
-//            .onNext(true)
     }
     
     //MARK: - 글 업데이트
@@ -100,7 +94,7 @@ class PostViewModel {
             if let newExpanded = expanded {
                 post.expanded = newExpanded
             }
-            print(#fileID, #function, #line, " - update as: ", post.expanded ?? "nil")
+//            print(#fileID, #function, #line, " - update as: ", post.expanded ?? "nil")
         }
         fetchPosts()
     }

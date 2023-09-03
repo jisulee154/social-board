@@ -95,7 +95,7 @@ class SocialViewController: UIViewController {
         PostViewModel.shared.posts
             .subscribe(on: MainScheduler.instance)
             .subscribe {
-                print(#fileID, #function, #line, " - subscribe()!!")
+//                print(#fileID, #function, #line, " - subscribe()!!")
                 self.posts = $0
                 self.tableView.reloadData()
             }

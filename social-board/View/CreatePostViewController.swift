@@ -18,21 +18,29 @@ class CreatePostViewController: UIViewController {
     var closeBtn = UIButton()
     var submitBtn = UIButton() // 업로드 버튼
     var appendImageBtn = UIButton() // 이미지 추가 버튼
-    var appendImageLabel = UILabel() // 이미지 추가 place holder 메시지
+    var appendImageLabel = UILabel() // 이미지 추가 안내 메시지 place holder
+    var imageView = UIImageView() // 선택한 이미지 표시
     var textfield = UITextField() // 내용 작성 버튼 // place holder text 포함
     
     //MARK: - 영역별 스택 뷰 선언
     var topStackView = UIStackView() // 최상단 스택뷰 - 닫기, 업로드 버튼
-    var appendImageStackView = UIStackView() // 이미지 추가 영역
-    var writingStackView = UIStackView() // 글쓰기 영역
+    var appendImageStackView = UIStackView() // 이미지 추가 버튼 영역
+    var writingStackView = UIStackView() // 내용(이미지+글) 작성 영역
     
     let disposeBag = DisposeBag()
-
+    
+    //MARK: - 이미지 picker 관련
+    var picker = UIImagePickerController()
+    var selectImageURL = URL(string: "")
+//    var pickerViewController = PhotosAlbumViewController()
+    /// An array for storing captured images to display.
+//    var selectedImage = UIImage()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.backgroundColor = .white
+        self.picker.delegate = self
         
         configureView()
         setConstraint()
@@ -48,6 +56,7 @@ class CreatePostViewController: UIViewController {
         setSubmitBtn()
         setAppendImageBtn()
         setAppendImageLabel()
+        setImageView()
         setTextfield()
         
         view.addSubview(topStackView)
@@ -60,6 +69,7 @@ class CreatePostViewController: UIViewController {
         appendImageStackView.addSubview(appendImageBtn)
         appendImageStackView.addSubview(appendImageLabel)
 
+        writingStackView.addSubview(imageView)
         writingStackView.addSubview(textfield)
     }
     
@@ -119,7 +129,7 @@ class CreatePostViewController: UIViewController {
         }
     }
     
-    //MARK: - 오토 레이아웃 - 이미지 추가 영역
+    //MARK: - 오토 레이아웃 - 이미지 추가 버튼 영역
     func setMiddleConstraint() {
         appendImageBtn.snp.makeConstraints { make in
             make.centerY.equalTo(appendImageStackView)
@@ -135,14 +145,20 @@ class CreatePostViewController: UIViewController {
         }
     }
     
-    //MARK: - 오토 레이아웃 - 글쓰기 영역
+    //MARK: - 오토 레이아웃 - 내용(이미지/글) 작성 영역
     func setBottomConstraint() {
+        imageView.snp.makeConstraints { make in
+            make.top.equalTo(writingStackView)
+            make.leading.equalTo(writingStackView)
+            make.trailing.equalTo(writingStackView)
+            make.bottom.equalTo(textfield.snp.top).offset(-10)
+        }
+        
         textfield.snp.makeConstraints { make in
-            make.centerY.equalTo(writingStackView)
-            make.centerX.equalTo(writingStackView)
-            
-            make.width.equalTo(writingStackView)
-            make.height.equalTo(writingStackView)
+            make.top.equalTo(imageView.snp.bottom).offset(10)
+            make.leading.equalTo(writingStackView)
+            make.trailing.equalTo(writingStackView)
+            make.bottom.equalTo(writingStackView)
         }
     }
     
@@ -152,7 +168,6 @@ class CreatePostViewController: UIViewController {
             
             stackView.axis = .horizontal
             stackView.alignment = .center
-//            stackView.backgroundColor = .yellow
             
             return stackView
         }()
@@ -164,7 +179,6 @@ class CreatePostViewController: UIViewController {
             
             stackView.axis = .horizontal
             stackView.alignment = .center
-//            stackView.backgroundColor = .green
             
             return stackView
         }()
@@ -176,12 +190,13 @@ class CreatePostViewController: UIViewController {
             
             stackView.axis = .vertical
             stackView.alignment = .center
-//            stackView.backgroundColor = .blue
+            stackView.backgroundColor = .yellow
             
             return stackView
         }()
     }
     
+    //MARK: - 화면 요소 정의
     func setCloseBtn() {
         closeBtn = {
             let btn = UIButton()
@@ -229,6 +244,8 @@ class CreatePostViewController: UIViewController {
                 btn.imageView?.tintColor = .black
             }
         
+            // 이미지 picker 열기
+            btn.addTarget(self, action: #selector(selectContentImage), for: .touchUpInside)
             
 //            btn.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             return btn
@@ -243,6 +260,20 @@ class CreatePostViewController: UIViewController {
             return label
         }()
     }
+    
+    func setImageView() {
+        imageView = {
+            let imageView = UIImageView()
+            
+            imageView.backgroundColor = .green
+            imageView.contentMode = .scaleAspectFill
+            imageView.clipsToBounds = true
+            imageView.layer.cornerRadius = 10
+            
+            return imageView
+        }()
+    }
+    
     func setTextfield() {
         textfield =
         {
@@ -285,20 +316,76 @@ extension CreatePostViewController {
         let dummyUser = PostViewModel.shared.dummyUsers.randomElement()
         let dummyLikeCount = (0...10).randomElement()
         let dummyCommentCount = (0...10).randomElement()
-        let post = Post(contents: contents, likeCount: dummyLikeCount, commentCount: dummyCommentCount, writer: dummyUser)
+        let post = Post(contents: contents, contentImage: selectImageURL?.description, likeCount: dummyLikeCount, commentCount: dummyCommentCount, writer: dummyUser)
         PostViewModel.shared.createPost(with: post) //onNext
         self.dismiss(animated: true)
     }
     
-    //MARK: - 이미지 추가
+    //MARK: - 이미지 선택 창 띄우기
     @objc func selectContentImage() {
+        if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
+            picker.sourceType = .savedPhotosAlbum
+        } else {
+            print(#fileID, #function, #line, " - Error: Not available for PhotosAlbum")
+            return
+        }
+       
+        if let mediaTypes = UIImagePickerController.availableMediaTypes(for: .savedPhotosAlbum) {
+            picker.mediaTypes = mediaTypes
+        }
         
+        picker.modalPresentationStyle = UIModalPresentationStyle.popover
         
+        present(picker, animated: true)
     }
 }
 
-extension CreatePostViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension CreatePostViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+        
+//        guard let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage else {
+//            return
+//        }
+        // 이미지 path 저장
+        if let imgUrl = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.imageURL)] as? URL {
+            let imgName = imgUrl.lastPathComponent
+            let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
+            let localPath = documentDirectory?.appending(imgName)
+
+            let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as! UIImage
+            let data = image.pngData()! as NSData
+            data.write(toFile: localPath!, atomically: true)
+            selectImageURL = URL.init(fileURLWithPath: localPath!)
+            
+            picker.dismiss(animated: true) { () in
+                // 이미지 추가 시, height를 지정합니다.
+                self.imageView.snp.makeConstraints {
+                    $0.height.equalTo(self.writingStackView.snp.width)
+                }
+                
+                self.imageView.image = image
+            }
+        }
+    }
     
+    /**
+    If the user cancels the operation, the system invokes the delegate's
+    `imagePickerControllerDidCancel(_:)` method, and you should dismiss the
+    picker.
+    */
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true)
+    }
+}
+
+// MARK: - Utilities
+private func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+    return Dictionary(uniqueKeysWithValues: input.map { key, value in (key.rawValue, value) })
+}
+
+private func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+    return input.rawValue
 }
 
 struct PreView: PreviewProvider{

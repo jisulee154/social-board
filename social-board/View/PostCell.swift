@@ -70,6 +70,7 @@ class PostCell: UITableViewCell {
         self.jobLabel.text = ""
         self.createdTimeLabel.text = ""
         
+        self.contentsImage.image = nil
         self.contentsText.text = ""
         self.likeCountLabel.text = ""
         self.commentCountLabel.text = ""
@@ -81,20 +82,16 @@ extension PostCell {
     func setPost(_ post: Post) {
         self.post = post
         
-//        // 이미지 원형으로 변형
-//        self.profilePicture.layer.cornerRadius = self.profilePicture.frame.height/2
-//        self.profilePicture.clipsToBounds = true
+        self.createdTimeLabel.text = post.createdDateTime?.description ?? ""
+        self.nameLabel.text = post.writer?.userName ?? "익명"
+        self.jobLabel.text = post.writer?.job?.category?.rawValue ?? JobCategory.dev.rawValue
+        
         if let pic = UIImage(named: post.writer?.userProfilePicture ?? "userProfile1") {
             self.profilePicture.image = pic
         } else {
             self.profilePicture.image = UIImage(systemName: "person")
         }
         
-        self.createdTimeLabel.text = post.createdDateTime?.description ?? ""
-        self.nameLabel.text = post.writer?.userName ?? "익명"
-        self.jobLabel.text = post.writer?.job?.category?.rawValue ?? JobCategory.dev.rawValue
-        
-//        self.contentsImage.image = post.contentImage
         self.contentsText.text = post.contents
         self.isExpanded = post.expanded ?? false
         
@@ -103,6 +100,24 @@ extension PostCell {
         
         // 더보기 버튼 표시 결정
         setContentsMoreShowing()
+        
+//        self.contentsImage.image = post.contentImage
+        // 이미지 path 정보가 있는 경우 이미지를 표시합니다.
+        if let contentImage = post.contentImage {
+            // 오토 레이아웃 적용
+            contentsImage.isHidden = false
+            contentsImage.snp.makeConstraints {
+                $0.height.equalTo(contentsStack.snp.width)
+            }
+            //Users/ijisu/Library/Developer/CoreSimulator/Devices/52B35CA1-70BE-4790-8F99-4A93071DD827/data/Containers/Data/Application/A22BDFFE-EC3B-4B88-990E-D07BE1A755AB/Documents73009AFF-EA34-4E83-A0DB-D15CAC435E2F.jpeg
+            if let imageURL = URL.init(string: contentImage) {
+                let imageData = try! Data.init(contentsOf: imageURL)
+                let image = UIImage.init(data: imageData)
+                self.contentsImage.image = image
+//                self.contentsImage.image = UIImage(contentsOfFile: filePath.description)
+//            self.contentsImage.image = UIImage(contentsOfFile: contentImage)
+            }
+        }
         
         self.likeCountLabel.text = "\(post.likeCount ?? 0)"
         self.commentCountLabel.text = "\(post.commentCount ?? 0)"
@@ -128,6 +143,7 @@ extension PostCell {
         self.contentsText.numberOfLines = isExpanded ? 0 : 5
     }
     
+    //MARK: - 더보기 적용
     /// 더보기: 접힌 글 내용을 전부 표시합니다.
     @objc func expandContents() {
         guard let post = self.post else {
@@ -257,7 +273,7 @@ extension PostCell {
         
         rightStack.snp.makeConstraints { make in
             make.top.equalTo(profilePicture.snp.top)
-            make.leading.equalTo(profilePicture.snp.trailing).offset(20)
+            make.leading.equalTo(profilePicture.snp.trailing).offset(10)
             make.trailing.equalTo(contentView.snp.trailing).offset(-20)
             make.bottom.equalTo(profilePicture.snp.bottom)
             
@@ -523,7 +539,8 @@ extension PostCell {
             let imageView = UIImageView()
             
             imageView.backgroundColor = .darkGray
-            imageView.image = UIImage(systemName: "star")
+            imageView.isHidden = true
+//            imageView.image = UIImage(systemName: "star")
             imageView.contentMode = .scaleAspectFit
             
             return imageView
