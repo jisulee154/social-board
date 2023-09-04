@@ -11,6 +11,7 @@ import RealmSwift
 import RxSwift
 
 import SwiftUI // UI 테스트
+import Photos
 
 /// 새글 쓰기 모달 화면
 class CreatePostViewController: UIViewController {
@@ -31,7 +32,7 @@ class CreatePostViewController: UIViewController {
     
     //MARK: - 이미지 picker 관련
     var picker = UIImagePickerController()
-    var selectImageURL = URL(string: "")
+    var selectedImageName = ""
 //    var pickerViewController = PhotosAlbumViewController()
     /// An array for storing captured images to display.
 //    var selectedImage = UIImage()
@@ -316,7 +317,7 @@ extension CreatePostViewController {
         let dummyUser = PostViewModel.shared.dummyUsers.randomElement()
         let dummyLikeCount = (0...10).randomElement()
         let dummyCommentCount = (0...10).randomElement()
-        let post = Post(contents: contents, contentImage: selectImageURL?.description, likeCount: dummyLikeCount, commentCount: dummyCommentCount, writer: dummyUser)
+        let post = Post(contents: contents, contentImage: selectedImageName, likeCount: dummyLikeCount, commentCount: dummyCommentCount, writer: dummyUser)
         PostViewModel.shared.createPost(with: post) //onNext
         self.dismiss(animated: true)
     }
@@ -344,26 +345,27 @@ extension CreatePostViewController: UINavigationControllerDelegate, UIImagePicke
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
         
-//        guard let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage else {
-//            return
-//        }
-        // 이미지 path 저장
+        
+        
+        // 이미지 path 저장 // 방법 1 info key 사용
         if let imgUrl = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.imageURL)] as? URL {
             let imgName = imgUrl.lastPathComponent
+            selectedImageName = imgName
+            
             let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
-            let localPath = documentDirectory?.appending(imgName)
+            let localPath = documentDirectory?.appending("/"+imgName)
 
             let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as! UIImage
             let data = image.pngData()! as NSData
             data.write(toFile: localPath!, atomically: true)
-            selectImageURL = URL.init(fileURLWithPath: localPath!)
+            print(#fileID, #function, #line, " - write to: ", localPath)
             
             picker.dismiss(animated: true) { () in
                 // 이미지 추가 시, height를 지정합니다.
                 self.imageView.snp.makeConstraints {
                     $0.height.equalTo(self.writingStackView.snp.width)
                 }
-                
+
                 self.imageView.image = image
             }
         }

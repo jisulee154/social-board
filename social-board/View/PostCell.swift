@@ -8,6 +8,7 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import Photos
 
 class PostCell: UITableViewCell {
     var post: Post?
@@ -28,7 +29,7 @@ class PostCell: UITableViewCell {
     var subStack = UIStackView()            // 직종 + 시간 //HStack
     var rightStack = UIStackView()          // subInfoStack + nameStack //VStack
     var writerInfoStack = UIStackView()     // profileStack + rightStack //HStack
-
+    
     //MARK: - 셀 중앙 내용 영역
     var contentsStack = UIStackView()       //vstack
     var contentsImage = UIImageView()       // 내용(사진)
@@ -70,6 +71,7 @@ class PostCell: UITableViewCell {
         self.jobLabel.text = ""
         self.createdTimeLabel.text = ""
         
+        self.contentsImage.isHidden = true
         self.contentsImage.image = nil
         self.contentsText.text = ""
         self.likeCountLabel.text = ""
@@ -101,28 +103,35 @@ extension PostCell {
         // 더보기 버튼 표시 결정
         setContentsMoreShowing()
         
-//        self.contentsImage.image = post.contentImage
         // 이미지 path 정보가 있는 경우 이미지를 표시합니다.
-        if let contentImage = post.contentImage {
+        if let contentImageName = post.contentImage {
             // 오토 레이아웃 적용
             contentsImage.isHidden = false
             contentsImage.snp.makeConstraints {
-                $0.height.equalTo(contentsStack.snp.width)
+                $0.height.lessThanOrEqualTo(contentsStack.snp.width)
             }
-            //Users/ijisu/Library/Developer/CoreSimulator/Devices/52B35CA1-70BE-4790-8F99-4A93071DD827/data/Containers/Data/Application/A22BDFFE-EC3B-4B88-990E-D07BE1A755AB/Documents73009AFF-EA34-4E83-A0DB-D15CAC435E2F.jpeg
-            if let imageURL = URL.init(string: contentImage) {
-                let imageData = try! Data.init(contentsOf: imageURL)
-                let image = UIImage.init(data: imageData)
-                self.contentsImage.image = image
-//                self.contentsImage.image = UIImage(contentsOfFile: filePath.description)
-//            self.contentsImage.image = UIImage(contentsOfFile: contentImage)
+            
+            if let imageURL = URL.init(string: contentImageName) {
+                let imgName = contentImageName
+                let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
+                let localPath = documentDirectory?.appending("/" + imgName)
+                
+                if let url = NSURL(string: localPath ?? "")?.path {
+                    guard FileManager.default.fileExists(atPath: url) else {
+                        print(#fileID, #function, #line, " - Error: [FileManager] file does not exist. \(url)")
+                        return
+                    }
+                    self.contentsImage.image = UIImage(contentsOfFile: url)
+                } else {
+                    print(#fileID, #function, #line, " - Error: [NSURL] can't get file path. \(contentImageName)")
+                }
             }
         }
         
         self.likeCountLabel.text = "\(post.likeCount ?? 0)"
         self.commentCountLabel.text = "\(post.commentCount ?? 0)"
     }
-
+    
     /// 셀에서 '더보기' 버튼을 표시할지 결정합니다.
     func setContentsMoreShowing() {
         let charNum = self.contentsText.text?.count ?? 0
@@ -172,7 +181,6 @@ extension PostCell {
         setCreatedTimeLabel()
         setSeperatorDot()
         
-        
         // 내용 영역
         setContentsStack()
         
@@ -204,35 +212,35 @@ extension PostCell {
         // 작성자 정보
         writerInfoStack.addSubview(profilePicture)
         writerInfoStack.addSubview(rightStack)
-
+        
         rightStack.addSubview(nameLabel)
         rightStack.addSubview(subStack)
-
+        
         subStack.addSubview(jobLabel)
         subStack.addSubview(seperatorDot)
         subStack.addSubview(createdTimeLabel)
-
+        
         setWriterInfoStackConstraint()
         setRightStackConstraint()
         setSubStackConstraint()
-
+        
         // 내용
         contentsStack.addSubview(contentsImage)
         contentsStack.addSubview(contentsText)
         contentsStack.addSubview(contentsMore)
-
+        
         setContentsStackConstraint()
-
+        
         // 좋아요/코멘트
         likeCommentStack.addSubview(likeCountStack)
         likeCommentStack.addSubview(commentCountStack)
-
+        
         likeCountStack.addSubview(likeCountIcon)
         likeCountStack.addSubview(likeCountLabel)
-
+        
         commentCountStack.addSubview(commentCountIcon)
         commentCountStack.addSubview(commentCountLabel)
-
+        
         setLikeCommentStackConstraint()
         
     }
@@ -328,31 +336,40 @@ extension PostCell {
     //MARK: - 오토 레이아웃: 내용
     func setContentsStackConstraint() {
         contentsStack.snp.makeConstraints { make in
-//            make.top.equalTo(self.contentView.snp.top).offset(55)
+            //            make.top.equalTo(self.contentView.snp.top).offset(55)
             make.top.equalTo(writerInfoStack.snp.bottom).offset(15)
-//            make.bottom.equalTo(likeCommentStack.snp.top).offset(-10)
+            //            make.bottom.equalTo(likeCommentStack.snp.top).offset(-10)
             make.leading.equalTo(writerInfoStack)
             make.trailing.equalTo(writerInfoStack)
             
-//            make.height.greaterThanOrEqualTo(50)
+            //            make.height.greaterThanOrEqualTo(50)
         }
         
         contentsImage.snp.makeConstraints { make in
+//            if let contentsImage = contentsImage.image {
+//                make.height.equalTo(contentsStack.snp.width)
+//            } else {
+//                make.height.equalTo(0)
+//            }
             make.top.equalTo(contentsStack)
-//            make.bottom.equalTo(contentsText.snp.top).offset(-20)
+            make.bottom.equalTo(contentsText.snp.top).offset(-20) //??
             make.leading.equalTo(contentsStack)
             
             make.width.equalTo(contentsStack)
-//            make.height.greaterThanOrEqualTo(50)
         }
         
         contentsText.snp.makeConstraints { make in
+//            if let contentsImage = contentsImage.image {
+//                make.top.equalTo(contentsStack).offset(20)
+//            } else {
+//                make.top.equalTo(contentsImage.snp.bottom).offset(20)
+//            }
             make.top.equalTo(contentsImage.snp.bottom).offset(20)
             make.leading.equalTo(contentsStack.snp.leading)
             make.bottom.equalTo(contentsStack.snp.bottom).offset(-50) // 더보기 버튼을 위한 여백
             make.trailing.equalTo(contentsStack.snp.trailing)
             
-//            make.height.greaterThanOrEqualTo(50)
+            //            make.height.greaterThanOrEqualTo(50)
         }
         
         contentsMore.snp.makeConstraints { make in
@@ -372,7 +389,7 @@ extension PostCell {
             make.leading.equalTo(contentsStack.snp.leading)
             make.trailing.equalTo(contentsStack.snp.trailing)
             
-//            make.height.lessThanOrEqualTo(30)
+            //            make.height.lessThanOrEqualTo(30)
         }
         
         likeCountStack.snp.makeConstraints { make in
@@ -387,21 +404,21 @@ extension PostCell {
             make.leading.equalTo(likeCountStack.snp.trailing).offset(20)
             make.trailing.equalTo(likeCommentStack)
             
-//            make.width.lessThanOrEqualTo(40)
+            //            make.width.lessThanOrEqualTo(40)
         }
         
         likeCountIcon.snp.makeConstraints { make in
             make.top.equalTo(likeCommentStack.snp.top)
             make.leading.equalTo(likeCountStack.snp.leading)
             
-//            make.width.equalTo(20)
+            //            make.width.equalTo(20)
             make.height.equalTo(likeCommentStack.snp.height)
         }
         
         likeCountLabel.snp.makeConstraints { make in
             make.top.equalTo(likeCommentStack.snp.top)
             make.leading.equalTo(likeCountIcon.snp.trailing).offset(5)
-//            make.width.equalTo(30)
+            //            make.width.equalTo(30)
             
             make.height.equalTo(likeCommentStack.snp.height)
         }
@@ -417,7 +434,7 @@ extension PostCell {
         commentCountLabel.snp.makeConstraints { make in
             make.top.equalTo(likeCommentStack.snp.top)
             make.leading.equalTo(commentCountIcon.snp.trailing).offset(5)
-//            make.width.equalTo(30)
+            //            make.width.equalTo(30)
             
             make.height.equalTo(likeCommentStack.snp.height)
         }
@@ -433,7 +450,7 @@ extension PostCell {
             
             stack.axis = .vertical
             stack.alignment = .center
-//            stack.backgroundColor = .red
+            //            stack.backgroundColor = .red
             return stack
         }()
     }
@@ -483,7 +500,7 @@ extension PostCell {
         seperatorDot = {
             let label = UILabel()
             label.text = "・"
-
+            
             label.font = .systemFont(ofSize: 10, weight: .regular)
             return label
         }()
@@ -494,7 +511,7 @@ extension PostCell {
             
             stack.axis = .horizontal
             stack.alignment = .center
-//            stack.backgroundColor = .orange
+            //            stack.backgroundColor = .orange
             return stack
         }()
     }
@@ -505,7 +522,7 @@ extension PostCell {
             
             stack.axis = .vertical
             stack.alignment = .center
-//            stack.backgroundColor = .systemIndigo
+            //            stack.backgroundColor = .systemIndigo
             return stack
         }()
     }
@@ -540,7 +557,7 @@ extension PostCell {
             
             imageView.backgroundColor = .darkGray
             imageView.isHidden = true
-//            imageView.image = UIImage(systemName: "star")
+            //            imageView.image = UIImage(systemName: "star")
             imageView.contentMode = .scaleAspectFit
             
             return imageView
@@ -555,7 +572,7 @@ extension PostCell {
             
             label.numberOfLines = 0
             label.lineBreakMode = .byTruncatingTail
-//            label.font = .systemFont(ofSize: 10, weight: .regular)
+            //            label.font = .systemFont(ofSize: 10, weight: .regular)
             return label
         }()
     }
@@ -578,7 +595,7 @@ extension PostCell {
             
             stack.axis = .horizontal
             stack.alignment = .center
-//            stack.backgroundColor = .green
+            //            stack.backgroundColor = .green
             
             return stack
         }()
@@ -610,7 +627,7 @@ extension PostCell {
         likeCountIcon = {
             let imageView = UIImageView()
             
-//            imageView.backgroundColor = .white
+            //            imageView.backgroundColor = .white
             imageView.tintColor = .black
             imageView.image = UIImage(systemName: "heart")
             
@@ -630,7 +647,7 @@ extension PostCell {
         commentCountIcon = {
             let imageView = UIImageView()
             
-//            imageView.backgroundColor = .white
+            //            imageView.backgroundColor = .white
             imageView.tintColor = .black
             imageView.image = UIImage(systemName: "message")
             
