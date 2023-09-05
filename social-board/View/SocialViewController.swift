@@ -13,6 +13,8 @@ class SocialViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        configureNavigationBarItem()
+        
         configureTableView()
         setConstraint()
         
@@ -41,12 +43,11 @@ class SocialViewController: UIViewController {
     var posts: [Post] = []
     
     func configureTableView() {
-        setNavigationBarItem()
         setTableViewDelegates()
     }
     
     //MARK: - Navigation Item
-    func setNavigationBarItem() {
+    func configureNavigationBarItem() {
         let newPostBtn = UIButton()
         let newPostBtnImage = UIImage(systemName: "pencil")
         newPostBtn.setImage(newPostBtnImage, for: .normal)
@@ -134,6 +135,8 @@ extension SocialViewController: UITableViewDataSource {
             
             let post = posts[indexPath.row]
             
+            cell.delegate = self // 화면전환 프로토콜 위임
+            
             cell.setPost(post)
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             
@@ -157,5 +160,16 @@ extension SocialViewController: UITableViewDataSource {
 
 //MARK: - TableView Delegate
 extension SocialViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //
+    }
+}
+
+//MARK: - 테이블 뷰 셀에서의 화면전환을 위한 Delegate
+extension SocialViewController: CellPresentProtocol {
+    func presentToDetail(of post: Post) {
+        let detailViewController = DetailViewController()
+        
+        self.navigationController?.pushViewController(detailViewController, animated: true)
+    }
 }

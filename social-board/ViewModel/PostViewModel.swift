@@ -55,7 +55,7 @@ class PostViewModel {
         Realm.Configuration.defaultConfiguration = config
         let realm = try! Realm()
         
-        let fetchResult = realm.objects(Post.self)
+        let fetchResult = realm.objects(Post.self).sorted(by: \.createdDateTime, ascending: false)
         var postResult: [Post] = []
         
         for element in fetchResult {

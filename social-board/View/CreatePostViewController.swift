@@ -345,9 +345,7 @@ extension CreatePostViewController: UINavigationControllerDelegate, UIImagePicke
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
         
-        
-        
-        // 이미지 path 저장 // 방법 1 info key 사용
+        // 이미지 path 저장 
         if let imgUrl = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.imageURL)] as? URL {
             let imgName = imgUrl.lastPathComponent
             selectedImageName = imgName
