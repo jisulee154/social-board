@@ -52,12 +52,12 @@ class SocialViewController: UIViewController {
         let newPostBtnImage = UIImage(systemName: "pencil")
         newPostBtn.setImage(newPostBtnImage, for: .normal)
         newPostBtn.addTarget(self, action: #selector(moveToCreatePostViewController), for: .touchUpInside)
-        newPostBtn.tintColor = .black
+//        newPostBtn.tintColor = .black
         
         let noticeBtn = UIButton()
         let noticeBtnImage = UIImage(systemName: "bell")
         noticeBtn.setImage(noticeBtnImage, for: .normal)
-        noticeBtn.tintColor = .black
+//        noticeBtn.tintColor = .black
         
         let rightStack = UIStackView(arrangedSubviews: [newPostBtn, noticeBtn])
         rightStack.axis = .horizontal
@@ -69,6 +69,11 @@ class SocialViewController: UIViewController {
         self.navigationItem.title = "소셜"
         self.view.backgroundColor = .systemGray4
         self.navigationItem.rightBarButtonItem = rightItems
+        
+        //MARK: - Back BarButton Item 설정
+        let backBtnItem = UIBarButtonItem(title: nil, style: .plain, target: nil, action: nil)
+        self.navigationItem.backBarButtonItem = backBtnItem
+        self.navigationController?.navigationBar.tintColor = .black
     }
     
     func setTableViewDelegates() {

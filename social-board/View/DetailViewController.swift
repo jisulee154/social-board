@@ -22,17 +22,17 @@ class DetailViewController: UIViewController {
         let shareBtnImage = UIImage(systemName: "square.and.arrow.up")
         shareBtn.setImage(shareBtnImage, for: .normal)
 //        shareBtn.addTarget(self, action: #selector(), for: .touchUpInside)
-        shareBtn.tintColor = .black
+//        shareBtn.tintColor = .black
         
         let likeBtn = UIButton()
         let likeBtnImage = UIImage(systemName: "heart")
         likeBtn.setImage(likeBtnImage, for: .normal)
-        likeBtn.tintColor = .black
+//        likeBtn.tintColor = .black
         
         let reportBtn = UIButton()
         let reportBtnImage = UIImage(systemName: "ellipsis")
         reportBtn.setImage(reportBtnImage, for: .normal)
-        reportBtn.tintColor = .black
+//        reportBtn.tintColor = .black
         
         let rightStack = UIStackView(arrangedSubviews: [shareBtn, likeBtn, reportBtn])
         rightStack.axis = .horizontal
@@ -44,9 +44,5 @@ class DetailViewController: UIViewController {
         self.view.backgroundColor = .systemGray4
         self.navigationItem.rightBarButtonItem = rightItems
         
-        //MARK: - Back BarItem 설정
-        let backBtnItem = UIBarButtonItem(title: nil, style: .plain, target: nil, action: nil)
-        backBtnItem.tintColor = .black
-        self.navigationItem.backBarButtonItem = backBtnItem
     }
 }
