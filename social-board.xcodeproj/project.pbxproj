@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		4149EA582AA38018002EB655 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4149EA572AA38018002EB655 /* DetailViewController.swift */; };
-		4149EA5A2AA4615C002EB655 /* PhotosAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4149EA592AA4615C002EB655 /* PhotosAlbumViewController.swift */; };
+		4149EA5C2AA8A458002EB655 /* DetailMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4149EA5B2AA8A458002EB655 /* DetailMain.swift */; };
+		4149EA5E2AA8A5A6002EB655 /* ViewController.swift 21-17-50-821.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4149EA5D2AA8A5A6002EB655 /* ViewController.swift 21-17-50-821.swift */; };
 		415C6B2C2A9868E30081375F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 415C6B2B2A9868E30081375F /* AppDelegate.swift */; };
 		415C6B2E2A9868E30081375F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 415C6B2D2A9868E30081375F /* SceneDelegate.swift */; };
-		415C6B302A9868E30081375F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 415C6B2F2A9868E30081375F /* ViewController.swift */; };
 		415C6B362A9868E30081375F /* social_board.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 415C6B342A9868E30081375F /* social_board.xcdatamodeld */; };
 		415C6B382A9868E50081375F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 415C6B372A9868E50081375F /* Assets.xcassets */; };
 		415C6B3B2A9868E50081375F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 415C6B392A9868E50081375F /* LaunchScreen.storyboard */; };
@@ -33,11 +33,11 @@
 
 /* Begin PBXFileReference section */
 		4149EA572AA38018002EB655 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
-		4149EA592AA4615C002EB655 /* PhotosAlbumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosAlbumViewController.swift; sourceTree = "<group>"; };
+		4149EA5B2AA8A458002EB655 /* DetailMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailMain.swift; sourceTree = "<group>"; };
+		4149EA5D2AA8A5A6002EB655 /* ViewController.swift 21-17-50-821.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ViewController.swift 21-17-50-821.swift"; sourceTree = "<group>"; };
 		415C6B282A9868E30081375F /* social-board.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "social-board.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		415C6B2B2A9868E30081375F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		415C6B2D2A9868E30081375F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		415C6B2F2A9868E30081375F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		415C6B352A9868E30081375F /* social_board.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = social_board.xcdatamodel; sourceTree = "<group>"; };
 		415C6B372A9868E50081375F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		415C6B3A2A9868E50081375F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -69,6 +69,42 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4149EA5F2AA8A5CD002EB655 /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				415C6B422A986C8B0081375F /* MainTabBarController.swift */,
+				4149EA5D2AA8A5A6002EB655 /* ViewController.swift 21-17-50-821.swift */,
+			);
+			path = TabBar;
+			sourceTree = "<group>";
+		};
+		4149EA602AA8A5F2002EB655 /* SocialTab */ = {
+			isa = PBXGroup;
+			children = (
+				415C6B512A98929F0081375F /* SocialViewController.swift */,
+				415C6B592A98AAF70081375F /* PostCell.swift */,
+				415C6B5E2A9E0CA30081375F /* PostTopCell.swift */,
+			);
+			path = SocialTab;
+			sourceTree = "<group>";
+		};
+		4149EA612AA8A603002EB655 /* CreatePost */ = {
+			isa = PBXGroup;
+			children = (
+				415C6B652A9EF6E90081375F /* CreatePostViewController.swift */,
+			);
+			path = CreatePost;
+			sourceTree = "<group>";
+		};
+		4149EA622AA8A61A002EB655 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				4149EA572AA38018002EB655 /* DetailViewController.swift */,
+				4149EA5B2AA8A458002EB655 /* DetailMain.swift */,
+			);
+			path = Detail;
+			sourceTree = "<group>";
+		};
 		415C6B1F2A9868E30081375F = {
 			isa = PBXGroup;
 			children = (
@@ -105,14 +141,10 @@
 		415C6B532A9892C80081375F /* View */ = {
 			isa = PBXGroup;
 			children = (
-				415C6B2F2A9868E30081375F /* ViewController.swift */,
-				415C6B422A986C8B0081375F /* MainTabBarController.swift */,
-				415C6B512A98929F0081375F /* SocialViewController.swift */,
-				4149EA572AA38018002EB655 /* DetailViewController.swift */,
-				415C6B592A98AAF70081375F /* PostCell.swift */,
-				415C6B5E2A9E0CA30081375F /* PostTopCell.swift */,
-				415C6B652A9EF6E90081375F /* CreatePostViewController.swift */,
-				4149EA592AA4615C002EB655 /* PhotosAlbumViewController.swift */,
+				4149EA5F2AA8A5CD002EB655 /* TabBar */,
+				4149EA602AA8A5F2002EB655 /* SocialTab */,
+				4149EA612AA8A603002EB655 /* CreatePost */,
+				4149EA622AA8A61A002EB655 /* Detail */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -224,18 +256,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				415C6B302A9868E30081375F /* ViewController.swift in Sources */,
 				415C6B472A988F940081375F /* PostViewModel.swift in Sources */,
 				415C6B452A987EF50081375F /* Extensions.swift in Sources */,
+				4149EA5E2AA8A5A6002EB655 /* ViewController.swift 21-17-50-821.swift in Sources */,
 				415C6B5F2A9E0CA30081375F /* PostTopCell.swift in Sources */,
 				4149EA582AA38018002EB655 /* DetailViewController.swift in Sources */,
 				415C6B502A9890020081375F /* Post.swift in Sources */,
 				415C6B2C2A9868E30081375F /* AppDelegate.swift in Sources */,
-				4149EA5A2AA4615C002EB655 /* PhotosAlbumViewController.swift in Sources */,
 				415C6B432A986C8B0081375F /* MainTabBarController.swift in Sources */,
 				415C6B522A98929F0081375F /* SocialViewController.swift in Sources */,
 				415C6B2E2A9868E30081375F /* SceneDelegate.swift in Sources */,
 				415C6B362A9868E30081375F /* social_board.xcdatamodeld in Sources */,
+				4149EA5C2AA8A458002EB655 /* DetailMain.swift in Sources */,
 				415C6B662A9EF6E90081375F /* CreatePostViewController.swift in Sources */,
 				415C6B5A2A98AAF70081375F /* PostCell.swift in Sources */,
 			);
