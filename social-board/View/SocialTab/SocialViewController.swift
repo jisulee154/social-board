@@ -174,6 +174,7 @@ extension SocialViewController: UITableViewDelegate {
 extension SocialViewController: CellPresentProtocol {
     func presentToDetail(of post: Post) {
         let detailViewController = DetailViewController()
+        detailViewController.setPost(post)
         
         self.navigationController?.pushViewController(detailViewController, animated: true)
     }

@@ -7,11 +7,18 @@
 
 import UIKit
 import SnapKit
+import SwiftUI
 
 class DetailViewController: UIViewController {
+    //MARK: - 상세보기를 선택한 글 정보
+    var post: Post?
+    
     var tableView = {
         let tableView = UITableView()
-        tableView.register(DetailMain.self, forCellReuseIdentifier: "DetailMain")
+        tableView.register(DetailMainCell.self, forCellReuseIdentifier: "DetailMainCell")
+        tableView.register(CommentCell.self, forCellReuseIdentifier: "CommentCell")
+        tableView.register(CreateCommentCell.self, forCellReuseIdentifier: "CreateCommentCell")
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         
         return tableView
     }()
@@ -67,14 +74,57 @@ class DetailViewController: UIViewController {
     }
 }
 
+extension DetailViewController {
+    //MARK: - 어떤 글에 대한 상세보기인지 설정
+    func setPost(_ post: Post) {
+        self.post = post
+    }
+}
+
 //MARK: - TableView DataSource
 extension DetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        if section == 0 {
+            return 1
+        } else {
+            return 10
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        let cell: UITableViewCell = UITableViewCell()
+        
+        //상세보기할 글이 지정되어 있지 않으면 기본 cell을 반환합니다.
+        guard let post = self.post else {
+            return cell
+        }
+        
+        if indexPath.section == 0 {
+            // 상단의 글 내용을 보여줍니다.
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "DetailMainCell", for: indexPath) as? DetailMainCell {
+                cell.setContents(of: post)
+            }
+        } else {
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "CommentCell", for: indexPath) as? CommentCell {
+                cell.setComments(of: post)
+            }
+            
+        }
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 500
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
+    //MARK: - Section 설정
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
     }
 }
 
@@ -84,3 +134,27 @@ extension DetailViewController: UITableViewDelegate {
         
     }
 }
+
+struct PreView: PreviewProvider{
+    static var previews: some View {
+        DetailViewController().toPreview()
+    }
+}
+
+#if DEBUG
+extension DetailViewController {
+    private struct Preview: UIViewControllerRepresentable {
+        let viewController: DetailViewController
+        
+        func makeUIViewController(context: Context) -> DetailViewController {
+            return viewController
+        }
+        
+        func updateUIViewController(_ uiViewController: DetailViewController, context: Context) {
+        }
+    }
+    func toPreview() -> some View {
+        Preview(viewController: self)
+    }
+}
+#endif

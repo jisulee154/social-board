@@ -51,7 +51,7 @@ class PostViewModel {
     //MARK: - 글 불러오기
     func fetchPosts() {
         //MARK: - Realm SchemaVersion 관리
-        let config = Realm.Configuration(schemaVersion: 4)
+        let config = Realm.Configuration(schemaVersion: 5)
         Realm.Configuration.defaultConfiguration = config
         let realm = try! Realm()
         

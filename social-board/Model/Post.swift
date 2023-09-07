@@ -75,7 +75,7 @@ class Comment: Object {
     @Persisted var writtenBy: User? //외래키
     @Persisted var belongsTo: Post?//외래키
     
-    convenience init(commentID: ObjectId, createdDateTime: Date? = nil, contents: String? = nil, writtenBy: User? = nil, belongsTo: Post? = nil) {
+    convenience init(commentID: ObjectId = ObjectId.generate(), createdDateTime: Date? = nil, contents: String? = nil, writtenBy: User? = nil, belongsTo: Post? = nil) {
         self.init()
         
         self.commentID = commentID
@@ -93,7 +93,7 @@ class Job: Object {
     
 //    @Persisted(originProperty: "job") var worker: LinkingObjects<User> //외래키 //필요한가?
     
-    convenience init(jobID: ObjectId, category: JobCategory, workYear: Int) {
+    convenience init(jobID: ObjectId = ObjectId.generate(), category: JobCategory, workYear: Int) {
         self.init()
         
         self.jobID = jobID

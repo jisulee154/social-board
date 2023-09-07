@@ -191,8 +191,6 @@ class CreatePostViewController: UIViewController {
             
             stackView.axis = .vertical
             stackView.alignment = .center
-            stackView.backgroundColor = .yellow
-            
             return stackView
         }()
     }
@@ -316,10 +314,34 @@ extension CreatePostViewController {
 //        let dummyUser = postViewModel.dummyUsers.randomElement()
         let dummyUser = PostViewModel.shared.dummyUsers.randomElement()
         let dummyLikeCount = (0...10).randomElement()
-        let dummyCommentCount = (0...10).randomElement()
+//        let dummyCommentCount = (0...10).randomElement()
+        
+//        class Comment: Object {
+//            @Persisted(primaryKey: true) var commentID: ObjectId
+//            @Persisted var createdDateTime: Date?
+//            @Persisted var contents: String?
+//
+//            @Persisted var writtenBy: User? //외래키
+//            @Persisted var belongsTo: Post?//외래키
+//
+//            convenience init(commentID: ObjectId, createdDateTime: Date? = nil, contents: String? = nil, writtenBy: User? = nil, belongsTo: Post? = nil) {
+//                self.init()
+//
+//                self.commentID = commentID
+//                self.createdDateTime = createdDateTime
+//                self.contents = contents
+//                self.writtenBy = writtenBy
+//                self.belongsTo = belongsTo
+//            }
+//        }
+        
+        // 코멘트 더미데이터
+        let dummyComment = Comment(commentID: ObjectId.generate(), )
         let post = Post(contents: contents, contentImage: selectedImageName, likeCount: dummyLikeCount, commentCount: dummyCommentCount, writer: dummyUser)
         PostViewModel.shared.createPost(with: post) //onNext
         self.dismiss(animated: true)
+        
+        
     }
     
     //MARK: - 이미지 선택 창 띄우기
@@ -388,26 +410,26 @@ private func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerCon
     return input.rawValue
 }
 
-struct PreView: PreviewProvider{
-    static var previews: some View {
-        CreatePostViewController().toPreview()
-    }
-}
-
-#if DEBUG
-extension CreatePostViewController {
-    private struct Preview: UIViewControllerRepresentable {
-        let viewController: CreatePostViewController
-        
-        func makeUIViewController(context: Context) -> CreatePostViewController {
-            return viewController
-        }
-        
-        func updateUIViewController(_ uiViewController: CreatePostViewController, context: Context) {
-        }
-    }
-    func toPreview() -> some View {
-        Preview(viewController: self)
-    }
-}
-#endif
+//struct PreView: PreviewProvider{
+//    static var previews: some View {
+//        CreatePostViewController().toPreview()
+//    }
+//}
+//
+//#if DEBUG
+//extension CreatePostViewController {
+//    private struct Preview: UIViewControllerRepresentable {
+//        let viewController: CreatePostViewController
+//
+//        func makeUIViewController(context: Context) -> CreatePostViewController {
+//            return viewController
+//        }
+//
+//        func updateUIViewController(_ uiViewController: CreatePostViewController, context: Context) {
+//        }
+//    }
+//    func toPreview() -> some View {
+//        Preview(viewController: self)
+//    }
+//}
+//#endif
