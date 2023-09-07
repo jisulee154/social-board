@@ -336,8 +336,10 @@ extension CreatePostViewController {
 //        }
         
         // 코멘트 더미데이터
-        let dummyComment = Comment(commentID: ObjectId.generate(), )
-        let post = Post(contents: contents, contentImage: selectedImageName, likeCount: dummyLikeCount, commentCount: dummyCommentCount, writer: dummyUser)
+        let dummyComments = [
+            Comment(createdDateTime: Date(), contents: "댓글1 내용 내용 내용", writtenBy: post?.writer, belongsTo: post)
+            ]
+        let post = Post(contents: contents, contentImage: selectedImageName, likeCount: dummyLikeCount, commentCount: dummyCommentCount, writer: dummyUser, comments)
         PostViewModel.shared.createPost(with: post) //onNext
         self.dismiss(animated: true)
         

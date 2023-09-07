@@ -48,7 +48,7 @@ class Post: Object {
     
 //    @Persisted(originProperty: "posts") var writer: LinkingObjects<User> //외래키
     
-    convenience init(postID: ObjectId = ObjectId.generate(), title: String = "", contents: String, contentImage: String? = nil, createdDateTime: Date = Date(), likeCount: Int? = nil, commentCount: Int? = nil, writer: User? = nil, expanded: Bool? = false) {
+    convenience init(postID: ObjectId = ObjectId.generate(), title: String = "", contents: String, contentImage: String? = nil, createdDateTime: Date = Date(), likeCount: Int? = nil, commentCount: Int? = nil, writer: User? = nil, comments: List<Comment> = List<Comment>(), Commentexpanded: Bool? = false) {
         self.init()
         
         self.postID = postID
@@ -59,6 +59,7 @@ class Post: Object {
         self.likeCount = likeCount
         self.commentCount = commentCount
         self.writer = writer
+        self.comments = comments
         self.expanded = expanded
 //        self.comments = comments
     }
