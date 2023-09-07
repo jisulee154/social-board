@@ -17,6 +17,7 @@ class PostViewModel {
     
     var dummyjobs: [Job] = []
     var dummyUsers: [User] = []
+    var dummyComments: [Comment] = []
     
     private init() {
         //MARK: - 더미 데이터
@@ -31,10 +32,18 @@ class PostViewModel {
         dummyUsers = [
             User(userID: ObjectId.generate(), userName: "신사임당", userProfilePicture: "userProfile1", job: dummyjobs.randomElement()),
             User(userID: ObjectId.generate(), userName: "유관순", userProfilePicture: "userProfile2", job: dummyjobs.randomElement()),
-            User(userID: ObjectId.generate(), userName: "권애라", userProfilePicture: "userProfile3", job: dummyjobs.randomElement()),
-            User(userID: ObjectId.generate(), userName: "마리", userProfilePicture: "userProfile4", job: dummyjobs.randomElement()),
-            User(userID: ObjectId.generate(), userName: "지혜", userProfilePicture: "userProfile5", job: dummyjobs.randomElement()),
-            User(userID: ObjectId.generate(), userName: "은지", userProfilePicture: "userProfile6", job: dummyjobs.randomElement())
+            User(userID: ObjectId.generate(), userName: "아이바오", userProfilePicture: "userProfile3", job: dummyjobs.randomElement()),
+            User(userID: ObjectId.generate(), userName: "곰", userProfilePicture: "userProfile4", job: dummyjobs.randomElement()),
+            User(userID: ObjectId.generate(), userName: "여우", userProfilePicture: "userProfile5", job: dummyjobs.randomElement()),
+            User(userID: ObjectId.generate(), userName: "푸바오", userProfilePicture: "userProfile6", job: dummyjobs.randomElement())
+        ]
+        
+        dummyComments = [
+            Comment(createdDateTime: Date(), contents: "댓글1 내용 내용 내용"),
+            Comment(createdDateTime: Date(), contents: "댓글2 내용 내용 내용"),
+            Comment(createdDateTime: Date(), contents: "댓글3 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용"),
+            Comment(createdDateTime: Date(), contents: "댓글4 내용 내용 내용~!"),
+            Comment(createdDateTime: Date(), contents: "댓글5 내용 내용 내용")
         ]
     }
     
@@ -51,7 +60,7 @@ class PostViewModel {
     //MARK: - 글 불러오기
     func fetchPosts() {
         //MARK: - Realm SchemaVersion 관리
-        let config = Realm.Configuration(schemaVersion: 6)
+        let config = Realm.Configuration(schemaVersion: 7)
         Realm.Configuration.defaultConfiguration = config
         let realm = try! Realm()
         
@@ -110,12 +119,22 @@ class PostViewModel {
         }
         fetchPosts()
     }
+        
+    //MARK: - 새 댓글 생성
+    #warning("무슨 포스트랑 관련이 있는지 어떻게 알지??? 일단 제껴")
+    func createComment(of post: Post, comment: Comment) {
+        let realm = try! Realm()
+        
+        try! realm.write {
+            realm.add(comment)
+        }
+        fetchPosts()
+    }
     
-//    func getUser(of user: User) -> User {
-//        let realm = try! Realm()
-//        
-//        let returnStruct = realm.objects(User.self).filter("")
-//    }
+    //MARK: - 댓글 불러오기
+    func fetchComments(of post:Post) {
+        
+    }
 }
 
 
