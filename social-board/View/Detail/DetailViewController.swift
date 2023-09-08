@@ -69,7 +69,7 @@ class DetailViewController: UIViewController {
         self.view.addSubview(tableView)
         
         tableView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.edges.equalTo(self.view)
         }
     }
 }
@@ -123,11 +123,12 @@ extension DetailViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 500
+        return 1500
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+//        return UITableView.automaticDimension
+        return 500
     }
     
 //    //MARK: - Section 설정
