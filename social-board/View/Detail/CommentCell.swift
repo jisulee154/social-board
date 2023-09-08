@@ -18,8 +18,10 @@ class CommentCell: UITableViewCell {
     }
     
     func configureCell() {
-        setComponents()
-        setConstraints()
+        self.contentView.backgroundColor = .orange
+        
+//        setComponents()
+//        setConstraints()
     }
     
     //MARK: - 오토 레이아웃

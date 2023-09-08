@@ -22,8 +22,6 @@ class PostCell: UITableViewCell {
     
     var delegate: CellPresentProtocol?
     
-    var isFirstPost: Bool = false
-    
     //MARK: - 전체 영역
     var stack = UIStackView()               // 전체 통합
     
@@ -269,7 +267,6 @@ extension PostCell {
     // 작성자 정보 영역
     // 프로필 사진 + RightStack
     func setWriterInfoStackConstraint() {
-        
         writerInfoStack.snp.makeConstraints { make in
             make.top.equalTo(stack.snp.top).offset(15)
             make.leading.equalTo(stack.snp.leading).offset(20)

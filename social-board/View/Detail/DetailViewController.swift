@@ -84,11 +84,12 @@ extension DetailViewController {
 //MARK: - TableView DataSource
 extension DetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return 1
-        } else {
-            return 10
-        }
+        return 1
+//        if section == 0 {
+//            return 1
+//        } else {
+//            return 2
+//        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -96,20 +97,27 @@ extension DetailViewController: UITableViewDataSource {
         
         //상세보기할 글이 지정되어 있지 않으면 기본 cell을 반환합니다.
         guard let post = self.post else {
+            print(#fileID, #function, #line, " - post is nil.")
+           
             return cell
         }
         
-        if indexPath.section == 0 {
-            // 상단의 글 내용을 보여줍니다.
-            if let cell = tableView.dequeueReusableCell(withIdentifier: "DetailMainCell", for: indexPath) as? DetailMainCell {
-                cell.setContents(of: post)
-            }
-        } else {
-            if let cell = tableView.dequeueReusableCell(withIdentifier: "CommentCell", for: indexPath) as? CommentCell {
-                cell.setComments(of: post)
-            }
-            
+        // 상단 - 글 내용을 보여줍니다.
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "DetailMainCell", for: indexPath) as? DetailMainCell {
+            cell.setPost(post)
         }
+        
+//        if indexPath.section == 0 {
+//            // 상단 - 글 내용을 보여줍니다.
+//            if let cell = tableView.dequeueReusableCell(withIdentifier: "DetailMainCell", for: indexPath) as? DetailMainCell {
+//                cell.setPost(post)
+//            }
+//        } else {
+//            if let cell = tableView.dequeueReusableCell(withIdentifier: "CommentCell", for: indexPath) as? CommentCell {
+//                cell.setComments(of: post)
+//            }
+//
+//        }
         
         return cell
     }
@@ -122,22 +130,16 @@ extension DetailViewController: UITableViewDataSource {
         return UITableView.automaticDimension
     }
     
-    //MARK: - Section 설정
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
-    }
+//    //MARK: - Section 설정
+//    func numberOfSections(in tableView: UITableView) -> Int {
+//        return 2
+//    }
 }
 
 //MARK: - TableView Delegate
 extension DetailViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-    }
-}
-
-struct PreView: PreviewProvider{
-    static var previews: some View {
-        DetailViewController().toPreview()
     }
 }
 
@@ -158,3 +160,10 @@ extension DetailViewController {
     }
 }
 #endif
+
+
+struct PreView: PreviewProvider{
+    static var previews: some View {
+        DetailViewController().toPreview()
+    }
+}

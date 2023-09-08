@@ -311,33 +311,13 @@ extension CreatePostViewController {
     //MARK: - 새글 쓰기
     @objc func submitPost() {
         let contents = self.textfield.text ?? ""
-//        let dummyUser = postViewModel.dummyUsers.randomElement()
         let dummyUser = PostViewModel.shared.dummyUsers.randomElement()
         let dummyLikeCount = (0...10).randomElement()
 //        let dummyCommentCount = (0...10).randomElement()
         
-//        class Comment: Object {
-//            @Persisted(primaryKey: true) var commentID: ObjectId
-//            @Persisted var createdDateTime: Date?
-//            @Persisted var contents: String?
-//
-//            @Persisted var writtenBy: User? //외래키
-//            @Persisted var belongsTo: Post?//외래키
-//
-//            convenience init(commentID: ObjectId, createdDateTime: Date? = nil, contents: String? = nil, writtenBy: User? = nil, belongsTo: Post? = nil) {
-//                self.init()
-//
-//                self.commentID = commentID
-//                self.createdDateTime = createdDateTime
-//                self.contents = contents
-//                self.writtenBy = writtenBy
-//                self.belongsTo = belongsTo
-//            }
-//        }
-        
-        // 코멘트 더미데이터
-        let post = Post(contents: contents, contentImage: selectedImageName, likeCount: dummyLikeCount, commentCount: 0, writer: dummyUser, comments)
+        let post = Post(contents: contents, contentImage: selectedImageName, likeCount: dummyLikeCount, commentCount: 0, writer: dummyUser)
         #warning("comment count 수정할 것")
+        
         PostViewModel.shared.createPost(with: post) //onNext
         self.dismiss(animated: true)
         

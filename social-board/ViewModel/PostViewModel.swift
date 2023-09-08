@@ -109,7 +109,7 @@ class PostViewModel {
     }
     
     func reset() {
-        //MARK: - 모든 글'더보기'해제 -> 펼쳤던 글을 접습니다.
+        //MARK: - 모든 글'더보기' 해제 -> 펼쳤던 글을 접습니다.
         let realm = try! Realm()
         
         let expandedPosts = realm.objects(Post.self).filter("expanded == true")
