@@ -106,6 +106,9 @@ extension DetailViewController: UITableViewDataSource {
         // 상단 - 글 내용을 보여줍니다.
         if let cell = tableView.dequeueReusableCell(withIdentifier: "DetailMainCell", for: indexPath) as? DetailMainCell {
             cell.setPost(post)
+            
+            // Comment Test
+            PostViewModel.shared.createComment(of: post)
         }
         
 //        if indexPath.section == 0 {

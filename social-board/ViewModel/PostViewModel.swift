@@ -12,12 +12,13 @@ import Foundation
 class PostViewModel {
     static let shared = PostViewModel()
     var posts = PublishSubject<[Post]>()
+    var comments = PublishSubject<[Comment]>()
     
     let disposeBag = DisposeBag()
     
     var dummyjobs: [Job] = []
     var dummyUsers: [User] = []
-    var dummyComments: [Comment] = []
+//    var dummyComments: [Comment] = []
     
     private init() {
         //MARK: - 더미 데이터
@@ -38,13 +39,13 @@ class PostViewModel {
             User(userID: ObjectId.generate(), userName: "푸바오", userProfilePicture: "userProfile6", job: dummyjobs.randomElement())
         ]
         
-        dummyComments = [
-            Comment(createdDateTime: Date(), contents: "댓글1 내용 내용 내용"),
-            Comment(createdDateTime: Date(), contents: "댓글2 내용 내용 내용"),
-            Comment(createdDateTime: Date(), contents: "댓글3 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용"),
-            Comment(createdDateTime: Date(), contents: "댓글4 내용 내용 내용~!"),
-            Comment(createdDateTime: Date(), contents: "댓글5 내용 내용 내용")
-        ]
+//        dummyComments = [
+//            Comment(createdDateTime: Date(), contents: "댓글1 내용 내용 내용"),
+//            Comment(createdDateTime: Date(), contents: "댓글2 내용 내용 내용"),
+//            Comment(createdDateTime: Date(), contents: "댓글3 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용"),
+//            Comment(createdDateTime: Date(), contents: "댓글4 내용 내용 내용~!"),
+//            Comment(createdDateTime: Date(), contents: "댓글5 내용 내용 내용")
+//        ]
     }
     
     //MARK: - 새글 생성
@@ -122,18 +123,47 @@ class PostViewModel {
         
     //MARK: - 새 댓글 생성
     #warning("무슨 포스트랑 관련이 있는지 어떻게 알지??? 일단 제껴")
-    func createComment(of post: Post, comment: Comment) {
+    func createComment(of post: Post) {
         let realm = try! Realm()
+        
+        let dummyCommentContents: [String] = [
+            "댓글1 내용 내용 내용",
+            "댓글2 내용 내용 내용",
+            "댓글3 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용",
+            "댓글4 내용 내용 내용",
+            "댓글5 내용 내용 내용 "
+        ]
+        
+        let comment: Comment = Comment(commentID: ObjectId.generate(),
+                                       createdDateTime: Date(),
+                                       contents: dummyCommentContents.randomElement(),
+                                       writtenBy: post.writer,
+                                       belongsTo: post)
         
         try! realm.write {
             realm.add(comment)
         }
+        
         fetchComments(of: post)
     }
     
     //MARK: - 댓글 불러오기
     func fetchComments(of post:Post) {
+        let realm = try! Realm()
         
+        let allComments = realm.objects(Comment.self)
+        let commentsOfPost = allComments.where {
+            $0.belongsTo == post
+        }.sorted(by: \.createdDateTime, ascending: false)
+        
+        var commentResult: [Comment] = []
+        
+        for element in commentsOfPost {
+            commentResult.append(element)
+        }
+        
+        self.comments
+            .onNext(commentResult)
     }
 }
 

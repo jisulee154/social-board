@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 extension UITabBar {
     /// TabBar height 설정
@@ -17,7 +18,6 @@ extension UITabBar {
         return sizeThatFits
     }
 }
-
 
 //func resizeImage(image: UIImage, newWidth: CGFloat) -> UIImage? {
 //    let scale = newWidth / image.size.width // 새 이미지 확대/축소 비율
