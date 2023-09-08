@@ -12,6 +12,7 @@ import SwiftUI
 class DetailViewController: UIViewController {
     //MARK: - 상세보기를 선택한 글 정보
     var post: Post?
+    var comments: Comment?
     
     var tableView = {
         let tableView = UITableView()

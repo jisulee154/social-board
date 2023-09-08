@@ -25,17 +25,17 @@ class DetailMainCell: UITableViewCell {
     var seperatorDot = UILabel()                        // 구분자
     var createdTimeLabel = UILabel()                    // 작성 시간
     
-    //    // 글 중앙: 내용
-    //    var contentsStack = UIStackView()
-    //    var contentsImageView = UIImageView()
-    //    var contentsText = UILabel()
-    //
-    //    // 글 하단: 좋아요/댓글 개수 정보
-    //    var likeCommentStack = UIStackView()
-    //    var likeIcon = UIImageView()
-    //    var likeCount = UILabel()
-    //    var commentIcon = UIImageView()
-    //    var commentCount = UILabel()
+    // 글 중앙: 내용
+    var contentsStack = UIStackView()
+    var contentsImageView = UIImageView()
+    var contentsText = UILabel()
+
+    // 글 하단: 좋아요/댓글 개수 정보
+    var likeCommentStack = UIStackView()
+    var likeIcon = UIImageView()
+    var likeCount = UILabel()
+    var commentIcon = UIImageView()
+    var commentCount = UILabel()
     
     var post: Post?
     
@@ -74,15 +74,43 @@ extension DetailMainCell {
         } else {
             self.profilePicture.image = UIImage(systemName: "person")
         }
+        
+        self.contentsText.text = post.contents
+
+        // DB에 이미지 파일명 정보가 있는 경우 이미지를 표시합니다.
+        if let contentImageName = post.contentImage {
+            // 오토 레이아웃 적용
+            contentsImageView.isHidden = false
+            contentsImageView.snp.makeConstraints {
+                $0.height.lessThanOrEqualTo(contentsStack.snp.width)
+            }
+
+            let imgName = contentImageName
+            let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
+            let localPath = documentDirectory?.appending("/" + imgName)
+
+            if let url = NSURL(string: localPath ?? "")?.path {
+                guard FileManager.default.fileExists(atPath: url) else {
+                    print(#fileID, #function, #line, " - Error: [FileManager] file does not exist. \(url)")
+                    return
+                }
+                self.contentsImageView.image = UIImage(contentsOfFile: url)
+            } else {
+                print(#fileID, #function, #line, " - Error: [NSURL] can't get file path. \(contentImageName)")
+            }
+        }
+        
+        self.likeCount.text = "\(post.likeCount ?? 0)"
+        self.commentCount.text = "\(post.commentCount ?? 0)"
     }
     
     func setComponents() {
+        //MARK: - 요소 정의: 상단 작성자 정보
         stack = {
             let stackView = UIStackView()
             
             stackView.axis = .vertical
             stackView.alignment = .center
-            stackView.backgroundColor = .blue
             return stackView
         }()
         
@@ -163,8 +191,68 @@ extension DetailMainCell {
             return label
         }()
         
+        //MARK: - 요소 정의: 중앙 글 내용
+        contentsStack = {
+            let stackView = UIStackView()
+
+            stackView.axis = .vertical
+            return stackView
+        }()
+
+        contentsImageView = {
+            let imageView = UIImageView()
+
+            imageView.contentMode = .scaleAspectFit
+            return imageView
+        }()
+
+        contentsText = {
+            let label = UILabel()
+            
+            label.numberOfLines = 0
+            return label
+        }()
         
+        //MARK: - 요소 정의: 글 하단 좋아요/댓글 개수
+        likeCommentStack = {
+            let stackView = UIStackView()
+
+            stackView.axis = .horizontal
+            return stackView
+        }()
+
+        likeIcon = {
+            let imageView = UIImageView()
+
+            imageView.tintColor = .black
+            imageView.image = UIImage(systemName: "heart")
+
+            return imageView
+        }()
+
+        likeCount = {
+            let label = UILabel()
+
+            return label
+        }()
+
+        commentIcon = {
+            let imageView = UIImageView()
+
+            imageView.tintColor = .black
+            imageView.image = UIImage(systemName: "message")
+            return imageView
+        }()
+
+        commentCount = {
+            let label = UILabel()
+
+//            label.text = "labelDisplay"
+
+            return label
+        }()
         
+        // 요소 addSubView
         // 전체 영역
         self.contentView.addSubview(stack)
         
@@ -182,17 +270,31 @@ extension DetailMainCell {
         writerSubInfoStack.addSubview(jobLabel)
         writerSubInfoStack.addSubview(seperatorDot)
         writerSubInfoStack.addSubview(createdTimeLabel)
+        
+        // 중앙 스택: 글 내용 요소
+        stack.addSubview(contentsStack)
+
+        contentsStack.addSubview(contentsImageView)
+        contentsStack.addSubview(contentsText)
+        
+        // 하단 스택: 좋아요/댓글 개수 정보 요소
+        stack.addSubview(likeCommentStack)
+
+        likeCommentStack.addSubview(likeIcon)
+        likeCommentStack.addSubview(likeCount)
+        likeCommentStack.addSubview(commentIcon)
+        likeCommentStack.addSubview(commentCount)
     }
     
     func setConstraints() {
-        // 전체
+        //MARK: - 오토 레이아웃: 전체
         stack.snp.makeConstraints { make in
             make.edges.equalTo(self.contentView)
             
-            //height/width?
+            //height?
         }
         
-        // 상단: 작성자 정보
+        //MARK: - 오토 레이아웃 - 상단: 작성자 정보
         writerInfoStack.snp.makeConstraints { make in
             make.top.leading.equalTo(stack).offset(20)
             make.trailing.equalTo(stack).offset(-20)
@@ -217,7 +319,7 @@ extension DetailMainCell {
             make.top.trailing.equalTo(writerInfoStack)
             make.bottom.equalTo(writerSubInfoStack).offset(-10)
             
-            make.height.equalTo(20)
+//            make.height.equalTo(20)
             make.width.equalTo(writerRightSideStack)
         }
         
@@ -237,7 +339,7 @@ extension DetailMainCell {
             make.leading.top.bottom.equalTo(writerSubInfoStack)
             make.trailing.equalTo(seperatorDot.snp.leading)
             
-            make.width.greaterThanOrEqualTo(20)
+            make.width.greaterThanOrEqualTo(10)
         }
         
         seperatorDot.snp.makeConstraints { make in
@@ -249,11 +351,72 @@ extension DetailMainCell {
         
         createdTimeLabel.snp.makeConstraints { make in
             make.centerY.equalTo(writerSubInfoStack)
-//            make.trailing.equalTo(writerSubInfoStack).offset(-50)
             
             make.width.greaterThanOrEqualTo(50)
         }
         
+        //MARK: - 오토 레이아웃 - 중앙: 글 내용
+        contentsStack.snp.makeConstraints { make in
+            make.top.equalTo(writerInfoStack.snp.bottom).offset(20)
+            make.leading.trailing.equalTo(writerInfoStack)
+            make.bottom.equalTo(likeCommentStack).offset(-20)
+            
+//            make.height.greaterThanOrEqualTo(50)
+            make.width.equalTo(writerInfoStack)
+            
+        }
+        
+        contentsImageView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalTo(contentsStack)
+            make.bottom.equalTo(contentsText.snp.top).offset(-10)
+            
+            make.height.equalTo(300)
+        }
+
+        contentsText.snp.makeConstraints { make in
+            make.leading.trailing.equalTo(contentsStack)
+            make.bottom.equalTo(contentsStack)
+//            make.height.greaterThanOrEqualTo(50)
+        }
+            
+        //MARK: - 오토 레이아웃 - 하단: 좋아요/댓글 개수 정보
+        likeCommentStack.snp.makeConstraints { make in
+            make.leading.equalTo(stack).offset(20)
+            make.trailing.bottom.equalTo(stack).offset(-20)
+            
+            make.height.equalTo(20)
+        }
+        
+        likeIcon.snp.makeConstraints { make in
+            make.top.leading.bottom.equalTo(likeCommentStack)
+            make.trailing.equalTo(likeCount.snp.leading).offset(-5)
+
+            make.height.equalTo(likeCommentStack)
+            make.width.equalTo(20)
+        }
+
+        likeCount.snp.makeConstraints { make in
+            make.top.bottom.equalTo(likeCommentStack)
+            make.trailing.equalTo(commentIcon.snp.leading).offset(-20)
+
+            make.height.equalTo(likeCommentStack)
+            make.width.equalTo(20)
+        }
+
+        commentIcon.snp.makeConstraints { make in
+            make.top.bottom.equalTo(likeCommentStack)
+            make.trailing.equalTo(commentCount.snp.leading).offset(-5)
+
+            make.height.equalTo(likeCommentStack)
+            make.width.equalTo(20)
+        }
+
+        commentCount.snp.makeConstraints { make in
+            make.top.bottom.equalTo(likeCommentStack)
+
+            make.height.equalTo(likeCommentStack)
+            make.width.equalTo(20)
+        }
     }
     
 }

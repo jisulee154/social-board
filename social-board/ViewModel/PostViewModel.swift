@@ -128,7 +128,7 @@ class PostViewModel {
         try! realm.write {
             realm.add(comment)
         }
-        fetchPosts()
+        fetchComments(of: post)
     }
     
     //MARK: - 댓글 불러오기
