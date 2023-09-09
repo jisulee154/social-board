@@ -53,7 +53,7 @@
             <Locations>
                <Location
                   uuid = "A960E3C5-886A-47FE-A919-5061334C680A - a7fcefb32556b234"
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "social_board.PostHeader.myProfilePicture.getter : __C.UIImageView"

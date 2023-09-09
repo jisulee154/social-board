@@ -93,48 +93,40 @@ extension DetailViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: UITableViewCell = UITableViewCell()
-        
         //상세보기할 글이 지정되어 있지 않으면 기본 cell을 반환합니다.
         guard let post = self.post else {
             print(#fileID, #function, #line, " - post is nil.")
            
-            return cell
+            return UITableViewCell()
         }
-        
-//        // 상단 - 글 내용을 보여줍니다.
-//        if let cell = tableView.dequeueReusableCell(withIdentifier: "DetailMainCell", for: indexPath) as? DetailMainCell {
-//            cell.setPost(post)
-//            
+     
 //            // Comment Test
 //            PostViewModel.shared.createComment(of: post)
 //        }
         
         if indexPath.section == 0 {
             // 상단 - 글 내용을 보여줍니다.
-            if let cell = tableView.dequeueReusableCell(withIdentifier: "DetailMainCell", for: indexPath) as? DetailMainCell {
-                cell.setPost(post)
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "DetailMainCell", for: indexPath) as? DetailMainCell else {
+                return UITableViewCell()
             }
-        } else {
-            if let cell = tableView.dequeueReusableCell(withIdentifier: "CommentCell", for: indexPath) as? CommentCell {
-                cell.setComments(of: post)
-            }
+            cell.setPost(post)
+            return cell
 
+        } else {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "CommentCell", for: indexPath) as? CommentCell else {
+                return UITableViewCell()
+            }
+            cell.setComments(of: post)
+            return cell
         }
-        
-        return cell
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 1500
+        return 500
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 {
-            return 500
-        } else {
-            return 300
-        }
+        return UITableView.automaticDimension
     }
     
     //MARK: - Section 설정
@@ -150,27 +142,27 @@ extension DetailViewController: UITableViewDelegate {
     }
 }
 
-#if DEBUG
-extension DetailViewController {
-    private struct Preview: UIViewControllerRepresentable {
-        let viewController: DetailViewController
-        
-        func makeUIViewController(context: Context) -> DetailViewController {
-            return viewController
-        }
-        
-        func updateUIViewController(_ uiViewController: DetailViewController, context: Context) {
-        }
-    }
-    func toPreview() -> some View {
-        Preview(viewController: self)
-    }
-}
-#endif
-
-
-struct PreView: PreviewProvider{
-    static var previews: some View {
-        DetailViewController().toPreview()
-    }
-}
+//#if DEBUG
+//extension DetailViewController {
+//    private struct Preview: UIViewControllerRepresentable {
+//        let viewController: DetailViewController
+//
+//        func makeUIViewController(context: Context) -> DetailViewController {
+//            return viewController
+//        }
+//
+//        func updateUIViewController(_ uiViewController: DetailViewController, context: Context) {
+//        }
+//    }
+//    func toPreview() -> some View {
+//        Preview(viewController: self)
+//    }
+//}
+//#endif
+//
+//
+//struct PreView: PreviewProvider{
+//    static var previews: some View {
+//        DetailViewController().toPreview()
+//    }
+//}

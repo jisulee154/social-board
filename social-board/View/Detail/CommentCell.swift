@@ -183,10 +183,6 @@ class CommentCell: UITableViewCell {
         //MARK: - 오토 레이아웃: 전체
         stack.snp.makeConstraints { make in
             make.edges.equalTo(self.contentView)
-            
-            //height?
-//            make.height.equalTo(300)
-            make.width.equalTo(self.contentView)
         }
         
         //MARK: - 오토 레이아웃 - 상단: 작성자 정보
@@ -195,7 +191,6 @@ class CommentCell: UITableViewCell {
             make.trailing.equalTo(stack).offset(-20)
             
             make.height.equalTo(40)
-            make.width.equalTo(self.contentView)
         }
         
         profilePicture.snp.makeConstraints { make in
@@ -235,7 +230,7 @@ class CommentCell: UITableViewCell {
             make.bottom.equalTo(writerInfoStack).offset(-5)
             
             make.width.equalTo(writerRightSideStack)
-            make.height.equalTo(15)
+//            make.height.equalTo(15)
         }
         
         jobLabel.snp.makeConstraints { make in
@@ -243,7 +238,7 @@ class CommentCell: UITableViewCell {
             make.trailing.equalTo(seperatorDot.snp.leading)
             
             make.width.greaterThanOrEqualTo(10)
-            make.height.equalTo(15)
+//            make.height.equalTo(15)
         }
         
         seperatorDot.snp.makeConstraints { make in
@@ -251,14 +246,14 @@ class CommentCell: UITableViewCell {
             make.trailing.equalTo(createdTimeLabel.snp.leading)
             
             make.width.greaterThanOrEqualTo(5)
-            make.height.equalTo(15)
+//            make.height.equalTo(15)
         }
         
         createdTimeLabel.snp.makeConstraints { make in
             make.centerY.equalTo(writerSubInfoStack)
             
             make.width.greaterThanOrEqualTo(50)
-            make.height.equalTo(15)
+//            make.height.equalTo(15)
         }
         
         //MARK: - 오토 레이아웃 - 중앙: 글 내용
