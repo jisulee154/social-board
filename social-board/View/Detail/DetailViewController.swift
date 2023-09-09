@@ -12,7 +12,7 @@ import SwiftUI
 class DetailViewController: UIViewController {
     //MARK: - 상세보기를 선택한 글 정보
     var post: Post?
-    var comments: Comment?
+    var comments: [Comment]?
     
     var tableView = {
         let tableView = UITableView()
@@ -85,12 +85,11 @@ extension DetailViewController {
 //MARK: - TableView DataSource
 extension DetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-//        if section == 0 {
-//            return 1
-//        } else {
-//            return 2
-//        }
+        if section == 0 {
+            return 1
+        } else {
+            return 2
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -103,25 +102,25 @@ extension DetailViewController: UITableViewDataSource {
             return cell
         }
         
-        // 상단 - 글 내용을 보여줍니다.
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "DetailMainCell", for: indexPath) as? DetailMainCell {
-            cell.setPost(post)
-            
-            // Comment Test
-            PostViewModel.shared.createComment(of: post)
-        }
-        
-//        if indexPath.section == 0 {
-//            // 상단 - 글 내용을 보여줍니다.
-//            if let cell = tableView.dequeueReusableCell(withIdentifier: "DetailMainCell", for: indexPath) as? DetailMainCell {
-//                cell.setPost(post)
-//            }
-//        } else {
-//            if let cell = tableView.dequeueReusableCell(withIdentifier: "CommentCell", for: indexPath) as? CommentCell {
-//                cell.setComments(of: post)
-//            }
-//
+//        // 상단 - 글 내용을 보여줍니다.
+//        if let cell = tableView.dequeueReusableCell(withIdentifier: "DetailMainCell", for: indexPath) as? DetailMainCell {
+//            cell.setPost(post)
+//            
+//            // Comment Test
+//            PostViewModel.shared.createComment(of: post)
 //        }
+        
+        if indexPath.section == 0 {
+            // 상단 - 글 내용을 보여줍니다.
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "DetailMainCell", for: indexPath) as? DetailMainCell {
+                cell.setPost(post)
+            }
+        } else {
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "CommentCell", for: indexPath) as? CommentCell {
+                cell.setComments(of: post)
+            }
+
+        }
         
         return cell
     }
@@ -131,14 +130,17 @@ extension DetailViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return UITableView.automaticDimension
-        return 500
+        if indexPath.section == 0 {
+            return 500
+        } else {
+            return 300
+        }
     }
     
-//    //MARK: - Section 설정
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return 2
-//    }
+    //MARK: - Section 설정
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
 }
 
 //MARK: - TableView Delegate
