@@ -21,10 +21,16 @@ class DetailViewController: UIViewController {
         let tableView = UITableView()
         tableView.register(DetailMainCell.self, forCellReuseIdentifier: "DetailMainCell")
         tableView.register(CommentCell.self, forCellReuseIdentifier: "CommentCell")
-        tableView.register(CreateCommentCell.self, forCellReuseIdentifier: "CreateCommentCell")
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         
         return tableView
+    }()
+    
+    var footer = {
+        let footer = CreateCommentView(frame: CGRectZero)
+        
+        footer.layoutIfNeeded()
+        return footer
     }()
     
     override func viewDidLoad() {
@@ -38,10 +44,25 @@ class DetailViewController: UIViewController {
         bind()
     }
     
+    //MARK: - ViewDidDisappear()
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        self.tabBarController?.tabBar.isHidden = false
+    }
+    
+    //MARK: - viewWillAppear()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.tabBarController?.tabBar.isHidden = true
+    }
+    
     //MARK: - Rx bind - Comments 구독
     func bind() {
         if let post = self.post {
             PostViewModel.shared.comments
+                .subscribe(on: MainScheduler.instance)
                 .subscribe {
                     self.comments = $0
                     self.tableView.reloadData()
@@ -89,7 +110,21 @@ class DetailViewController: UIViewController {
         self.view.addSubview(tableView)
         
         tableView.snp.makeConstraints { make in
-            make.edges.equalTo(self.view)
+//            make.edges.equalTo(self.view)
+            make.top.leading.trailing.equalTo(self.view)
+            make.height.greaterThanOrEqualTo(500)
+        }
+        
+        
+        self.view.addSubview(footer)
+//        footer.frame = DetailViewController. tabBarController!.tabBar.frame
+//        tabBarController!.view.addSubview(footer)
+        
+        footer.snp.makeConstraints { make in
+            make.top.equalTo(tableView.snp.bottom)
+            make.leading.trailing.bottom.equalTo(self.view)
+
+            make.height.greaterThanOrEqualTo(150)
         }
     }
 }

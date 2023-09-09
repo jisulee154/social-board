@@ -320,8 +320,6 @@ extension CreatePostViewController {
         
         PostViewModel.shared.createPost(with: post) //onNext
         self.dismiss(animated: true)
-        
-        
     }
     
     //MARK: - 이미지 선택 창 띄우기

@@ -44,8 +44,6 @@ class CommentCell: UITableViewCell {
     }
     
     func configureCell() {
-        self.contentView.backgroundColor = .orange
-        
         setComponents()
         setConstraints()
     }
@@ -268,8 +266,7 @@ class CommentCell: UITableViewCell {
         }
 
         contentsText.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(contentsStack)
-            make.bottom.equalTo(contentsStack)
+            make.edges.equalTo(contentsStack)
 //            make.height.greaterThanOrEqualTo(100)
         }
     }
