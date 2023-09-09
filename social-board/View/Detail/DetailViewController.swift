@@ -9,10 +9,13 @@ import UIKit
 import SnapKit
 import SwiftUI
 
+import RxSwift
+
 class DetailViewController: UIViewController {
-    //MARK: - 상세보기를 선택한 글 정보
+    //MARK: - 상세보기를 선택한 글&댓글 정보
     var post: Post?
-    var comments: [Comment]?
+    var comments: [Comment] = []
+    var disposeBag = DisposeBag()
     
     var tableView = {
         let tableView = UITableView()
@@ -31,6 +34,22 @@ class DetailViewController: UIViewController {
         
         setTableViewDelegates()
         setConstraints()
+        
+        bind()
+    }
+    
+    //MARK: - Rx bind - Comments 구독
+    func bind() {
+        if let post = self.post {
+            PostViewModel.shared.comments
+                .subscribe {
+                    self.comments = $0
+                    self.tableView.reloadData()
+                }
+                .disposed(by: disposeBag)
+            
+            PostViewModel.shared.fetchComments(of: post)
+        }
     }
     
     func configureNavigationBarItem () {
@@ -88,7 +107,7 @@ extension DetailViewController: UITableViewDataSource {
         if section == 0 {
             return 1
         } else {
-            return 2
+            return self.comments.count
         }
     }
     
@@ -116,7 +135,8 @@ extension DetailViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "CommentCell", for: indexPath) as? CommentCell else {
                 return UITableViewCell()
             }
-            cell.setComments(of: post)
+            let comment = self.comments[indexPath.row]
+            cell.setComment(comment)
             return cell
         }
     }

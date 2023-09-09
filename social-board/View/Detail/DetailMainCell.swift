@@ -248,7 +248,6 @@ extension DetailMainCell {
         commentCount = {
             let label = UILabel()
 
-//            label.text = "labelDisplay"
 
             return label
         }()

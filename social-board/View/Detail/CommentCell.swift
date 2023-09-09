@@ -28,6 +28,7 @@ class CommentCell: UITableViewCell {
     var contentsText = UILabel()
     
     var post: Post?
+    var comment: Comment?
     
     //MARK: - 상수
     let profilePictureHeight: Int = 40 // 프로필 이미지 높이
@@ -48,7 +49,6 @@ class CommentCell: UITableViewCell {
         setComponents()
         setConstraints()
     }
-
     
     //MARK: - 구성요소 정의
     func setComponents() {
@@ -262,7 +262,7 @@ class CommentCell: UITableViewCell {
             make.leading.trailing.equalTo(writerInfoStack)
             make.bottom.equalTo(stack).offset(-20)
             
-            make.height.greaterThanOrEqualTo(50)
+//            make.height.greaterThanOrEqualTo(50)
             make.width.equalTo(writerInfoStack)
             
         }
@@ -270,14 +270,26 @@ class CommentCell: UITableViewCell {
         contentsText.snp.makeConstraints { make in
             make.leading.trailing.equalTo(contentsStack)
             make.bottom.equalTo(contentsStack)
-            make.height.greaterThanOrEqualTo(50)
+//            make.height.greaterThanOrEqualTo(100)
         }
     }
 }
 
 extension CommentCell {
-    //MARK: - 댓글들을 보여줄 글 정보를 전달 받음
-    func setComments(of post: Post) {
-        self.post = post
+    //MARK: - 댓글 내용 설정
+    func setComment(_ comment: Comment) {
+        self.comment = comment
+        
+        self.createdTimeLabel.text = comment.createdDateTime?.description ?? ""
+        self.nameLabel.text = comment.writtenBy?.userName ?? "익명"
+        self.jobLabel.text = comment.writtenBy?.job?.category?.rawValue ?? JobCategory.dev.rawValue
+        
+        if let pic = UIImage(named: comment.writtenBy?.userProfilePicture ?? "userProfile1") {
+            self.profilePicture.image = pic
+        } else {
+            self.profilePicture.image = UIImage(systemName: "person")
+        }
+        
+        self.contentsText.text = comment.contents
     }
 }
