@@ -23,6 +23,8 @@ class CommentCell: UITableViewCell {
     var seperatorDot = UILabel()                        // 구분자
     var createdTimeLabel = UILabel()                    // 작성 시간
     
+    var reportBtn = UIButton()                          // 댓글 신고 버튼
+    
     // 글 중앙: 내용
     var contentsStack = UIStackView()
     var contentsText = UILabel()
@@ -136,6 +138,14 @@ class CommentCell: UITableViewCell {
             return label
         }()
         
+        reportBtn = {
+            let btn = UIButton()
+            
+            btn.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+            btn.tintColor = .black
+            return btn
+        }()
+        
         //MARK: - 요소 정의: 중앙 글 내용
         contentsStack = {
             let stackView = UIStackView()
@@ -160,6 +170,7 @@ class CommentCell: UITableViewCell {
         
         writerInfoStack.addSubview(profilePicture)
         writerInfoStack.addSubview(writerRightSideStack)
+        writerInfoStack.addSubview(reportBtn)
         
         writerRightSideStack.addSubview(writerMainInfoStack)
         writerRightSideStack.addSubview(writerSubInfoStack)
@@ -200,15 +211,25 @@ class CommentCell: UITableViewCell {
         }
         
         writerRightSideStack.snp.makeConstraints { make in
-            make.top.bottom.trailing.equalTo(writerInfoStack)
+            make.top.bottom.equalTo(writerInfoStack)
+            make.trailing.equalTo(reportBtn.snp.leading).offset(-10)
             
             make.height.equalTo(profilePicture)
             make.width.lessThanOrEqualTo(writerInfoStack)
         }
         
+        reportBtn.snp.makeConstraints { make in
+            make.centerY.equalTo(writerInfoStack)
+            make.trailing.equalTo(writerInfoStack)
+            
+            make.height.equalTo(profilePicture)
+            make.width.equalTo(15)
+        }
+        
         // Writer Main Info
         writerMainInfoStack.snp.makeConstraints { make in
-            make.top.trailing.equalTo(writerInfoStack)
+            make.leading.equalTo(writerRightSideStack)
+            make.top.trailing.equalTo(writerRightSideStack)
             make.bottom.equalTo(writerSubInfoStack).offset(-10)
             
             make.height.equalTo(20)
@@ -224,7 +245,8 @@ class CommentCell: UITableViewCell {
         
         // Writer Sub Info
         writerSubInfoStack.snp.makeConstraints { make in
-            make.trailing.equalTo(writerInfoStack)
+            make.leading.equalTo(writerRightSideStack)
+            make.trailing.equalTo(writerRightSideStack)
             make.bottom.equalTo(writerInfoStack).offset(-5)
             
             make.width.equalTo(writerRightSideStack)

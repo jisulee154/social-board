@@ -24,19 +24,20 @@ class PostViewModel {
         //MARK: - 더미 데이터
         dummyjobs = [
             Job(jobID: ObjectId.generate(), category: JobCategory.dev, workYear: 1),
+            Job(jobID: ObjectId.generate(), category: JobCategory.dev, workYear: 8),
             Job(jobID: ObjectId.generate(), category: JobCategory.design, workYear: 3),
             Job(jobID: ObjectId.generate(), category: JobCategory.business, workYear: 11),
-            Job(jobID: ObjectId.generate(), category: JobCategory.hr, workYear: 4),
+            Job(jobID: ObjectId.generate(), category: JobCategory.hr, workYear: 7),
             Job(jobID: ObjectId.generate(), category: JobCategory.marcketing, workYear: 2)
         ]
         
         dummyUsers = [
-            User(userID: ObjectId.generate(), userName: "신사임당", userProfilePicture: "userProfile1", job: dummyjobs.randomElement()),
-            User(userID: ObjectId.generate(), userName: "유관순", userProfilePicture: "userProfile2", job: dummyjobs.randomElement()),
-            User(userID: ObjectId.generate(), userName: "아이바오", userProfilePicture: "userProfile3", job: dummyjobs.randomElement()),
-            User(userID: ObjectId.generate(), userName: "곰", userProfilePicture: "userProfile4", job: dummyjobs.randomElement()),
-            User(userID: ObjectId.generate(), userName: "여우", userProfilePicture: "userProfile5", job: dummyjobs.randomElement()),
-            User(userID: ObjectId.generate(), userName: "푸바오", userProfilePicture: "userProfile6", job: dummyjobs.randomElement())
+            User(userID: ObjectId.generate(), userName: "초상화", userProfilePicture: "userProfile1", job: dummyjobs[0]),
+            User(userID: ObjectId.generate(), userName: "불도그", userProfilePicture: "userProfile2", job: dummyjobs[1]),
+            User(userID: ObjectId.generate(), userName: "뚱땅뚱땅", userProfilePicture: "userProfile3", job: dummyjobs[2]),
+            User(userID: ObjectId.generate(), userName: "미소세상", userProfilePicture: "userProfile4", job: dummyjobs[3]),
+            User(userID: ObjectId.generate(), userName: "초록", userProfilePicture: "userProfile5", job: dummyjobs[4]),
+            User(userID: ObjectId.generate(), userName: "응시", userProfilePicture: "userProfile6", job: dummyjobs[5])
         ]
     }
     
@@ -101,6 +102,31 @@ class PostViewModel {
         fetchPosts()
     }
     
+    //MARK: - 코멘트 수 가져오기
+    func getCommentCount(of post: Post) {
+        let realm = try! Realm()
+        
+        let commentCount = realm.objects(Comment.self)
+        let commentsOfPost = allComments.where {
+            $0.belongsTo == post
+        }.sorted(by: \.createdDateTime, ascending: false)
+        
+        var commentResult: [Comment] = []
+        
+        for element in commentsOfPost {
+            commentResult.append(element)
+        }
+        
+        self.comments
+            .onNext(commentResult)
+    }
+    
+    //MARK: - 좋아요 수 가져오기
+    func getLikeCount(of post: Post) {
+        
+    }
+    
+    ///모든 글 접기
     func reset() {
         //MARK: - 모든 글'더보기' 해제 -> 펼쳤던 글을 접습니다.
         let realm = try! Realm()
@@ -114,29 +140,16 @@ class PostViewModel {
     }
         
     //MARK: - 새 댓글 생성
-    #warning("무슨 포스트랑 관련이 있는지 어떻게 알지??? 일단 제껴")
-    func createComment(of post: Post) {
+    func createComment(_ comment: Comment) {
         let realm = try! Realm()
         
-        let dummyCommentContents: [String] = [
-            "댓글1 내용 내용 내용",
-            "댓글2 한치 두치 세치 네치 뿌꾸 빵 뿌꾸 빵",
-            "댓글3 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용 무언가 길고 진지한 내용",
-            "댓글4 좋은 내용 감사합니다.",
-            "댓글5 저도 얼른 써보고 싶네요! "
-        ]
-        
-        let comment: Comment = Comment(commentID: ObjectId.generate(),
-                                       createdDateTime: Date(),
-                                       contents: dummyCommentContents.randomElement(),
-                                       writtenBy: post.writer,
-                                       belongsTo: post)
+        let comment: Comment = comment
         
         try! realm.write {
             realm.add(comment)
         }
         
-        fetchComments(of: post)
+        fetchComments(of: comment.belongsTo!)
     }
     
     //MARK: - 댓글 불러오기

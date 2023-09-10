@@ -14,7 +14,7 @@ import IQKeyboardManagerSwift
 
 class DetailViewController: UIViewController {
     //MARK: - 상세보기를 선택한 글&댓글 정보
-    var post: Post?
+    var post: Post!
     var comments: [Comment] = []
     var disposeBag = DisposeBag()
     
@@ -30,9 +30,9 @@ class DetailViewController: UIViewController {
         return tableView
     }()
     
+    /// footer: 댓글 쓰기란
     var footer = {
         let footer = CreateCommentView(frame: CGRectZero)
-//        footer.backgroundColor = .cyan
         
         footer.layoutIfNeeded()
         return footer
@@ -45,6 +45,7 @@ class DetailViewController: UIViewController {
         
         setTableViewDelegates()
         setConstraints()
+        setWhichPost()
         
         bind()
     }
@@ -110,6 +111,11 @@ class DetailViewController: UIViewController {
         tableView.delegate = self
     }
     
+    //MARK: - 글 정보 주입
+    func setWhichPost() {
+        footer.setPost(self.post)
+    }
+    
     //MARK: - 오토 레이아웃
     func setConstraints() {
         self.view.addSubview(scrollView)
@@ -121,21 +127,21 @@ class DetailViewController: UIViewController {
         scrollView.addSubview(tableView)
         
         tableView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalTo(scrollView)
-            make.height.greaterThanOrEqualTo(500)
-            make.width.equalTo(scrollView)
+            make.top.leading.trailing.equalTo(scrollView).priority(800)
+            make.height.greaterThanOrEqualTo(600).priority(1000)
+            make.width.equalTo(scrollView).priority(800)
         }
-        
         
         scrollView.addSubview(footer)
         scrollView.backgroundColor = .yellow
+        footer.backgroundColor = .green
         footer.snp.makeConstraints { make in
             
-            make.bottom.equalTo(scrollView)
-            make.height.equalTo(150)
+            make.bottom.equalTo(scrollView).priority(1000)
+            make.height.equalTo(150).priority(800)
             
-            make.top.greaterThanOrEqualTo(tableView.snp.bottom).offset(50)
-            make.leading.trailing.equalTo(scrollView)
+            make.top.equalTo(tableView.snp.bottom).priority(1000)
+            make.leading.trailing.equalTo(scrollView).priority(800)
 
             make.width.equalTo(scrollView)
         }
@@ -166,10 +172,6 @@ extension DetailViewController: UITableViewDataSource {
            
             return UITableViewCell()
         }
-     
-//            // Comment Test
-//            PostViewModel.shared.createComment(of: post)
-//        }
         
         if indexPath.section == 0 {
             // 상단 - 글 내용을 보여줍니다.

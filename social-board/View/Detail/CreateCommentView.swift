@@ -17,6 +17,7 @@ class CreateCommentView: UIView {
     var textField: UITextField = UITextField()
     var submitBtn: UIButton = UIButton()
     
+    var post: Post!
     var user = PostViewModel.shared.dummyUsers.randomElement()
     
     var disposeBag = DisposeBag()
@@ -38,6 +39,10 @@ class CreateCommentView: UIView {
         setConstraints()
     }
     
+    //MARK: - 게시글 정보
+    func setPost(_ post: Post) {
+        self.post = post
+    }
     
     //MARK: - 구성요소 정의
     func setComponents() {
@@ -98,8 +103,11 @@ class CreateCommentView: UIView {
         submitBtn = {
             let btn = UIButton()
             
+            btn.addTarget(self, action: #selector(createComment), for: .touchUpInside)
+            btn.isEnabled = false
             btn.setTitle("게시", for: .normal)
-            btn.titleLabel?.tintColor = .blue
+            btn.setTitleColor(.blue, for: .normal)
+            btn.setTitleColor(.gray, for: .disabled)
             
             return btn
         }()
@@ -150,7 +158,13 @@ class CreateCommentView: UIView {
             make.width.equalTo(40)
             
             make.trailing.equalTo(stack)
-            
         }
+    }
+}
+
+extension CreateCommentView {
+    @objc func createComment() {
+        let comment = Comment(createdDateTime: Date(), contents: textField.text, writtenBy: user, belongsTo: post)
+        PostViewModel.shared.createComment(comment)
     }
 }

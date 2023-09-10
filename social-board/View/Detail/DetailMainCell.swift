@@ -296,7 +296,8 @@ extension DetailMainCell {
         
         //MARK: - 오토 레이아웃 - 상단: 작성자 정보
         writerInfoStack.snp.makeConstraints { make in
-            make.top.leading.equalTo(stack).offset(20)
+            make.top.equalTo(stack).offset(30)
+            make.leading.equalTo(stack).offset(20)
             make.trailing.equalTo(stack).offset(-20)
             
             make.height.equalTo(40)
@@ -359,7 +360,7 @@ extension DetailMainCell {
         contentsStack.snp.makeConstraints { make in
             make.top.equalTo(writerInfoStack.snp.bottom).offset(12)
             make.leading.trailing.equalTo(writerInfoStack)
-            make.bottom.equalTo(likeCommentStack).offset(-20)
+            make.bottom.equalTo(likeCommentStack).offset(-50)
             
 //            make.height.greaterThanOrEqualTo(50)
             make.width.equalTo(writerInfoStack)
@@ -382,7 +383,8 @@ extension DetailMainCell {
         //MARK: - 오토 레이아웃 - 하단: 좋아요/댓글 개수 정보
         likeCommentStack.snp.makeConstraints { make in
             make.leading.equalTo(stack).offset(20)
-            make.trailing.bottom.equalTo(stack).offset(-20)
+            make.trailing.equalTo(stack).offset(-20)
+            make.bottom.equalTo(stack).offset(-20)
             
             make.height.equalTo(20)
         }
