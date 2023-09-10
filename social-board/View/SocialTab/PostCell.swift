@@ -133,8 +133,16 @@ extension PostCell {
             }
         }
         
-        self.likeCountLabel.text = "\(post.likeCount ?? 0)"
-        self.commentCountLabel.text = "\(post.commentCount ?? 0)"
+//        self.likeCountLabel.text = "\(post.likeCount ?? 0)"
+//        self.commentCountLabel.text = "\(post.commentCount ?? 0)"
+    }
+    
+    //MARK: - Rx Bind
+    func bind(_ post: Post) {
+        self.post = post
+        
+        
+        
     }
     
     /// 셀에서 '더보기' 버튼을 표시할지 결정합니다.

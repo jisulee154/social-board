@@ -8,6 +8,8 @@
 import UIKit
 import SnapKit
 
+import RxSwift
+
 class DetailMainCell: UITableViewCell {
     // 전체 영역
     var stack = UIStackView()                           // 전체 통합
@@ -37,7 +39,9 @@ class DetailMainCell: UITableViewCell {
     var commentIcon = UIImageView()
     var commentCount = UILabel()
     
-    var post: Post?
+    var post: Post!
+    
+    var disposeBag = DisposeBag()
     
     //MARK: - 상수
     let profilePictureHeight: Int = 40 // 프로필 이미지 높이
@@ -59,6 +63,10 @@ class DetailMainCell: UITableViewCell {
 }
 
 extension DetailMainCell {
+//    //MARK: - Rx bind
+//    func bind() {
+//    }
+    
     //MARK: - Post 내용 설정
     func setPost(_ post: Post) {
         print(#fileID, #function, #line, " - post for detail: ", post)

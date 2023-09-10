@@ -15,6 +15,7 @@ import IQKeyboardManagerSwift
 class DetailViewController: UIViewController {
     //MARK: - 상세보기를 선택한 글&댓글 정보
     var post: Post!
+    
     var comments: [Comment] = []
     var disposeBag = DisposeBag()
     
@@ -64,8 +65,9 @@ class DetailViewController: UIViewController {
         self.tabBarController?.tabBar.isHidden = true
     }
     
-    //MARK: - Rx bind - Comments 구독
+    //MARK: - Rx bind
     func bind() {
+        //MARK: - Comments 구독
         if let post = self.post {
             PostViewModel.shared.comments
                 .subscribe(on: MainScheduler.instance)
@@ -77,6 +79,30 @@ class DetailViewController: UIViewController {
             
             PostViewModel.shared.fetchComments(of: post)
         }
+        
+        //MARK: - likeCount 구독
+        PostViewModel.shared.likeCount
+            .subscribe(on: MainScheduler.instance)
+            .subscribe {
+//                self.likeCountValue = $0
+                PostViewModel.shared.updatePost(self.post, likeCount: $0)
+                self.tableView.reloadData()
+            }
+            .disposed(by: disposeBag)
+        
+        PostViewModel.shared.getLikeCount(of: post)
+        
+        //MARK: - commentCount 구독
+        PostViewModel.shared.commentCount
+            .subscribe(on: MainScheduler.instance)
+            .subscribe {
+//                self.commentCountValue = $0
+                PostViewModel.shared.updatePost(self.post, commentCount: $0)
+                self.tableView.reloadData()
+            }
+            .disposed(by: disposeBag)
+        
+        PostViewModel.shared.getCommentCount(of: post)
     }
     
     func configureNavigationBarItem () {
@@ -88,6 +114,7 @@ class DetailViewController: UIViewController {
         let likeBtn = UIButton()
         let likeBtnImage = UIImage(systemName: "heart")
         likeBtn.setImage(likeBtnImage, for: .normal)
+        likeBtn.addTarget(self, action: #selector(likeBtnPressed), for: .touchUpInside)
         
         let reportBtn = UIButton()
         let reportBtnImage = UIImage(systemName: "ellipsis")
@@ -209,6 +236,16 @@ extension DetailViewController: UITableViewDataSource {
 extension DetailViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+    }
+}
+
+extension DetailViewController {
+    //MARK: - 좋아요 버튼 동작
+    @objc func likeBtnPressed() {
+        //rx bind
+//        let likeCountOfPost = PostViewModel.shared.getLikeCount(of: self.post)
+//        let newLikeCount = likeCountOfPost + 1
+//        PostViewModel.shared.updatePost(post: self.post, likeCount: newLikeCount)
     }
 }
 

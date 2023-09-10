@@ -13,6 +13,8 @@ class PostViewModel {
     static let shared = PostViewModel()
     var posts = PublishSubject<[Post]>()
     var comments = PublishSubject<[Comment]>()
+    var commentCount = PublishSubject<Int>()
+    var likeCount = PublishSubject<Int>()
     
     let disposeBag = DisposeBag()
     
@@ -106,24 +108,28 @@ class PostViewModel {
     func getCommentCount(of post: Post) {
         let realm = try! Realm()
         
-        let commentCount = realm.objects(Comment.self)
+        let allComments = realm.objects(Comment.self)
         let commentsOfPost = allComments.where {
             $0.belongsTo == post
-        }.sorted(by: \.createdDateTime, ascending: false)
-        
-        var commentResult: [Comment] = []
-        
-        for element in commentsOfPost {
-            commentResult.append(element)
         }
+        let commentCount = commentsOfPost.count
         
-        self.comments
-            .onNext(commentResult)
+        self.commentCount
+            .onNext(commentCount)
     }
     
     //MARK: - 좋아요 수 가져오기
     func getLikeCount(of post: Post) {
+        let realm = try! Realm()
         
+        let allPosts = realm.objects(Post.self)
+        let targetPost = allPosts.where {
+            $0.postID == post.postID
+        }
+        let likeCount = targetPost.first?.likeCount
+        
+        self.likeCount
+            .onNext(likeCount ?? 0)
     }
     
     ///모든 글 접기

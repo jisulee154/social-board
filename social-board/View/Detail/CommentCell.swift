@@ -45,6 +45,16 @@ class CommentCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.nameLabel.text = ""
+        self.jobLabel.text = ""
+        self.createdTimeLabel.text = ""
+        
+        self.contentsText.text = ""
+    }
+    
     func configureCell() {
         setComponents()
         setConstraints()

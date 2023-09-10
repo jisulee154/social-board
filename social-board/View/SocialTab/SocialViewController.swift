@@ -41,6 +41,8 @@ class SocialViewController: UIViewController {
     let disposeBag = DisposeBag()
     
     var posts: [Post] = []
+    var likeCountOfAPost: Int = 0
+    var commentCountOfAPost: Int = 0
     
     func configureTableView() {
         setTableViewDelegates()
@@ -108,6 +110,21 @@ class SocialViewController: UIViewController {
             .disposed(by: disposeBag)
         
         PostViewModel.shared.fetchPosts()
+        
+        //MARK: - likeCount 구독
+        PostViewModel.shared.likeCount
+            .subscribe {
+                self.likeCountOfAPost = $0
+            }
+            .disposed(by: disposeBag)
+        
+        
+        //MARK: - commentCount 구독
+        PostViewModel.shared.commentCount
+            .subscribe {
+                self.commentCountOfAPost = $0
+            }
+            .disposed(by: disposeBag)
     }
     
 }
@@ -142,7 +159,14 @@ extension SocialViewController: UITableViewDataSource {
             
             cell.delegate = self // 화면전환 프로토콜 위임
             
+            PostViewModel.shared.getLikeCount(of: post)
+            PostViewModel.shared.getCommentCount(of: post)
+            
             cell.setPost(post)
+            
+            cell.likeCountLabel.text = "\(self.likeCountOfAPost)"
+            cell.commentCountLabel.text = "\(self.commentCountOfAPost)"
+            
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             
             return cell
@@ -157,7 +181,7 @@ extension SocialViewController: UITableViewDataSource {
         return UITableView.automaticDimension
     }
     
-    //MARK: - Section 설정
+    //MARK: self    social_board.SocialViewController    0x0000000154d13790- Section 설정
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
