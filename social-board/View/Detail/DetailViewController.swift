@@ -90,7 +90,7 @@ class DetailViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
-        PostViewModel.shared.getLikeCount(of: post)
+        PostViewModel.shared.fetchLikeCount(of: post)
         
         //MARK: - commentCount 구독
         PostViewModel.shared.commentCount
@@ -102,7 +102,7 @@ class DetailViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
-        PostViewModel.shared.getCommentCount(of: post)
+        PostViewModel.shared.fetchCommentCount(of: post)
     }
     
     func configureNavigationBarItem () {

@@ -48,7 +48,7 @@ class PostCell: UITableViewCell {
     var likeCountStack = UIStackView()      // 좋아요 스택(아이콘+숫자)
     var commentCountStack = UIStackView()   // 코멘트 스택(아이콘+숫자)
     
-    var likeCountIcon = UIImageView()
+    var likeCountIcon = UIButton()
     var likeCountLabel = UILabel()
     var commentCountIcon = UIImageView()
     var commentCountLabel = UILabel()
@@ -133,17 +133,22 @@ extension PostCell {
             }
         }
         
+        //좋아요 선택 상태
+        if let isLiked = post.isLiked {
+            if isLiked {
+                likeCountIcon.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+            } else {
+                likeCountIcon.setImage(UIImage(systemName: "heart"), for: .normal)
+            }
+        }
 //        self.likeCountLabel.text = "\(post.likeCount ?? 0)"
 //        self.commentCountLabel.text = "\(post.commentCount ?? 0)"
     }
     
-    //MARK: - Rx Bind
-    func bind(_ post: Post) {
-        self.post = post
-        
-        
-        
-    }
+//    //MARK: - Rx Bind
+//    func bind(_ post: Post) {
+//        self.post = post
+//    }
     
     /// 셀에서 '더보기' 버튼을 표시할지 결정합니다.
     func setContentsMoreShowing() {
@@ -180,6 +185,11 @@ extension PostCell {
         self.delegate?.presentToDetail(of: self.post!)
     }
     
+    //MARK: - 좋아요 버튼 동작
+    @objc func likeBtnPressed() {
+        print(#fileID, #function, #line, " - like btn is pressed.")
+        
+    }
 }
 
 //MARK: - 요소 정의 호출
@@ -653,13 +663,12 @@ extension PostCell {
     
     func setLikeCountIcon() {
         likeCountIcon = {
-            let imageView = UIImageView()
+            let btn = UIButton()
             
-//                        imageView.backgroundColor = .blue
-            imageView.tintColor = .black
-            imageView.image = UIImage(systemName: "heart")
-            
-            return imageView
+            btn.setImage(UIImage(systemName: "heart"), for: .normal)
+            btn.tintColor = .black
+            btn.addTarget(self, action: #selector(likeBtnPressed), for: .touchUpInside)
+            return btn
         }()
     }
     

@@ -27,6 +27,15 @@ class SocialViewController: UIViewController {
         
         //MARK: - 더보기 전부 해제
         PostViewModel.shared.reset()
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
     
     var tableView = {
@@ -125,6 +134,9 @@ class SocialViewController: UIViewController {
                 self.commentCountOfAPost = $0
             }
             .disposed(by: disposeBag)
+        
+        PostViewModel.shared.fetchLikeCount(of: Post())
+        PostViewModel.shared.fetchCommentCount(of: Post())
     }
     
 }
@@ -159,8 +171,8 @@ extension SocialViewController: UITableViewDataSource {
             
             cell.delegate = self // 화면전환 프로토콜 위임
             
-            PostViewModel.shared.getLikeCount(of: post)
-            PostViewModel.shared.getCommentCount(of: post)
+            PostViewModel.shared.fetchLikeCount(of: post)
+            PostViewModel.shared.fetchCommentCount(of: post)
             
             cell.setPost(post)
             

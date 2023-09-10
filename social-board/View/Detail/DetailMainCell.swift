@@ -69,7 +69,7 @@ extension DetailMainCell {
     
     //MARK: - Post 내용 설정
     func setPost(_ post: Post) {
-        print(#fileID, #function, #line, " - post for detail: ", post)
+//        print(#fileID, #function, #line, " - post for detail: ", post)
         
         self.post = post
         

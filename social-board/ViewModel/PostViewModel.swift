@@ -15,6 +15,7 @@ class PostViewModel {
     var comments = PublishSubject<[Comment]>()
     var commentCount = PublishSubject<Int>()
     var likeCount = PublishSubject<Int>()
+    var isLiked = PublishSubject<Bool>()
     
     let disposeBag = DisposeBag()
     
@@ -56,7 +57,7 @@ class PostViewModel {
     //MARK: - 글 불러오기
     func fetchPosts() {
         //MARK: - Realm SchemaVersion 관리
-        let config = Realm.Configuration(schemaVersion: 7)
+        let config = Realm.Configuration(schemaVersion: 8)
         Realm.Configuration.defaultConfiguration = config
         let realm = try! Realm()
         
@@ -72,7 +73,7 @@ class PostViewModel {
     }
     
     //MARK: - 글 업데이트
-    func updatePost(_ post: Post, contents: String? = nil, contentImage: String? = nil, likeCount: Int? = nil, commentCount: Int? = nil, writer: User? = nil, comments: List<Comment>? = nil, expanded: Bool? = nil) {
+    func updatePost(_ post: Post, contents: String? = nil, contentImage: String? = nil, likeCount: Int? = nil, commentCount: Int? = nil, writer: User? = nil, comments: List<Comment>? = nil, expanded: Bool? = nil, isLiked: Bool? = nil) {
         let realm = try! Realm()
         
         guard let post = realm.object(ofType: Post.self, forPrimaryKey: post.postID) else {
@@ -99,13 +100,16 @@ class PostViewModel {
             if let newExpanded = expanded {
                 post.expanded = newExpanded
             }
+            if let newIsLiked = isLiked {
+                post.isLiked = newIsLiked
+            }
 //            print(#fileID, #function, #line, " - update as: ", post.expanded ?? "nil")
         }
         fetchPosts()
     }
     
     //MARK: - 코멘트 수 가져오기
-    func getCommentCount(of post: Post) {
+    func fetchCommentCount(of post: Post) {
         let realm = try! Realm()
         
         let allComments = realm.objects(Comment.self)
@@ -119,7 +123,7 @@ class PostViewModel {
     }
     
     //MARK: - 좋아요 수 가져오기
-    func getLikeCount(of post: Post) {
+    func fetchLikeCount(of post: Post) {
         let realm = try! Realm()
         
         let allPosts = realm.objects(Post.self)
@@ -130,6 +134,20 @@ class PostViewModel {
         
         self.likeCount
             .onNext(likeCount ?? 0)
+    }
+    
+    //MARK: - 좋아요 상태 가져오기
+    func fetchIsLiked(of post: Post) {
+        let realm = try! Realm()
+        
+        let allPosts = realm.objects(Post.self)
+        let targetPost = allPosts.where {
+            $0.postID == post.postID
+        }
+        let isLiked = targetPost.first?.isLiked
+        
+        self.isLiked
+            .onNext(isLiked ?? false)
     }
     
     ///모든 글 접기
