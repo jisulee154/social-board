@@ -9,6 +9,8 @@ import UIKit
 import CoreData
 import RealmSwift
 
+import IQKeyboardManagerSwift
+
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -22,6 +24,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
 //        let realm = try! Realm()
 //        print(#fileID, #function, #line, " - User Realm User file location: \(realm.configuration.fileURL!.path)")
+        IQKeyboardManager.shared.enable = true
+        IQKeyboardManager.shared.enableAutoToolbar = false
+        IQKeyboardManager.shared.shouldResignOnTouchOutside = true
+                
         
         return true
     }

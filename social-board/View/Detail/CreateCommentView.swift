@@ -20,11 +20,11 @@ class CreateCommentView: UIView {
     var user = PostViewModel.shared.dummyUsers.randomElement()
     
     var disposeBag = DisposeBag()
-
+    
+    var keyboardHeight = CGFloat(0)
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-//        self.backgroundColor = .white
         
         configureView()
     }
@@ -37,6 +37,7 @@ class CreateCommentView: UIView {
         setComponents()
         setConstraints()
     }
+    
     
     //MARK: - 구성요소 정의
     func setComponents() {
@@ -119,6 +120,7 @@ class CreateCommentView: UIView {
             make.bottom.equalTo(self).offset(-30)
             make.leading.equalTo(self).offset(20)
             make.trailing.equalTo(self).offset(-20)
+            
         }
         
         stack.snp.makeConstraints { make in

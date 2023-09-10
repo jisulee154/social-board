@@ -10,6 +10,7 @@ import SnapKit
 import SwiftUI
 
 import RxSwift
+import IQKeyboardManagerSwift
 
 class DetailViewController: UIViewController {
     //MARK: - 상세보기를 선택한 글&댓글 정보
@@ -17,17 +18,21 @@ class DetailViewController: UIViewController {
     var comments: [Comment] = []
     var disposeBag = DisposeBag()
     
+    var scrollView = UIScrollView()
+    
     var tableView = {
         let tableView = UITableView()
         tableView.register(DetailMainCell.self, forCellReuseIdentifier: "DetailMainCell")
         tableView.register(CommentCell.self, forCellReuseIdentifier: "CommentCell")
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//        tableView.backgroundColor = .magenta
         
         return tableView
     }()
     
     var footer = {
         let footer = CreateCommentView(frame: CGRectZero)
+//        footer.backgroundColor = .cyan
         
         footer.layoutIfNeeded()
         return footer
@@ -44,9 +49,9 @@ class DetailViewController: UIViewController {
         bind()
     }
     
-    //MARK: - ViewDidDisappear()
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    //MARK: - viewWillDisappear()
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
         self.tabBarController?.tabBar.isHidden = false
     }
@@ -107,24 +112,32 @@ class DetailViewController: UIViewController {
     
     //MARK: - 오토 레이아웃
     func setConstraints() {
-        self.view.addSubview(tableView)
+        self.view.addSubview(scrollView)
+
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalTo(self.view)
+        }
+        
+        scrollView.addSubview(tableView)
         
         tableView.snp.makeConstraints { make in
-//            make.edges.equalTo(self.view)
-            make.top.leading.trailing.equalTo(self.view)
+            make.top.leading.trailing.equalTo(scrollView)
             make.height.greaterThanOrEqualTo(500)
+            make.width.equalTo(scrollView)
         }
         
         
-        self.view.addSubview(footer)
-//        footer.frame = DetailViewController. tabBarController!.tabBar.frame
-//        tabBarController!.view.addSubview(footer)
-        
+        scrollView.addSubview(footer)
+        scrollView.backgroundColor = .yellow
         footer.snp.makeConstraints { make in
-            make.top.equalTo(tableView.snp.bottom)
-            make.leading.trailing.bottom.equalTo(self.view)
+            
+            make.bottom.equalTo(scrollView)
+            make.height.equalTo(150)
+            
+            make.top.greaterThanOrEqualTo(tableView.snp.bottom).offset(50)
+            make.leading.trailing.equalTo(scrollView)
 
-            make.height.greaterThanOrEqualTo(150)
+            make.width.equalTo(scrollView)
         }
     }
 }
