@@ -7,7 +7,6 @@
 
 import UIKit
 import SnapKit
-import SwiftUI
 
 import RxSwift
 import IQKeyboardManagerSwift
@@ -21,6 +20,9 @@ class DetailViewController: UIViewController {
     
     var scrollView = UIScrollView()
     
+    var shareBtn = UIButton()
+    var likeBtn = UIButton()
+    var reportBtn = UIButton()
     var tableView = {
         let tableView = UITableView()
         tableView.register(DetailMainCell.self, forCellReuseIdentifier: "DetailMainCell")
@@ -67,7 +69,22 @@ class DetailViewController: UIViewController {
     
     //MARK: - Rx bind
     func bind() {
-        #warning("post subscribe??")
+        //MARK: - post 구독
+        PostViewModel.shared.post
+            .subscribe(on: MainScheduler.instance)
+            .subscribe {
+                self.post = $0
+                
+                // post.isLiked 값에 따라 좋아요 아이콘을 표시합니다.
+                if self.post?.isLiked ?? false {
+                    self.likeBtn.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+                } else {
+                    self.likeBtn.setImage(UIImage(systemName: "heart"), for: .normal)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        PostViewModel.shared.fetchAPost(post)
         
         //MARK: - Comments 구독
         if let post = self.post {
@@ -87,16 +104,13 @@ class DetailViewController: UIViewController {
     
     func configureNavigationBarItem () {
         //MARK: - Right BarItem 설정
-        let shareBtn = UIButton()
         let shareBtnImage = UIImage(systemName: "square.and.arrow.up")
         shareBtn.setImage(shareBtnImage, for: .normal)
         
-        let likeBtn = UIButton()
         let likeBtnImage = UIImage(systemName: "heart")
         likeBtn.setImage(likeBtnImage, for: .normal)
         likeBtn.addTarget(self, action: #selector(likeBtnPressed), for: .touchUpInside)
         
-        let reportBtn = UIButton()
         let reportBtnImage = UIImage(systemName: "ellipsis")
         reportBtn.setImage(reportBtnImage, for: .normal)
         
@@ -231,10 +245,11 @@ extension DetailViewController: UITableViewDelegate {
 extension DetailViewController {
     //MARK: - 좋아요 버튼 동작
     @objc func likeBtnPressed() {
-        //rx bind
-//        let likeCountOfPost = PostViewModel.shared.getLikeCount(of: self.post)
-//        let newLikeCount = likeCountOfPost + 1
-//        PostViewModel.shared.updatePost(post: self.post, likeCount: newLikeCount)
+        if self.post?.isLiked ?? false {
+            PostViewModel.shared.updateAPost(self.post, isLiked: false)
+        } else {
+            PostViewModel.shared.updateAPost(self.post, isLiked: true)
+        }
     }
 }
 

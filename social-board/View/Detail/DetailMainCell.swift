@@ -76,13 +76,15 @@ extension DetailMainCell {
             .subscribe {
                 self.post = $0
                 
-                // post.isLiked 값에 따라 다른 이미지를 표시합니다.
+                // post.isLiked 값에 따라 좋아요 아이콘을 표시합니다.
                 self.isLiked = self.post?.isLiked ?? false
                 
                 if self.isLiked {
                     self.likeIcon.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+                    self.likeIcon.tintColor = .red
                 } else {
                     self.likeIcon.setImage(UIImage(systemName: "heart"), for: .normal)
+                    self.likeIcon.tintColor = .black
                 }
             }
             .disposed(by: disposeBag)
