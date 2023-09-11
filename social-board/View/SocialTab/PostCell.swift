@@ -109,7 +109,6 @@ extension PostCell {
                 self.commentCountOfAPost = $0
             }
             .disposed(by: disposeBag)
-        
     }
     //MARK: - Post 내용 설정
     func setPost(_ post: Post) {
@@ -207,7 +206,7 @@ extension PostCell {
             print(#fileID, #function, #line, " - 더보기 Error: \(String(describing: post))")
             return
         }
-        PostViewModel.shared.updatePost(post, expanded: true)
+        PostViewModel.shared.updateAPost(post, expanded: true)
     }
     
     //MARK: - 화면 전환 (-> 글 상세보기)

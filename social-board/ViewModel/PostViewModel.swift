@@ -12,10 +12,13 @@ import Foundation
 class PostViewModel {
     static let shared = PostViewModel()
     var posts = PublishSubject<[Post]>()
+    var post = PublishSubject<Post>()
+    
     var comments = PublishSubject<[Comment]>()
     var commentCount = PublishSubject<Int>()
     var likeCount = PublishSubject<Int>()
     var isLiked = PublishSubject<Bool>()
+    
     
     let disposeBag = DisposeBag()
     
@@ -72,8 +75,21 @@ class PostViewModel {
             .onNext(postResult)
     }
     
+    //MARK: - 특정 글 불러오기
+    func fetchAPost(_ post: Post) {
+        let realm = try! Realm()
+        
+        let allPosts = realm.objects(Post.self)
+        let targetPost = allPosts.where {
+            $0.postID == post.postID
+        }.first ?? post
+        
+        self.post
+            .onNext(targetPost)
+    }
+    
     //MARK: - 글 업데이트
-    func updatePost(_ post: Post, contents: String? = nil, contentImage: String? = nil, likeCount: Int? = nil, commentCount: Int? = nil, writer: User? = nil, comments: List<Comment>? = nil, expanded: Bool? = nil, isLiked: Bool? = nil) {
+    func updateAPost(_ post: Post, contents: String? = nil, contentImage: String? = nil, likeCount: Int? = nil, commentCount: Int? = nil, writer: User? = nil, comments: List<Comment>? = nil, expanded: Bool? = nil, isLiked: Bool? = nil) {
         let realm = try! Realm()
         
         guard let post = realm.object(ofType: Post.self, forPrimaryKey: post.postID) else {
@@ -108,7 +124,8 @@ class PostViewModel {
             }
 //            print(#fileID, #function, #line, " - update as: ", post.expanded ?? "nil")
         }
-        fetchPosts()
+//        fetchPosts()
+        fetchAPost(post)
     }
     
     //MARK: - 코멘트 수 가져오기

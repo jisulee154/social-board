@@ -67,6 +67,8 @@ class DetailViewController: UIViewController {
     
     //MARK: - Rx bind
     func bind() {
+        #warning("post subscribe??")
+        
         //MARK: - Comments 구독
         if let post = self.post {
             PostViewModel.shared.comments

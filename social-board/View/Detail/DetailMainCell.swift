@@ -34,7 +34,7 @@ class DetailMainCell: UITableViewCell {
 
     // 글 하단: 좋아요/댓글 개수 정보
     var likeCommentStack = UIStackView()
-    var likeIcon = UIImageView()
+    var likeIcon = UIButton()
     var likeCount = UILabel()
     var commentIcon = UIImageView()
     var commentCount = UILabel()
@@ -42,6 +42,7 @@ class DetailMainCell: UITableViewCell {
     var post: Post!
     var likeCountValue: Int = 0
     var commentCountValue: Int = 0
+    var isLiked: Bool = false
     
     var disposeBag = DisposeBag()
     
@@ -69,27 +70,36 @@ class DetailMainCell: UITableViewCell {
 extension DetailMainCell {
     //MARK: - Rx bind
     func bind() {
-        //MARK: - likeCount 구독
-        PostViewModel.shared.likeCount
-//            .subscribe(on: MainScheduler.instance)
+        //MARK: - post 구독
+        PostViewModel.shared.post
+            .subscribe(on: MainScheduler.instance)
             .subscribe {
-                self.likeCountValue = $0
-//                PostViewModel.shared.updatePost(self.post, likeCount: $0)
-//                self.tableView.reloadData()
-            }
-            .disposed(by: disposeBag)
-
-
-        //MARK: - commentCount 구독
-        PostViewModel.shared.commentCount
-//            .subscribe(on: MainScheduler.instance)
-            .subscribe {
-                self.commentCountValue = $0
-//                PostViewModel.shared.updatePost(self.post, commentCount: $0)
-//                self.tableView.reloadData()
+                self.post = $0
+                
+                // post.isLiked 값에 따라 다른 이미지를 표시합니다.
+                self.isLiked = self.post?.isLiked ?? false
+                
+                if self.isLiked {
+                    self.likeIcon.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+                } else {
+                    self.likeIcon.setImage(UIImage(systemName: "heart"), for: .normal)
+                }
             }
             .disposed(by: disposeBag)
         
+        //MARK: - likeCount 구독
+        PostViewModel.shared.likeCount
+            .subscribe {
+                self.likeCountValue = $0
+            }
+            .disposed(by: disposeBag)
+
+        //MARK: - commentCount 구독
+        PostViewModel.shared.commentCount
+            .subscribe {
+                self.commentCountValue = $0
+            }
+            .disposed(by: disposeBag)
     }
     
     //MARK: - Post 내용 설정
@@ -97,6 +107,7 @@ extension DetailMainCell {
         self.post = post
         
         //Rx bind
+        PostViewModel.shared.fetchAPost(post)
         PostViewModel.shared.fetchLikeCount(of: post)
         PostViewModel.shared.fetchCommentCount(of: post)
         
@@ -139,6 +150,15 @@ extension DetailMainCell {
         self.commentCount.text = "\(self.commentCountValue)"
 //        self.likeCount.text = "\(post.likeCount ?? 0)"
 //        self.commentCount.text = "\(post.commentCount ?? 0)"
+    }
+    
+    //MARK: - 좋아요 버튼 동작
+    @objc func likeBtnPressed() {
+        if self.post?.isLiked ?? false {
+            PostViewModel.shared.updateAPost(self.post, isLiked: false)
+        } else {
+            PostViewModel.shared.updateAPost(self.post, isLiked: true)
+        }
     }
     
     func setComponents() {
@@ -258,14 +278,19 @@ extension DetailMainCell {
             stackView.axis = .horizontal
             return stackView
         }()
-
+        
         likeIcon = {
-            let imageView = UIImageView()
-
-            imageView.tintColor = .black
-            imageView.image = UIImage(systemName: "heart")
-
-            return imageView
+            let btn = UIButton()
+            
+            btn.setImage(UIImage(systemName: "heart"), for: .normal)
+            
+            
+            btn.tintColor = .black
+            
+            //좋아요 동작
+            btn.addTarget(self, action: #selector(likeBtnPressed), for: .touchUpInside)
+            
+            return btn
         }()
 
         likeCount = {
