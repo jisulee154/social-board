@@ -40,6 +40,8 @@ class DetailMainCell: UITableViewCell {
     var commentCount = UILabel()
     
     var post: Post!
+    var likeCountValue: Int = 0
+    var commentCountValue: Int = 0
     
     var disposeBag = DisposeBag()
     
@@ -50,6 +52,8 @@ class DetailMainCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         configureCell()
+        
+        bind()
     }
     
     required init?(coder: NSCoder) {
@@ -63,15 +67,38 @@ class DetailMainCell: UITableViewCell {
 }
 
 extension DetailMainCell {
-//    //MARK: - Rx bind
-//    func bind() {
-//    }
+    //MARK: - Rx bind
+    func bind() {
+        //MARK: - likeCount 구독
+        PostViewModel.shared.likeCount
+//            .subscribe(on: MainScheduler.instance)
+            .subscribe {
+                self.likeCountValue = $0
+//                PostViewModel.shared.updatePost(self.post, likeCount: $0)
+//                self.tableView.reloadData()
+            }
+            .disposed(by: disposeBag)
+
+
+        //MARK: - commentCount 구독
+        PostViewModel.shared.commentCount
+//            .subscribe(on: MainScheduler.instance)
+            .subscribe {
+                self.commentCountValue = $0
+//                PostViewModel.shared.updatePost(self.post, commentCount: $0)
+//                self.tableView.reloadData()
+            }
+            .disposed(by: disposeBag)
+        
+    }
     
     //MARK: - Post 내용 설정
     func setPost(_ post: Post) {
-//        print(#fileID, #function, #line, " - post for detail: ", post)
-        
         self.post = post
+        
+        //Rx bind
+        PostViewModel.shared.fetchLikeCount(of: post)
+        PostViewModel.shared.fetchCommentCount(of: post)
         
         self.createdTimeLabel.text = post.createdDateTime?.description ?? ""
         self.nameLabel.text = post.writer?.userName ?? "익명"
@@ -108,8 +135,10 @@ extension DetailMainCell {
             }
         }
         
-        self.likeCount.text = "\(post.likeCount ?? 0)"
-        self.commentCount.text = "\(post.commentCount ?? 0)"
+        self.likeCount.text = "\(self.likeCountValue)"
+        self.commentCount.text = "\(self.commentCountValue)"
+//        self.likeCount.text = "\(post.likeCount ?? 0)"
+//        self.commentCount.text = "\(post.commentCount ?? 0)"
     }
     
     func setComponents() {

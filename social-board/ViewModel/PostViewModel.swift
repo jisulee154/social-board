@@ -87,9 +87,11 @@ class PostViewModel {
             }
             if let newLikeCount = likeCount {
                 post.likeCount = newLikeCount
+                //onNext?
             }
             if let newCommentCount = commentCount {
                 post.commentCount = newCommentCount
+                //onNext?
             }
             if let newWriter = writer {
                 post.writer = newWriter
@@ -102,6 +104,7 @@ class PostViewModel {
             }
             if let newIsLiked = isLiked {
                 post.isLiked = newIsLiked
+                //onNext?
             }
 //            print(#fileID, #function, #line, " - update as: ", post.expanded ?? "nil")
         }
@@ -114,7 +117,7 @@ class PostViewModel {
         
         let allComments = realm.objects(Comment.self)
         let commentsOfPost = allComments.where {
-            $0.belongsTo == post
+            $0.belongsTo.postID == post.postID
         }
         let commentCount = commentsOfPost.count
         
@@ -130,10 +133,14 @@ class PostViewModel {
         let targetPost = allPosts.where {
             $0.postID == post.postID
         }
-        let likeCount = targetPost.first?.likeCount
-        
-        self.likeCount
-            .onNext(likeCount ?? 0)
+        if let likeCount = targetPost.first?.likeCount {
+            self.likeCount
+                .onNext(likeCount)
+        } else {
+            print(#fileID, #function, #line, " - likeCount is nil. [Rx]")
+            self.likeCount
+                .onNext(0)
+        }
     }
     
     //MARK: - 좋아요 상태 가져오기
@@ -144,10 +151,14 @@ class PostViewModel {
         let targetPost = allPosts.where {
             $0.postID == post.postID
         }
-        let isLiked = targetPost.first?.isLiked
-        
-        self.isLiked
-            .onNext(isLiked ?? false)
+        if let isLiked = targetPost.first?.isLiked {
+            self.isLiked
+                .onNext(isLiked)
+        } else {
+            print(#fileID, #function, #line, " - isLiked is nil. [Rx]")
+            self.isLiked
+                .onNext(false)
+        }
     }
     
     ///모든 글 접기

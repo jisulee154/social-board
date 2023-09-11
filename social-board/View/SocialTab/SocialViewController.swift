@@ -32,6 +32,7 @@ class SocialViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        print(#fileID, #function, #line, " - view will appear")
         
         DispatchQueue.main.async {
             self.tableView.reloadData()
@@ -50,8 +51,8 @@ class SocialViewController: UIViewController {
     let disposeBag = DisposeBag()
     
     var posts: [Post] = []
-    var likeCountOfAPost: Int = 0
-    var commentCountOfAPost: Int = 0
+//    var likeCountOfAPost: Int = 0
+//    var commentCountOfAPost: Int = 0
     
     func configureTableView() {
         setTableViewDelegates()
@@ -114,29 +115,12 @@ class SocialViewController: UIViewController {
             .subscribe {
 //                print(#fileID, #function, #line, " - subscribe()!!")
                 self.posts = $0
+//                print(#fileID, #function, #line, " - posts: ", $0)
                 self.tableView.reloadData()
             }
             .disposed(by: disposeBag)
         
         PostViewModel.shared.fetchPosts()
-        
-        //MARK: - likeCount 구독
-        PostViewModel.shared.likeCount
-            .subscribe {
-                self.likeCountOfAPost = $0
-            }
-            .disposed(by: disposeBag)
-        
-        
-        //MARK: - commentCount 구독
-        PostViewModel.shared.commentCount
-            .subscribe {
-                self.commentCountOfAPost = $0
-            }
-            .disposed(by: disposeBag)
-        
-        PostViewModel.shared.fetchLikeCount(of: Post())
-        PostViewModel.shared.fetchCommentCount(of: Post())
     }
     
 }
@@ -171,13 +155,10 @@ extension SocialViewController: UITableViewDataSource {
             
             cell.delegate = self // 화면전환 프로토콜 위임
             
-            PostViewModel.shared.fetchLikeCount(of: post)
-            PostViewModel.shared.fetchCommentCount(of: post)
-            
             cell.setPost(post)
             
-            cell.likeCountLabel.text = "\(self.likeCountOfAPost)"
-            cell.commentCountLabel.text = "\(self.commentCountOfAPost)"
+//            cell.likeCountLabel.text = "\(self.likeCountOfAPost)"
+//            cell.commentCountLabel.text = "\(self.commentCountOfAPost)"
             
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             

@@ -47,7 +47,7 @@ class DetailViewController: UIViewController {
         setTableViewDelegates()
         setConstraints()
         setWhichPost()
-        
+
         bind()
     }
     
@@ -80,29 +80,7 @@ class DetailViewController: UIViewController {
             PostViewModel.shared.fetchComments(of: post)
         }
         
-        //MARK: - likeCount 구독
-        PostViewModel.shared.likeCount
-            .subscribe(on: MainScheduler.instance)
-            .subscribe {
-//                self.likeCountValue = $0
-                PostViewModel.shared.updatePost(self.post, likeCount: $0)
-                self.tableView.reloadData()
-            }
-            .disposed(by: disposeBag)
-        
-        PostViewModel.shared.fetchLikeCount(of: post)
-        
-        //MARK: - commentCount 구독
-        PostViewModel.shared.commentCount
-            .subscribe(on: MainScheduler.instance)
-            .subscribe {
-//                self.commentCountValue = $0
-                PostViewModel.shared.updatePost(self.post, commentCount: $0)
-                self.tableView.reloadData()
-            }
-            .disposed(by: disposeBag)
-        
-        PostViewModel.shared.fetchCommentCount(of: post)
+
     }
     
     func configureNavigationBarItem () {
@@ -187,9 +165,13 @@ extension DetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             return 1
-        } else {
+        }
+        else {
             return self.comments.count
         }
+//        else {
+//            return 1
+//        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -208,7 +190,8 @@ extension DetailViewController: UITableViewDataSource {
             cell.setPost(post)
             return cell
 
-        } else {
+        }
+        else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "CommentCell", for: indexPath) as? CommentCell else {
                 return UITableViewCell()
             }
@@ -216,6 +199,10 @@ extension DetailViewController: UITableViewDataSource {
             cell.setComment(comment)
             return cell
         }
+        
+//        else {
+//            return UITableViewCell()
+//        }
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {

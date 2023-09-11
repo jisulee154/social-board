@@ -17,7 +17,9 @@ protocol CellPresentProtocol {
 }
 
 class PostCell: UITableViewCell {
-    var post: Post?
+    var post: Post!
+    var likeCountOfAPost: Int = 0
+    var commentCountOfAPost: Int = 0
     let disposeBag = DisposeBag()
     
     var delegate: CellPresentProtocol?
@@ -63,6 +65,8 @@ class PostCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        bind()
+        
         configureCell()
         setConstraint()
     }
@@ -73,6 +77,8 @@ class PostCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        
+        self.post = nil
         
         self.nameLabel.text = ""
         self.jobLabel.text = ""
@@ -87,9 +93,31 @@ class PostCell: UITableViewCell {
 }
 
 extension PostCell {
+    //MARK: - Rx bind
+    func bind() {
+        //MARK: - likeCount 구독
+        PostViewModel.shared.likeCount
+            .subscribe {
+                self.likeCountOfAPost = $0
+            }
+            .disposed(by: disposeBag)
+
+
+        //MARK: - commentCount 구독
+        PostViewModel.shared.commentCount
+            .subscribe {
+                self.commentCountOfAPost = $0
+            }
+            .disposed(by: disposeBag)
+        
+    }
     //MARK: - Post 내용 설정
     func setPost(_ post: Post) {
         self.post = post
+        
+        // Rx 값 가져오기
+        PostViewModel.shared.fetchLikeCount(of: self.post)
+        PostViewModel.shared.fetchCommentCount(of: self.post)
         
         self.createdTimeLabel.text = post.createdDateTime?.description ?? ""
         self.nameLabel.text = post.writer?.userName ?? "익명"
@@ -143,6 +171,8 @@ extension PostCell {
         }
 //        self.likeCountLabel.text = "\(post.likeCount ?? 0)"
 //        self.commentCountLabel.text = "\(post.commentCount ?? 0)"
+        self.likeCountLabel.text = "\(self.likeCountOfAPost)"
+        self.commentCountLabel.text = "\(self.commentCountOfAPost)"
     }
     
 //    //MARK: - Rx Bind
