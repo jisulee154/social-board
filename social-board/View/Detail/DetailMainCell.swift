@@ -161,7 +161,7 @@ extension DetailMainCell {
 //        self.likeCount.text = "\(self.likeCountValue)"
 //        self.commentCount.text = "\(self.commentCountValue)"
         self.likeCount.text = "\(post.likeCount ?? 0)"
-        self.commentCount.text = "\(post.commentCount ?? 0)"
+        self.commentCount.text = "\(post.comments.count)"
     }
     
     //MARK: - 좋아요 버튼 동작

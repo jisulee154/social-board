@@ -208,7 +208,7 @@ extension PostCell {
             }
         }
         self.likeCountLabel.text = "\(post.likeCount ?? 0)"
-        self.commentCountLabel.text = "\(post.commentCount ?? 0)"
+        self.commentCountLabel.text = "\(post.comments.count)"
 //        self.likeCountLabel.text = "\(self.likeCountOfAPost)"
 //        self.commentCountLabel.text = "\(self.commentCountOfAPost)"
     }
