@@ -7,6 +7,7 @@
 
 import UIKit
 import RealmSwift
+import Foundation
 
 extension UITabBar {
     /// TabBar height 설정

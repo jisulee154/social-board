@@ -140,8 +140,8 @@
             filePath = "social-board/View/SocialTab/PostCell.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "306"
-            endingLineNumber = "306"
+            startingLineNumber = "307"
+            endingLineNumber = "307"
             landmarkName = "setConstraint()"
             landmarkType = "7">
          </BreakpointContent>

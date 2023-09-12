@@ -161,7 +161,8 @@ extension PostCell {
     func setPost(_ post: Post) {
         self.post = post
         
-        self.createdTimeLabel.text = post.createdDateTime?.description ?? ""
+//        self.createdTimeLabel.text = post.createdDateTime?.description ?? ""
+        self.createdTimeLabel.text = PostViewModel.shared.getCreatedDateTime(post.createdDateTime ?? Date())
         self.nameLabel.text = post.writer?.userName ?? "익명"
         self.jobLabel.text = post.writer?.job?.category?.rawValue ?? JobCategory.dev.rawValue
         
@@ -594,7 +595,7 @@ extension PostCell {
     func setCreatedTimeLabel() {
         createdTimeLabel = {
             let label = UILabel()
-            
+
             label.font = .systemFont(ofSize: 10, weight: .regular)
             label.textColor = .gray
             return label

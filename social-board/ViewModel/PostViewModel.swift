@@ -8,6 +8,7 @@
 import RxSwift
 import RealmSwift
 import Foundation
+import Realm
 
 class PostViewModel {
     static let shared = PostViewModel()
@@ -15,16 +16,12 @@ class PostViewModel {
     var post = PublishSubject<Post>()
     
     var comments = PublishSubject<[Comment]>()
-//    var commentCount = PublishSubject<Int>()
-//    var likeCount = PublishSubject<Int>()
-//    var isLiked = PublishSubject<Bool>()
-    
     
     let disposeBag = DisposeBag()
     
     var dummyjobs: [Job] = []
     var dummyUsers: [User] = []
-//    var dummyComments: [Comment] = []
+    var dummyTopics: [Topic] = []
     
     private init() {
         //MARK: - 더미 데이터
@@ -44,10 +41,6 @@ class PostViewModel {
             User(userID: ObjectId.generate(), userName: "미소세상", userProfilePicture: "userProfile4", job: dummyjobs[3]),
             User(userID: ObjectId.generate(), userName: "초록", userProfilePicture: "userProfile5", job: dummyjobs[4]),
             User(userID: ObjectId.generate(), userName: "응시", userProfilePicture: "userProfile6", job: dummyjobs[5])
-        ]
-        
-        dummyTopics = [
-            Topic(topicID: ObjectId.generate(), category: Topic)
         ]
     }
     
@@ -107,11 +100,9 @@ class PostViewModel {
             }
             if let newLikeCount = likeCount {
                 post.likeCount = newLikeCount
-                //onNext?
             }
             if let newCommentCount = commentCount {
                 post.commentCount = newCommentCount
-                //onNext?
             }
             if let newWriter = writer {
                 post.writer = newWriter
@@ -130,64 +121,11 @@ class PostViewModel {
                 } else {
                     post.likeCount = (post.likeCount ?? 1) - 1
                 }
-                //onNext?
             }
         }
         fetchPosts()
 //        fetchAPost(post)
     }
-    
-//    //MARK: - 코멘트 수 가져오기
-//    func fetchCommentCount(of post: Post) {
-//        let realm = try! Realm()
-//        
-////        let allComments = realm.objects(Comment.self)
-////        let commentsOfPost = allComments.where {
-////            $0.belongsTo.postID == post.postID
-////        }
-////        let commentCount = commentsOfPost.count
-//        let commentCount = post.comments.count
-//        
-//        self.commentCount
-//            .onNext(commentCount)
-//    }
-//    
-//    //MARK: - 좋아요 수 가져오기
-//    func fetchLikeCount(of post: Post) {
-//        let realm = try! Realm()
-//        
-//        let allPosts = realm.objects(Post.self)
-//        let targetPost = allPosts.where {
-//            $0.postID == post.postID
-//        }
-//        if let likeCount = targetPost.first?.likeCount {
-//            self.likeCount
-//                .onNext(likeCount)
-//        } else {
-//            print(#fileID, #function, #line, " - likeCount is nil. [Rx]")
-//            self.likeCount
-//                .onNext(0)
-//        }
-//    }
-//
-//    //MARK: - 좋아요 상태 가져오기
-//    func fetchIsLiked(of post: Post) {
-//        let realm = try! Realm()
-//
-//        let allPosts = realm.objects(Post.self)
-//        let targetPost = allPosts.where {
-//            $0.postID == post.postID
-//        }
-//
-//        if let isLiked = targetPost.first?.isLiked {
-//            self.isLiked
-//                .onNext(isLiked)
-//        } else {
-//            print(#fileID, #function, #line, " - isLiked is nil. [Rx]")
-//            self.isLiked
-//                .onNext(false)
-//        }
-//    }
     
     ///모든 글 접기
     func reset() {
@@ -211,8 +149,6 @@ class PostViewModel {
         }
         
         // 글의 기존 댓글 List에 새 댓글을 추가합니다.
-//        let oldComments = comment.belongsTo?.comments
-        
         try! realm.write {
             comment.belongsTo?.comments.append(comment)
         }
@@ -225,16 +161,6 @@ class PostViewModel {
     func fetchComments(of post:Post) {
         let realm = try! Realm()
         
-//        let allComments = realm.objects(Comment.self)
-//        let commentsOfPost = allComments.where {
-//            $0.belongsTo == post
-//        }.sorted(by: \.createdDateTime, ascending: false)
-//
-//        var commentResult: [Comment] = []
-//
-//        for element in commentsOfPost {
-//            commentResult.append(element)
-//        }
         let comments = post.comments.sorted(by: \.createdDateTime, ascending: false)
         
         var commentResult: [Comment] = []
@@ -244,5 +170,38 @@ class PostViewModel {
         
         self.comments
             .onNext(commentResult)
+    }
+}
+
+//MARK: - Utils
+extension PostViewModel {
+    //MARK: - 작성 시간 String 변환
+    func getCreatedDateTime(_ createdDateTime: Date) -> String {
+        let dateFormatter = DateFormatter()
+        
+        let now = Date()
+        let day = Double(60 * 60 * 24)
+        let hour = Double(60 * 60)
+        let min = Double(60)
+        
+        let interval = now.timeIntervalSince(createdDateTime) // 글 작성시간과 현재시간 차이
+        print(#fileID, #function, #line, " - interval: ", interval)
+        
+        switch interval {
+        case 0:
+            return "방금 전"
+        case 1..<min:
+            let seconds = Int(interval)
+            return "\(seconds)초 전"
+        case min..<hour:
+            let mins = Int(interval / min)
+            return "\(mins)분 전"
+        case hour..<day:
+            let hours = Int(interval / hour)
+            return "\(hours)시간 전"
+        default:
+            dateFormatter.dateFormat = "yyyy.MM.dd"
+            return dateFormatter.string(from: createdDateTime)
+        }
     }
 }

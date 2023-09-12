@@ -50,7 +50,7 @@ class PostTopCell: UITableViewCell {
             make.bottom.equalTo(self.contentView).offset(-20)
             
             make.width.equalTo(40)
-            make.height.greaterThanOrEqualTo(40)
+            make.height.equalTo(40)
         }
         
         writingLabel.snp.makeConstraints { make in
@@ -65,6 +65,9 @@ class PostTopCell: UITableViewCell {
             let imageView = UIImageView()
             
             imageView.image = UIImage(systemName: "person.crop.circle")
+            imageView.tintColor = .systemGray2
+//            let imageName = PostViewModel.shared.dummyUsers.randomElement()?.userProfilePicture
+//            imageView.image = UIImage(named: imageName ?? "userProfile1")
             return imageView
         }()
     }

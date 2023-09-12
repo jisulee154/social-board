@@ -21,7 +21,7 @@ class CreatePostViewController: UIViewController {
     var appendImageBtn = UIButton() // 이미지 추가 버튼
     var appendImageLabel = UILabel() // 이미지 추가 안내 메시지 place holder
     var imageView = UIImageView() // 선택한 이미지 표시
-    var textfield = UITextField() // 내용 작성 버튼 // place holder text 포함
+    var textView = UITextView() // 내용 작성 버튼 // place holder text 포함
     
     //MARK: - 영역별 스택 뷰 선언
     var topStackView = UIStackView() // 최상단 스택뷰 - 닫기, 업로드 버튼
@@ -33,9 +33,6 @@ class CreatePostViewController: UIViewController {
     //MARK: - 이미지 picker 관련
     var picker = UIImagePickerController()
     var selectedImageName = ""
-//    var pickerViewController = PhotosAlbumViewController()
-    /// An array for storing captured images to display.
-//    var selectedImage = UIImage()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +55,7 @@ class CreatePostViewController: UIViewController {
         setAppendImageBtn()
         setAppendImageLabel()
         setImageView()
-        setTextfield()
+        setTextView()
         
         view.addSubview(topStackView)
         view.addSubview(appendImageStackView)
@@ -71,7 +68,7 @@ class CreatePostViewController: UIViewController {
         appendImageStackView.addSubview(appendImageLabel)
 
         writingStackView.addSubview(imageView)
-        writingStackView.addSubview(textfield)
+        writingStackView.addSubview(textView)
     }
     
     //MARK: - 오토 레이아웃
@@ -152,14 +149,16 @@ class CreatePostViewController: UIViewController {
             make.top.equalTo(writingStackView)
             make.leading.equalTo(writingStackView)
             make.trailing.equalTo(writingStackView)
-            make.bottom.equalTo(textfield.snp.top).offset(-10)
+            make.bottom.equalTo(textView.snp.top).offset(-10)
         }
         
-        textfield.snp.makeConstraints { make in
+        textView.snp.makeConstraints { make in
             make.top.equalTo(imageView.snp.bottom).offset(10)
             make.leading.equalTo(writingStackView)
             make.trailing.equalTo(writingStackView)
             make.bottom.equalTo(writingStackView)
+            
+            make.height.greaterThanOrEqualTo(100)
         }
     }
     
@@ -273,19 +272,20 @@ class CreatePostViewController: UIViewController {
         }()
     }
     
-    func setTextfield() {
-        textfield =
-        {
-            let textfield = UITextField()
-            textfield.translatesAutoresizingMaskIntoConstraints = false
-            textfield.attributedPlaceholder = NSAttributedString(string: "나누고 싶은 생각을 공유해 보세요!", attributes: [NSAttributedString.Key.foregroundColor : UIColor.systemGray2])
+    func setTextView() {
+        textView = {
+            let textView = UITextView()
+            textView.translatesAutoresizingMaskIntoConstraints = false
+            textView.text = "나누고 싶은 생각을 공유해 보세요!"
+            textView.textColor = .lightGray
+            textView.font = .systemFont(ofSize: 20, weight: .regular)
+            textView.delegate = self
+//            textView.backgroundColor = .green
             
             // padding
-            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textfield.frame.height))
-            textfield.leftView = paddingView
-            textfield.leftViewMode = UITextField.ViewMode.always
+            textView.textContainerInset = UIEdgeInsets(top: 20.0, left: 15.0, bottom: 20.0, right: 0)
             
-            textfield.rx.text.orEmpty
+            textView.rx.text.orEmpty
                 .map {
                     $0.count > 0
                 }
@@ -295,7 +295,7 @@ class CreatePostViewController: UIViewController {
                 }
                 .disposed(by: disposeBag)
             
-            return textfield
+            return textView
         }()
     }
     
@@ -310,13 +310,11 @@ extension CreatePostViewController {
     
     //MARK: - 새글 쓰기
     @objc func submitPost() {
-        let contents = self.textfield.text ?? ""
+        let contents = self.textView.text ?? ""
         let dummyUser = PostViewModel.shared.dummyUsers.randomElement()
         let dummyLikeCount = (0...10).randomElement()
-//        let dummyCommentCount = (0...10).randomElement()
         
         let post = Post(contents: contents, contentImage: selectedImageName, likeCount: dummyLikeCount, commentCount: 0, writer: dummyUser)
-        #warning("comment count 수정할 것")
         
         PostViewModel.shared.createPost(with: post) //onNext
         self.dismiss(animated: true)
@@ -369,13 +367,16 @@ extension CreatePostViewController: UINavigationControllerDelegate, UIImagePicke
         }
     }
     
-    /**
-    If the user cancels the operation, the system invokes the delegate's
-    `imagePickerControllerDidCancel(_:)` method, and you should dismiss the
-    picker.
-    */
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true)
+    }
+}
+
+//MARK: - UITextViewDelegate
+extension CreatePostViewController: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        textView.text = ""
+        textView.textColor = .black
     }
 }
 
