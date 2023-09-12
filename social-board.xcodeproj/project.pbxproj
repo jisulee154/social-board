@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		411478D22AB083A900D41D68 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411478D12AB083A900D41D68 /* UserInfo.swift */; };
 		4149EA582AA38018002EB655 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4149EA572AA38018002EB655 /* DetailViewController.swift */; };
 		4149EA5C2AA8A458002EB655 /* DetailMainCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4149EA5B2AA8A458002EB655 /* DetailMainCell.swift */; };
 		4149EA5E2AA8A5A6002EB655 /* ViewController.swift 21-17-50-821.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4149EA5D2AA8A5A6002EB655 /* ViewController.swift 21-17-50-821.swift */; };
@@ -35,6 +36,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		411478D12AB083A900D41D68 /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
 		4149EA572AA38018002EB655 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		4149EA5B2AA8A458002EB655 /* DetailMainCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailMainCell.swift; sourceTree = "<group>"; };
 		4149EA5D2AA8A5A6002EB655 /* ViewController.swift 21-17-50-821.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ViewController.swift 21-17-50-821.swift"; sourceTree = "<group>"; };
@@ -75,6 +77,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		411478D32AB083B300D41D68 /* UserInfo */ = {
+			isa = PBXGroup;
+			children = (
+				411478D12AB083A900D41D68 /* UserInfo.swift */,
+			);
+			path = UserInfo;
+			sourceTree = "<group>";
+		};
 		4149EA5F2AA8A5CD002EB655 /* TabBar */ = {
 			isa = PBXGroup;
 			children = (
@@ -152,6 +162,7 @@
 				4149EA5F2AA8A5CD002EB655 /* TabBar */,
 				4149EA602AA8A5F2002EB655 /* SocialTab */,
 				4149EA622AA8A61A002EB655 /* Detail */,
+				411478D32AB083B300D41D68 /* UserInfo */,
 				4149EA612AA8A603002EB655 /* CreatePost */,
 			);
 			path = View;
@@ -271,6 +282,7 @@
 				4149EA5E2AA8A5A6002EB655 /* ViewController.swift 21-17-50-821.swift in Sources */,
 				415C6B5F2A9E0CA30081375F /* PostTopCell.swift in Sources */,
 				4149EA582AA38018002EB655 /* DetailViewController.swift in Sources */,
+				411478D22AB083A900D41D68 /* UserInfo.swift in Sources */,
 				4149EA642AA94B2F002EB655 /* CommentCell.swift in Sources */,
 				415C6B502A9890020081375F /* Post.swift in Sources */,
 				415C6B2C2A9868E30081375F /* AppDelegate.swift in Sources */,

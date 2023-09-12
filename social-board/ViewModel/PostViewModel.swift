@@ -45,6 +45,10 @@ class PostViewModel {
             User(userID: ObjectId.generate(), userName: "초록", userProfilePicture: "userProfile5", job: dummyjobs[4]),
             User(userID: ObjectId.generate(), userName: "응시", userProfilePicture: "userProfile6", job: dummyjobs[5])
         ]
+        
+        dummyTopics = [
+            Topic(topicID: ObjectId.generate(), category: Topic)
+        ]
     }
     
     //MARK: - 새글 생성
@@ -60,7 +64,7 @@ class PostViewModel {
     //MARK: - 글 모두 불러오기
     func fetchPosts() {
         //MARK: - Realm SchemaVersion 관리
-        let config = Realm.Configuration(schemaVersion: 8)
+        let config = Realm.Configuration(schemaVersion: 9)
         Realm.Configuration.defaultConfiguration = config
         let realm = try! Realm()
         

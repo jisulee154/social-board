@@ -105,15 +105,15 @@ class Job: Object {
 
 class Topic: Object {
     @Persisted(primaryKey: true) var topicID: ObjectId
-    @Persisted var category: TopicCategory?
+    @Persisted var categories: List<TopicCategory>
     
 //    @Persisted(originProperty: "topics") var postIDs: LinkingObjects<User> //외래키 //필요한가?
     
-    convenience init(topicID: ObjectId, category: TopicCategory? = nil) {
+    convenience init(topicID: ObjectId, categories: List<TopicCategory> = List<TopicCategory>()) {
         self.init()
         
         self.topicID = topicID
-        self.category = category
+        self.categories = categories
 //        self.postIDs = postIDs
     }
 }

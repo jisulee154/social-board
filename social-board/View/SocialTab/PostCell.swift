@@ -21,6 +21,11 @@ protocol CellLikeBtnProtocol {
     func likeBtnPressed(of post: Post)
 }
 
+//MARK: - 유저정보로의 화면전환을 위한 프로토콜
+protocol CellPresentToUserInfoProtocol {
+    func presentToUserInfo(of post: Post)
+}
+
 class PostCell: UITableViewCell {
     var post: Post!
 //    var likeCountOfAPost: Int = 0
@@ -30,6 +35,7 @@ class PostCell: UITableViewCell {
     
     var presentDelegate: CellPresentProtocol?
     var likeBtnDelegate: CellLikeBtnProtocol?
+    var presentToUserInfoDelegate: CellPresentToUserInfoProtocol?
     
     //MARK: - 전체 영역
     var stack = UIStackView()               // 전체 통합
@@ -252,6 +258,11 @@ extension PostCell {
     //MARK: - 좋아요 버튼 동작
     @objc func likeBtnPressed() {
         self.likeBtnDelegate?.likeBtnPressed(of: self.post!)
+    }
+    
+    //MARK: - 유저정보 화면으로 전환
+    @objc func presentToUserInfo() {
+        self.presentToUserInfoDelegate?.presentToUserInfo(of: self.post!)
     }
 }
 
@@ -628,6 +639,13 @@ extension PostCell {
             stack.axis = .vertical
             stack.alignment = .center
             stack.backgroundColor = .white
+            
+            /// 탭 제스처 정의
+            /// 적용: 사용자 정보 스택 터치 시 유저정보 화면으로 전환
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(presentToUserInfo))
+
+            stack.addGestureRecognizer(tapGesture)
+            stack.isUserInteractionEnabled = true
             
             return stack
         }()

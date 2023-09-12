@@ -149,6 +149,7 @@ extension SocialViewController: UITableViewDataSource {
             
             cell.presentDelegate = self // 화면전환 프로토콜 위임
             cell.likeBtnDelegate = self // 좋아요 버튼 동작 위임
+            cell.presentToUserInfoDelegate = self // 유저정보 화면전환 위임
             
             cell.setPost(post)
             
@@ -212,5 +213,14 @@ extension SocialViewController: CellPresentToCreatePostProtocol {
     @objc func moveToCreatePostViewController() {
         let targetViewController = CreatePostViewController()
         self.present(targetViewController, animated: true)
+    }
+}
+
+//MARK: - 유저정보 화면전환을 위한 Delegate
+extension SocialViewController: CellPresentToUserInfoProtocol {
+    func presentToUserInfo(of post: Post) {
+        let targetViewController = UserInfo()
+        
+        self.navigationController?.pushViewController(targetViewController, animated: true)
     }
 }
