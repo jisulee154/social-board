@@ -208,9 +208,6 @@ extension DetailViewController: UITableViewDataSource {
         else {
             return self.comments.count
         }
-//        else {
-//            return 1
-//        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

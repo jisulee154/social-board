@@ -8,11 +8,18 @@
 import UIKit
 import SnapKit
 
+//MARK: - 셀에서의 화면전환을 위한 프로토콜 (새글쓰기)
+protocol CellPresentToCreatePostProtocol {
+    func moveToCreatePostViewController()
+}
+
 class PostTopCell: UITableViewCell {
     
     //MARK: - 글 작성 셀(최상단)
     var myProfilePicture = UIImageView()    // 사용자 프로필 이미지
     var writingLabel = UILabel()            // 글 작성 셀 기본 문구
+    
+    var presentToCreatePostDelegate: CellPresentToCreatePostProtocol?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -67,8 +74,19 @@ class PostTopCell: UITableViewCell {
             let label = UILabel()
             
             label.text = "나누고 싶은 생각을 공유해 보세요!"
-            label.textColor = .gray            
+            label.textColor = .gray
+            
+            /// 탭 제스처 정의
+            /// 적용: 글쓰기 권장 문구 터치 시, 새글쓰기로 이동
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(moveToCreatePost))
+
+            label.addGestureRecognizer(tapGesture)
+            label.isUserInteractionEnabled = true
             return label
         }()
+    }
+    
+    @objc func moveToCreatePost() {
+        presentToCreatePostDelegate?.moveToCreatePostViewController()
     }
 }

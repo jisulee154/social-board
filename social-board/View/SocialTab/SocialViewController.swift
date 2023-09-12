@@ -102,12 +102,6 @@ class SocialViewController: UIViewController {
         }
     }
     
-    //MARK: - 화면 전환 (-> 새글 쓰기 화면)
-    @objc func moveToCreatePostViewController() {
-        let targetViewController = CreatePostViewController()
-        self.present(targetViewController, animated: true)
-    }
-    
     //MARK: - rx 구독
     func bind() {
         PostViewModel.shared.posts
@@ -142,6 +136,7 @@ extension SocialViewController: UITableViewDataSource {
                 return UITableViewCell()
             }
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            cell.presentToCreatePostDelegate = self
             
             return cell
         } else {
@@ -156,9 +151,6 @@ extension SocialViewController: UITableViewDataSource {
             cell.likeBtnDelegate = self // 좋아요 버튼 동작 위임
             
             cell.setPost(post)
-            
-//            cell.likeCountLabel.text = "\(self.likeCountOfAPost)"
-//            cell.commentCountLabel.text = "\(self.commentCountOfAPost)"
             
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             
@@ -211,5 +203,14 @@ extension SocialViewController: CellLikeBtnProtocol {
         }
         
         PostViewModel.shared.fetchAPost(post)
+    }
+}
+
+//MARK: - 새글쓰기를 위한 Delegate
+extension SocialViewController: CellPresentToCreatePostProtocol {
+    //MARK: - 화면 전환 (-> 새글 쓰기 화면)
+    @objc func moveToCreatePostViewController() {
+        let targetViewController = CreatePostViewController()
+        self.present(targetViewController, animated: true)
     }
 }

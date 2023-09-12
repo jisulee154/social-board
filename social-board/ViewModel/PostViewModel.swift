@@ -15,9 +15,9 @@ class PostViewModel {
     var post = PublishSubject<Post>()
     
     var comments = PublishSubject<[Comment]>()
-    var commentCount = PublishSubject<Int>()
-    var likeCount = PublishSubject<Int>()
-    var isLiked = PublishSubject<Bool>()
+//    var commentCount = PublishSubject<Int>()
+//    var likeCount = PublishSubject<Int>()
+//    var isLiked = PublishSubject<Bool>()
     
     
     let disposeBag = DisposeBag()
@@ -165,25 +165,25 @@ class PostViewModel {
 //                .onNext(0)
 //        }
 //    }
-    
-    //MARK: - 좋아요 상태 가져오기
-    func fetchIsLiked(of post: Post) {
-        let realm = try! Realm()
-        
-        let allPosts = realm.objects(Post.self)
-        let targetPost = allPosts.where {
-            $0.postID == post.postID
-        }
-        
-        if let isLiked = targetPost.first?.isLiked {
-            self.isLiked
-                .onNext(isLiked)
-        } else {
-            print(#fileID, #function, #line, " - isLiked is nil. [Rx]")
-            self.isLiked
-                .onNext(false)
-        }
-    }
+//
+//    //MARK: - 좋아요 상태 가져오기
+//    func fetchIsLiked(of post: Post) {
+//        let realm = try! Realm()
+//
+//        let allPosts = realm.objects(Post.self)
+//        let targetPost = allPosts.where {
+//            $0.postID == post.postID
+//        }
+//
+//        if let isLiked = targetPost.first?.isLiked {
+//            self.isLiked
+//                .onNext(isLiked)
+//        } else {
+//            print(#fileID, #function, #line, " - isLiked is nil. [Rx]")
+//            self.isLiked
+//                .onNext(false)
+//        }
+//    }
     
     ///모든 글 접기
     func reset() {

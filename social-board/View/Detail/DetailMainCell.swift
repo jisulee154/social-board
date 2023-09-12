@@ -88,6 +88,9 @@ extension DetailMainCell {
                     self.likeIcon.setImage(UIImage(systemName: "heart"), for: .normal)
                     self.likeIcon.tintColor = .black
                 }
+                
+                //좋아요 수 업데이트
+                self.likeCount.text = "\(self.post?.likeCount ?? 0)"
             }
             .disposed(by: disposeBag)
         
@@ -158,8 +161,6 @@ extension DetailMainCell {
             self.likeIcon.tintColor = .black
         }
         
-//        self.likeCount.text = "\(self.likeCountValue)"
-//        self.commentCount.text = "\(self.commentCountValue)"
         self.likeCount.text = "\(post.likeCount ?? 0)"
         self.commentCount.text = "\(post.comments.count)"
     }
