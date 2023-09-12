@@ -112,8 +112,8 @@ extension DetailMainCell {
         
         //Rx bind
 //        PostViewModel.shared.fetchAPost(post)
-        PostViewModel.shared.fetchLikeCount(of: post)
-        PostViewModel.shared.fetchCommentCount(of: post)
+//        PostViewModel.shared.fetchLikeCount(of: post)
+//        PostViewModel.shared.fetchCommentCount(of: post)
         
         self.createdTimeLabel.text = post.createdDateTime?.description ?? ""
         self.nameLabel.text = post.writer?.userName ?? "익명"

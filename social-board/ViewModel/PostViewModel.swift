@@ -57,7 +57,7 @@ class PostViewModel {
         fetchPosts()
     }
     
-    //MARK: - 글 불러오기
+    //MARK: - 글 모두 불러오기
     func fetchPosts() {
         //MARK: - Realm SchemaVersion 관리
         let config = Realm.Configuration(schemaVersion: 8)
@@ -133,37 +133,38 @@ class PostViewModel {
 //        fetchAPost(post)
     }
     
-    //MARK: - 코멘트 수 가져오기
-    func fetchCommentCount(of post: Post) {
-        let realm = try! Realm()
-        
-        let allComments = realm.objects(Comment.self)
-        let commentsOfPost = allComments.where {
-            $0.belongsTo.postID == post.postID
-        }
-        let commentCount = commentsOfPost.count
-        
-        self.commentCount
-            .onNext(commentCount)
-    }
-    
-    //MARK: - 좋아요 수 가져오기
-    func fetchLikeCount(of post: Post) {
-        let realm = try! Realm()
-        
-        let allPosts = realm.objects(Post.self)
-        let targetPost = allPosts.where {
-            $0.postID == post.postID
-        }
-        if let likeCount = targetPost.first?.likeCount {
-            self.likeCount
-                .onNext(likeCount)
-        } else {
-            print(#fileID, #function, #line, " - likeCount is nil. [Rx]")
-            self.likeCount
-                .onNext(0)
-        }
-    }
+//    //MARK: - 코멘트 수 가져오기
+//    func fetchCommentCount(of post: Post) {
+//        let realm = try! Realm()
+//        
+////        let allComments = realm.objects(Comment.self)
+////        let commentsOfPost = allComments.where {
+////            $0.belongsTo.postID == post.postID
+////        }
+////        let commentCount = commentsOfPost.count
+//        let commentCount = post.comments.count
+//        
+//        self.commentCount
+//            .onNext(commentCount)
+//    }
+//    
+//    //MARK: - 좋아요 수 가져오기
+//    func fetchLikeCount(of post: Post) {
+//        let realm = try! Realm()
+//        
+//        let allPosts = realm.objects(Post.self)
+//        let targetPost = allPosts.where {
+//            $0.postID == post.postID
+//        }
+//        if let likeCount = targetPost.first?.likeCount {
+//            self.likeCount
+//                .onNext(likeCount)
+//        } else {
+//            print(#fileID, #function, #line, " - likeCount is nil. [Rx]")
+//            self.likeCount
+//                .onNext(0)
+//        }
+//    }
     
     //MARK: - 좋아요 상태 가져오기
     func fetchIsLiked(of post: Post) {
@@ -201,27 +202,39 @@ class PostViewModel {
     func createComment(_ comment: Comment) {
         let realm = try! Realm()
         
-        let comment: Comment = comment
-        
         try! realm.write {
             realm.add(comment)
         }
         
+        // 글의 기존 댓글 List에 새 댓글을 추가합니다.
+//        let oldComments = comment.belongsTo?.comments
+        
+        try! realm.write {
+            comment.belongsTo?.comments.append(comment)
+        }
+        
         fetchComments(of: comment.belongsTo!)
+        fetchPosts()
     }
     
     //MARK: - 댓글 불러오기
     func fetchComments(of post:Post) {
         let realm = try! Realm()
         
-        let allComments = realm.objects(Comment.self)
-        let commentsOfPost = allComments.where {
-            $0.belongsTo == post
-        }.sorted(by: \.createdDateTime, ascending: false)
+//        let allComments = realm.objects(Comment.self)
+//        let commentsOfPost = allComments.where {
+//            $0.belongsTo == post
+//        }.sorted(by: \.createdDateTime, ascending: false)
+//
+//        var commentResult: [Comment] = []
+//
+//        for element in commentsOfPost {
+//            commentResult.append(element)
+//        }
+        let comments = post.comments.sorted(by: \.createdDateTime, ascending: false)
         
         var commentResult: [Comment] = []
-        
-        for element in commentsOfPost {
+        for element in comments {
             commentResult.append(element)
         }
         
