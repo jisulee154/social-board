@@ -16,13 +16,20 @@ protocol CellPresentProtocol {
     func presentToDetail(of post: Post)
 }
 
+//MARK: - 셀에서의 좋아요 버튼 동작을 위한 프로토콜
+protocol CellLikeBtnProtocol {
+    func likeBtnPressed(of post: Post)
+}
+
 class PostCell: UITableViewCell {
     var post: Post!
-    var likeCountOfAPost: Int = 0
-    var commentCountOfAPost: Int = 0
+//    var likeCountOfAPost: Int = 0
+//    var commentCountOfAPost: Int = 0
+//    var isLiked: Bool = false
     let disposeBag = DisposeBag()
     
-    var delegate: CellPresentProtocol?
+    var presentDelegate: CellPresentProtocol?
+    var likeBtnDelegate: CellLikeBtnProtocol?
     
     //MARK: - 전체 영역
     var stack = UIStackView()               // 전체 통합
@@ -65,7 +72,7 @@ class PostCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        bind()
+//        bind()
         
         configureCell()
         setConstraint()
@@ -94,29 +101,59 @@ class PostCell: UITableViewCell {
 
 extension PostCell {
     //MARK: - Rx bind
-    func bind() {
-        //MARK: - likeCount 구독
-        PostViewModel.shared.likeCount
-            .subscribe {
-                self.likeCountOfAPost = $0
-            }
-            .disposed(by: disposeBag)
-
-
-        //MARK: - commentCount 구독
-        PostViewModel.shared.commentCount
-            .subscribe {
-                self.commentCountOfAPost = $0
-            }
-            .disposed(by: disposeBag)
-    }
+//    func bind() {
+//        //MARK: - post 구독
+//        PostViewModel.shared.post
+//            .subscribe(on: MainScheduler.instance)
+//            .subscribe {
+//                self.post = $0
+//                print(#fileID, #function, #line, " - subscribe()!!: ", $0)
+//
+//                // post.isLiked 값에 따라 좋아요 아이콘을 표시합니다.
+//                if self.post?.isLiked ?? false {
+//                    self.likeCountIcon.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+//                    self.likeCountIcon.tintColor = .red
+//                } else {
+//                    self.likeCountIcon.setImage(UIImage(systemName: "heart"), for: .normal)
+//                    self.likeCountIcon.tintColor = .black
+//                }
+//            }
+//            .disposed(by: disposeBag)
+//
+//        //MARK: - isLiked 구독
+//        PostViewModel.shared.isLiked
+//            .subscribe(on: MainScheduler.instance)
+//            .subscribe {
+//                //post.isLiked 값에 따라 좋아요 아이콘을 표시합니다.
+//                if $0 {
+//                    self.likeCountIcon.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+//                    self.likeCountIcon.tintColor = .red
+//                } else {
+//                    self.likeCountIcon.setImage(UIImage(systemName: "heart"), for: .normal)
+//                    self.likeCountIcon.tintColor = .black
+//                }
+//            }
+//            .disposed(by: disposeBag)
+//
+//        //MARK: - likeCount 구독
+//        PostViewModel.shared.likeCount
+//            .subscribe {
+//                self.likeCountOfAPost = $0
+//            }
+//            .disposed(by: disposeBag)
+//
+//
+//        //MARK: - commentCount 구독
+//        PostViewModel.shared.commentCount
+//            .subscribe {
+//                self.commentCountOfAPost = $0
+//            }
+//            .disposed(by: disposeBag)
+//    }
+    
     //MARK: - Post 내용 설정
     func setPost(_ post: Post) {
         self.post = post
-        
-        // Rx 값 가져오기
-        PostViewModel.shared.fetchLikeCount(of: self.post)
-        PostViewModel.shared.fetchCommentCount(of: self.post)
         
         self.createdTimeLabel.text = post.createdDateTime?.description ?? ""
         self.nameLabel.text = post.writer?.userName ?? "익명"
@@ -164,20 +201,18 @@ extension PostCell {
         if let isLiked = post.isLiked {
             if isLiked {
                 likeCountIcon.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+                likeCountIcon.tintColor = .red
             } else {
                 likeCountIcon.setImage(UIImage(systemName: "heart"), for: .normal)
+                likeCountIcon.tintColor = .black
             }
         }
-//        self.likeCountLabel.text = "\(post.likeCount ?? 0)"
-//        self.commentCountLabel.text = "\(post.commentCount ?? 0)"
-        self.likeCountLabel.text = "\(self.likeCountOfAPost)"
-        self.commentCountLabel.text = "\(self.commentCountOfAPost)"
+        self.likeCountLabel.text = "\(post.likeCount ?? 0)"
+        self.commentCountLabel.text = "\(post.commentCount ?? 0)"
+//        self.likeCountLabel.text = "\(self.likeCountOfAPost)"
+//        self.commentCountLabel.text = "\(self.commentCountOfAPost)"
     }
     
-//    //MARK: - Rx Bind
-//    func bind(_ post: Post) {
-//        self.post = post
-//    }
     
     /// 셀에서 '더보기' 버튼을 표시할지 결정합니다.
     func setContentsMoreShowing() {
@@ -211,13 +246,12 @@ extension PostCell {
     
     //MARK: - 화면 전환 (-> 글 상세보기)
     @objc func goToDetail() {
-        self.delegate?.presentToDetail(of: self.post!)
+        self.presentDelegate?.presentToDetail(of: self.post!)
     }
     
     //MARK: - 좋아요 버튼 동작
     @objc func likeBtnPressed() {
-        print(#fileID, #function, #line, " - like btn is pressed.")
-        
+        self.likeBtnDelegate?.likeBtnPressed(of: self.post!)
     }
 }
 
@@ -694,8 +728,19 @@ extension PostCell {
         likeCountIcon = {
             let btn = UIButton()
             
+//            if post?.isLiked ?? false {
+//                btn.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+//                btn.tintColor = .red
+//            } else {
+//                btn.setImage(UIImage(systemName: "heart"), for: .normal)
+//                btn.tintColor = .black
+//            }
+            
             btn.setImage(UIImage(systemName: "heart"), for: .normal)
             btn.tintColor = .black
+            
+            /// 좋아요 버튼 동작 정의
+            /// 좋아요 버튼 눌렀을 때 버튼이미지 변화, 좋아요 수 변화
             btn.addTarget(self, action: #selector(likeBtnPressed), for: .touchUpInside)
             return btn
         }()

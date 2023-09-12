@@ -113,9 +113,8 @@ class SocialViewController: UIViewController {
         PostViewModel.shared.posts
             .subscribe(on: MainScheduler.instance)
             .subscribe {
-//                print(#fileID, #function, #line, " - subscribe()!!")
+                print(#fileID, #function, #line, "posts - subscribe()!!")
                 self.posts = $0
-//                print(#fileID, #function, #line, " - posts: ", $0)
                 self.tableView.reloadData()
             }
             .disposed(by: disposeBag)
@@ -153,7 +152,8 @@ extension SocialViewController: UITableViewDataSource {
             
             let post = posts[indexPath.row]
             
-            cell.delegate = self // 화면전환 프로토콜 위임
+            cell.presentDelegate = self // 화면전환 프로토콜 위임
+            cell.likeBtnDelegate = self // 좋아요 버튼 동작 위임
             
             cell.setPost(post)
             
@@ -192,7 +192,24 @@ extension SocialViewController: CellPresentProtocol {
     func presentToDetail(of post: Post) {
         let detailViewController = DetailViewController()
         detailViewController.setPost(post)
+//        print(#fileID, #function, #line, " - detailView에 전달된 post: ", post)
+        
+        // 상세 글보기 좋아요 버튼 동작 위임
+        detailViewController.likeBtnDelegate = self
         
         self.navigationController?.pushViewController(detailViewController, animated: true)
+    }
+}
+
+//MARK: - 셀에서의 좋아요 버튼 동작을 위한 Delegate
+extension SocialViewController: CellLikeBtnProtocol {
+    func likeBtnPressed(of post: Post) {
+        if post.isLiked ?? false {
+            PostViewModel.shared.updateAPost(post, isLiked: false)
+        } else {
+            PostViewModel.shared.updateAPost(post, isLiked: true)
+        }
+        
+        PostViewModel.shared.fetchAPost(post)
     }
 }

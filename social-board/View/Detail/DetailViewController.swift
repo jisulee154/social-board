@@ -14,9 +14,13 @@ import IQKeyboardManagerSwift
 class DetailViewController: UIViewController {
     //MARK: - 상세보기를 선택한 글&댓글 정보
     var post: Post!
+    var posts: [Post]!
     
     var comments: [Comment] = []
     var disposeBag = DisposeBag()
+    
+    //MARK: - delegate
+    var likeBtnDelegate: CellLikeBtnProtocol?
     
     var scrollView = UIScrollView()
     
@@ -32,6 +36,11 @@ class DetailViewController: UIViewController {
         
         return tableView
     }()
+
+    /// NavBar Item
+    var shareBtnImage = UIImage(systemName: "square.and.arrow.up")
+    var likeBtnImage = UIImage(systemName: "heart")
+    var reportBtnImage = UIImage(systemName: "ellipsis")
     
     /// footer: 댓글 쓰기란
     var footer = {
@@ -65,26 +74,34 @@ class DetailViewController: UIViewController {
         super.viewWillAppear(animated)
         
         self.tabBarController?.tabBar.isHidden = true
+        
     }
     
     //MARK: - Rx bind
     func bind() {
+        #warning("fetch a post??")
         //MARK: - post 구독
         PostViewModel.shared.post
-            .subscribe(on: MainScheduler.instance)
-            .subscribe {
-                self.post = $0
+        .subscribe(on: MainScheduler.instance)
+        .subscribe {
+            self.post = $0
+            
+            // post.isLiked 값에 따라 좋아요 아이콘을 표시합니다.
+            if self.post?.isLiked ?? false {
+                //본문 하단의 좋아요 아이콘 설정
+                self.likeBtn.setImage(UIImage(systemName: "heart.fill"), for: .normal)
                 
-                // post.isLiked 값에 따라 좋아요 아이콘을 표시합니다.
-                if self.post?.isLiked ?? false {
-                    self.likeBtn.setImage(UIImage(systemName: "heart.fill"), for: .normal)
-                } else {
-                    self.likeBtn.setImage(UIImage(systemName: "heart"), for: .normal)
-                }
+                //상단 네비게이션바 아이템의 좋아요 아이콘 설정
+                self.likeBtnImage = UIImage(systemName: "heart.fill")
+            } else {
+                //본문 하단의 좋아요 아이콘 설정
+                self.likeBtn.setImage(UIImage(systemName: "heart"), for: .normal)
+                
+                //상단 네비게이션바 아이템의 좋아요 아이콘 설정
+                self.likeBtnImage = UIImage(systemName: "heart")
             }
-            .disposed(by: disposeBag)
-        
-        PostViewModel.shared.fetchAPost(post)
+        }
+        .disposed(by: disposeBag)
         
         //MARK: - Comments 구독
         if let post = self.post {
@@ -98,20 +115,17 @@ class DetailViewController: UIViewController {
             
             PostViewModel.shared.fetchComments(of: post)
         }
-        
-
     }
     
     func configureNavigationBarItem () {
         //MARK: - Right BarItem 설정
-        let shareBtnImage = UIImage(systemName: "square.and.arrow.up")
+        
         shareBtn.setImage(shareBtnImage, for: .normal)
         
-        let likeBtnImage = UIImage(systemName: "heart")
         likeBtn.setImage(likeBtnImage, for: .normal)
-        likeBtn.addTarget(self, action: #selector(likeBtnPressed), for: .touchUpInside)
+        // 좋아요 버튼 동작
+        likeBtn.addTarget(self, action: #selector(likeBtnOnNavBarPressed), for: .touchUpInside)
         
-        let reportBtnImage = UIImage(systemName: "ellipsis")
         reportBtn.setImage(reportBtnImage, for: .normal)
         
         let rightStack = UIStackView(arrangedSubviews: [shareBtn, likeBtn, reportBtn])
@@ -134,6 +148,7 @@ class DetailViewController: UIViewController {
     
     //MARK: - 글 정보 주입
     func setWhichPost() {
+        //새 댓글 쓰기 - 어떤 글에 대한 댓글인지 알기위해 post값을 전달합니다.
         footer.setPost(self.post)
     }
     
@@ -173,6 +188,14 @@ extension DetailViewController {
     //MARK: - 어떤 글에 대한 상세보기인지 설정
     func setPost(_ post: Post) {
         self.post = post
+        
+        //상단 네비게이션바 아이템의 좋아요 아이콘 설정
+        #warning("메인 스레드에서 동작해야하는지?")
+        if self.post.isLiked ?? false {
+            self.likeBtnImage = UIImage(systemName: "heart.fill")
+        } else {
+            self.likeBtnImage = UIImage(systemName: "heart")
+        }
     }
 }
 
@@ -204,6 +227,10 @@ extension DetailViewController: UITableViewDataSource {
                 return UITableViewCell()
             }
             cell.setPost(post)
+            
+            // 좋아요 동작 delegate
+            cell.likeBtnDelegate = self
+            
             return cell
 
         }
@@ -215,10 +242,6 @@ extension DetailViewController: UITableViewDataSource {
             cell.setComment(comment)
             return cell
         }
-        
-//        else {
-//            return UITableViewCell()
-//        }
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -243,13 +266,27 @@ extension DetailViewController: UITableViewDelegate {
 }
 
 extension DetailViewController {
-    //MARK: - 좋아요 버튼 동작
-    @objc func likeBtnPressed() {
-        if self.post?.isLiked ?? false {
-            PostViewModel.shared.updateAPost(self.post, isLiked: false)
+    //MARK: - 네비게이션 바의 좋아요 버튼 동작
+    @objc func likeBtnOnNavBarPressed() {
+//        if self.post?.isLiked ?? false {
+//            PostViewModel.shared.updateAPost(self.post, isLiked: false)
+//        } else {
+//            PostViewModel.shared.updateAPost(self.post, isLiked: true)
+//        }
+        self.likeBtnDelegate?.likeBtnPressed(of: self.post)
+    }
+}
+
+//MARK: - 셀에서의 좋아요 버튼 동작을 위한 Delegate
+extension DetailViewController: CellLikeBtnProtocol {
+    func likeBtnPressed(of post: Post) {
+        if post.isLiked ?? false {
+            PostViewModel.shared.updateAPost(post, isLiked: false)
         } else {
-            PostViewModel.shared.updateAPost(self.post, isLiked: true)
+            PostViewModel.shared.updateAPost(post, isLiked: true)
         }
+        
+        PostViewModel.shared.fetchAPost(post)
     }
 }
 

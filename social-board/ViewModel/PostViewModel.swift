@@ -120,12 +120,17 @@ class PostViewModel {
             }
             if let newIsLiked = isLiked {
                 post.isLiked = newIsLiked
+                
+                if newIsLiked {
+                    post.likeCount = (post.likeCount ?? 0) + 1
+                } else {
+                    post.likeCount = (post.likeCount ?? 1) - 1
+                }
                 //onNext?
             }
-//            print(#fileID, #function, #line, " - update as: ", post.expanded ?? "nil")
         }
-//        fetchPosts()
-        fetchAPost(post)
+        fetchPosts()
+//        fetchAPost(post)
     }
     
     //MARK: - 코멘트 수 가져오기
@@ -168,6 +173,7 @@ class PostViewModel {
         let targetPost = allPosts.where {
             $0.postID == post.postID
         }
+        
         if let isLiked = targetPost.first?.isLiked {
             self.isLiked
                 .onNext(isLiked)
