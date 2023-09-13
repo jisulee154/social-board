@@ -102,6 +102,9 @@ class PostCell: UITableViewCell {
         self.contentsText.text = ""
         self.likeCountLabel.text = ""
         self.commentCountLabel.text = ""
+        
+        self.likeCountIcon.setImage(UIImage(systemName: "heart"), for: .normal)
+        self.likeCountIcon.tintColor = .black
     }
 }
 

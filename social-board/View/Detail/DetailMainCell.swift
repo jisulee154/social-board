@@ -118,7 +118,9 @@ extension DetailMainCell {
 //        PostViewModel.shared.fetchLikeCount(of: post)
 //        PostViewModel.shared.fetchCommentCount(of: post)
         
-        self.createdTimeLabel.text = post.createdDateTime?.description ?? ""
+//        self.createdTimeLabel.text = post.createdDateTime?.description ?? ""
+        self.createdTimeLabel.text = PostViewModel.shared.getCreatedDateTime(post.createdDateTime ?? Date())
+        
         self.nameLabel.text = post.writer?.userName ?? "익명"
         self.jobLabel.text = post.writer?.job?.category?.rawValue ?? JobCategory.dev.rawValue
         
@@ -190,7 +192,7 @@ extension DetailMainCell {
             
             
             stackView.axis = .horizontal
-            stackView.backgroundColor = .yellow
+//            stackView.backgroundColor = .yellow
             return stackView
         }()
         
@@ -198,7 +200,7 @@ extension DetailMainCell {
             let stackView = UIStackView()
             
             stackView.axis = .vertical
-            stackView.backgroundColor = .magenta
+//            stackView.backgroundColor = .magenta
             return stackView
         }()
         

@@ -161,7 +161,7 @@ class PostViewModel {
     func fetchComments(of post:Post) {
         let realm = try! Realm()
         
-        let comments = post.comments.sorted(by: \.createdDateTime, ascending: false)
+        let comments = post.comments.sorted(by: \.createdDateTime, ascending: true)
         
         var commentResult: [Comment] = []
         for element in comments {
@@ -185,7 +185,7 @@ extension PostViewModel {
         let min = Double(60)
         
         let interval = now.timeIntervalSince(createdDateTime) // 글 작성시간과 현재시간 차이
-        print(#fileID, #function, #line, " - interval: ", interval)
+//        print(#fileID, #function, #line, " - interval: ", interval)
         
         switch interval {
         case 0:

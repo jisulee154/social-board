@@ -158,7 +158,7 @@ class CreatePostViewController: UIViewController {
             make.trailing.equalTo(writingStackView)
             make.bottom.equalTo(writingStackView)
             
-            make.height.greaterThanOrEqualTo(100)
+            make.height.greaterThanOrEqualTo(400)
         }
     }
     

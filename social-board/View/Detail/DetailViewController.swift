@@ -163,21 +163,19 @@ class DetailViewController: UIViewController {
         scrollView.addSubview(tableView)
         
         tableView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalTo(scrollView).priority(800)
-            make.height.greaterThanOrEqualTo(600).priority(1000)
-            make.width.equalTo(scrollView).priority(800)
+            make.top.leading.trailing.equalTo(scrollView)
+            make.height.greaterThanOrEqualTo(700).priority(900)
+            make.width.equalTo(scrollView)
         }
         
         scrollView.addSubview(footer)
-        scrollView.backgroundColor = .yellow
-        footer.backgroundColor = .green
         footer.snp.makeConstraints { make in
             
             make.bottom.equalTo(scrollView).priority(1000)
-            make.height.equalTo(150).priority(800)
+            make.height.equalTo(150)
             
-            make.top.equalTo(tableView.snp.bottom).priority(1000)
-            make.leading.trailing.equalTo(scrollView).priority(800)
+            make.top.equalTo(tableView.snp.bottom)
+            make.leading.trailing.equalTo(scrollView)
 
             make.width.equalTo(scrollView)
         }

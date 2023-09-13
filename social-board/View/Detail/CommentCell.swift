@@ -76,7 +76,7 @@ class CommentCell: UITableViewCell {
             
             
             stackView.axis = .horizontal
-            stackView.backgroundColor = .yellow
+//            stackView.backgroundColor = .yellow
             return stackView
         }()
         
@@ -84,7 +84,7 @@ class CommentCell: UITableViewCell {
             let stackView = UIStackView()
             
             stackView.axis = .vertical
-            stackView.backgroundColor = .magenta
+//            stackView.backgroundColor = .magenta
             return stackView
         }()
         
@@ -309,7 +309,9 @@ extension CommentCell {
     func setComment(_ comment: Comment) {
         self.comment = comment
         
-        self.createdTimeLabel.text = comment.createdDateTime?.description ?? ""
+//        self.createdTimeLabel.text = comment.createdDateTime?.description ?? ""
+        self.createdTimeLabel.text = PostViewModel.shared.getCreatedDateTime(comment.createdDateTime ?? Date())
+        
         self.nameLabel.text = comment.writtenBy?.userName ?? "익명"
         self.jobLabel.text = comment.writtenBy?.job?.category?.rawValue ?? JobCategory.dev.rawValue
         

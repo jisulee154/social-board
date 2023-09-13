@@ -14,7 +14,7 @@ class CreateCommentView: UIView {
     var background: UIView!
     var stack: UIStackView!
     var profileImage: UIImageView!
-    var textField: UITextField = UITextField()
+    var textView: UITextView = UITextView()
     var submitBtn: UIButton = UIButton()
     
     var post: Post!
@@ -50,7 +50,7 @@ class CreateCommentView: UIView {
             let view = UIView()
             view.layer.cornerRadius = 10
             view.clipsToBounds = true
-            view.backgroundColor = .systemGray4
+//            view.backgroundColor = .systemGray4
             
             return view
         }()
@@ -78,16 +78,16 @@ class CreateCommentView: UIView {
             return imageView
         }()
         
-        textField = {
-            let textfield = UITextField()
-            textfield.placeholder = "내 생각 남기기"
+        textView = {
+            let textView = UITextView()
+            textView.text = "내 생각 남기기"
+            textView.textColor = .systemGray2
+            textView.font = .systemFont(ofSize: 18, weight: .regular)
+            textView.delegate = self
             
-            // padding
-            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textfield.frame.height))
-            textfield.leftView = paddingView
-            textfield.leftViewMode = UITextField.ViewMode.always
+            textView.textContainerInset = UIEdgeInsets(top: 10, left: 15.0, bottom: 20.0, right: 0)
             
-            textfield.rx.text.orEmpty
+            textView.rx.text.orEmpty
                 .map {
                     $0.count > 0
                 }
@@ -97,7 +97,7 @@ class CreateCommentView: UIView {
                 }
                 .disposed(by: disposeBag)
             
-            return textfield
+            return textView
         }()
         
         submitBtn = {
@@ -117,7 +117,7 @@ class CreateCommentView: UIView {
         background.addSubview(stack)
         
         stack.addSubview(profileImage)
-        stack.addSubview(textField)
+        stack.addSubview(textView)
         stack.addSubview(submitBtn)
     }
     
@@ -145,11 +145,13 @@ class CreateCommentView: UIView {
             make.width.equalTo(40)
         }
         
-        textField.snp.makeConstraints { make in
+        textView.snp.makeConstraints { make in
             make.centerY.equalTo(stack)
-            make.height.equalTo(stack)
+            make.height.equalTo(40)
             
+//            textView.backgroundColor = .green
             make.leading.equalTo(profileImage.snp.trailing)
+            make.width.equalTo(stack)
         }
         
         submitBtn.snp.makeConstraints { make in
@@ -164,7 +166,21 @@ class CreateCommentView: UIView {
 
 extension CreateCommentView {
     @objc func createComment() {
-        let comment = Comment(createdDateTime: Date(), contents: textField.text, writtenBy: user, belongsTo: post)
+        let comment = Comment(createdDateTime: Date(), contents: textView.text, writtenBy: user, belongsTo: post)
         PostViewModel.shared.createComment(comment)
+        textView.text = ""
     }
+}
+
+//MARK: - UITextView Delegate
+extension CreateCommentView: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        textView.text = ""
+        textView.textColor = .black
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        textView.text = ""
+    }
+    
 }
