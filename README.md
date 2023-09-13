@@ -10,9 +10,9 @@
 ## 기능
 | 기능  | 화면 | 기능  | 화면 |
 | ------------- | ------------- | ------------- | ------------- |
-| 새글 작성하기1      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="200">    |새글 작성하기2      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="200">      |
-| 글 목록보기, 접힌 글 펼치기      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="200">      |글 상세보기      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="200">      |
-| 좋아요 기능      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="200">      |댓글 달기      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="200">      |
+| 새글 작성하기1      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="200">    |새글 작성하기2      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_writingIcon.gif" width="200">      |
+| 글 목록보기, 접힌 글 펼치기      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_detail_moreBtn.gif" width="200">      |글 상세보기      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_detail_commentIcon.gif" width="200">      |
+| 좋아요 기능      | <img src="https://github.com/jisulee154/social-board/blob/main/images/like.gif" width="200">      |댓글 달기      | <img src="https://github.com/jisulee154/social-board/blob/main/images/comment_write.gif" width="200">      |
 
 ## 경험
 - `Realm`을 사용하여 데이터를 저장하고 읽습니다.
@@ -20,3 +20,4 @@
 - `프로토콜`을 활용하여 기능을 구현하였습니다.
 (테이블뷰 셀에서 다른 뷰로의 이동, 테이블뷰 셀 내의 좋아요 버튼 선택 기능)
 - 코드베이스 UI 오토레이아웃 구현을 위해 `SnapKit`을 활용했습니다.
+
