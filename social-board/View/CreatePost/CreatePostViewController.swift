@@ -13,6 +13,8 @@ import RxSwift
 import SwiftUI // UI 테스트
 import Photos
 
+import IQKeyboardManagerSwift
+
 /// 새글 쓰기 모달 화면
 class CreatePostViewController: UIViewController {
     //MARK: - 화면 ui 세부 요소 선언
@@ -42,6 +44,15 @@ class CreatePostViewController: UIViewController {
         
         configureView()
         setConstraint()
+    }
+    
+    //MARK: - 새글쓰기에서는 IQKeyboardManager 작동을 해제합니다.
+    override func viewWillAppear(_ animated: Bool) {
+        IQKeyboardManager.shared.enable = false
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        IQKeyboardManager.shared.enable = true
     }
     
     //MARK: - 화면에 요소 추가

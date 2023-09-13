@@ -222,6 +222,7 @@ extension DetailViewController: UITableViewDataSource {
                 return UITableViewCell()
             }
             cell.setPost(post)
+            cell.selectionStyle = .none
             
             // 좋아요 동작 delegate
             cell.likeBtnDelegate = self
@@ -235,6 +236,8 @@ extension DetailViewController: UITableViewDataSource {
             }
             let comment = self.comments[indexPath.row]
             cell.setComment(comment)
+            cell.selectionStyle = .none
+            
             return cell
         }
     }

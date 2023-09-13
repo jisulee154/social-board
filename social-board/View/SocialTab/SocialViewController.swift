@@ -137,6 +137,7 @@ extension SocialViewController: UITableViewDataSource {
             }
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             cell.presentToCreatePostDelegate = self
+            cell.selectionStyle = .none
             
             return cell
         } else {
@@ -154,6 +155,7 @@ extension SocialViewController: UITableViewDataSource {
             cell.setPost(post)
             
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            cell.selectionStyle = .none
             
             return cell
         }

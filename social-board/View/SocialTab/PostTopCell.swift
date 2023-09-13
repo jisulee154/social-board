@@ -66,8 +66,6 @@ class PostTopCell: UITableViewCell {
             
             imageView.image = UIImage(systemName: "person.crop.circle")
             imageView.tintColor = .systemGray2
-//            let imageName = PostViewModel.shared.dummyUsers.randomElement()?.userProfilePicture
-//            imageView.image = UIImage(named: imageName ?? "userProfile1")
             return imageView
         }()
     }
