@@ -8,14 +8,11 @@
 - RxSwift, Realm, SnapKit, IQKeyboardManager를 사용했습니다.
 
 ## 기능
-| 기능  | 화면 |
-| ------------- |:-------------:|
-| 새글 작성하기1      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="300">    |
-| 새글 작성하기2      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="300">      |
-| 글 목록보기, 접힌 글 펼치기      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="300">      |
-| 글 상세보기      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="300">      |
-| 좋아요 기능      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="300">      |
-| 댓글 달기      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="300">      |
+| 기능  | 화면 | 기능  | 화면 |
+| ------------- | ------------- | ------------- | ------------- |
+| 새글 작성하기1      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="200">    |새글 작성하기2      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="200">      |
+| 글 목록보기, 접힌 글 펼치기      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="200">      |글 상세보기      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="200">      |
+| 좋아요 기능      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="200">      |댓글 달기      | <img src="https://github.com/jisulee154/social-board/blob/main/images/post_write_topCell.gif" width="200">      |
 
 ## 경험
 - `Realm`을 사용하여 데이터를 저장하고 읽습니다.
